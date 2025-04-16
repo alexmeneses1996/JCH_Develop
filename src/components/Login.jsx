@@ -3,11 +3,13 @@ import { Box, Button, Container, FilledInput, FormControl, FormHelperText, IconB
 import { useFormik } from 'formik'
 import React from 'react'
 import * as yup from 'yup'
-import { colorBgPrimary, colorBgSecondary, colorTextPrimary } from '../styled/styled'
+import { colorBgPrimary, colorBgSecondary, colorTextPrimary, colorTextSecondary } from '../styled/styled'
 import LockIcon from '@mui/icons-material/Lock';
+import { Link, useNavigate } from 'react-router-dom'
 
 
 const Login = () => {
+    const navegate = useNavigate()
 
     const formik = useFormik({
         initialValues: {
@@ -23,10 +25,15 @@ const Login = () => {
             password: yup
                 .string()
                 .min(6, 'Mínimo 6 caracteres')
+                .matches(/[A-Z]/, 'Debe contener al menos una letra mayúscula')
+                .matches(/[0-9]/, 'Debe contener al menos un número')
                 .required('La contraseña es obligatoria')
         }),
         onSubmit: async (values, { setErrors }) => {
+
+            navegate('/inicio')
             /*
+
                   //Validacion de correo electronico si existe
                   const isRegistred = await validarEmail({ email: values.email })
                   if (!isRegistred) {
@@ -67,49 +74,55 @@ const Login = () => {
                 sx={{
                     width: '100vw',
                     height: '100vh',
-                    backgroundColor: '#efe7da',
+                    backgroundColor: 'rgb( 248, 249, 250)',
                     display: 'flex',
-                    flexDirection:'column',
+                    flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: '0px',
                     margin: '0px'
                 }}
             >
-                <Typography
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '40px',
-                        fontWeight: 'bold',
-                        marginBottom: '20px',
-                        color: colorTextPrimary
-                    }}
-                >
-                    INGRESO
-                </Typography>
+                <Box>
+                    <Typography
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '40px',
+                            fontWeight: 'bold',
+                            color: colorTextPrimary
+                        }}
+                    >
+                        Sistema de Registro
+                    </Typography>
+                    <Typography variant='body2' sx={{ marginBottom: '20px', }}>
+                        Inicia sesion para continuar
+                    </Typography>
 
-                <Paper elevation={5} sx={{width:'40%', padding:'1.5rem'}}>
-                <form
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                    }}
-                    onSubmit={formik.handleSubmit}
-                >
+                </Box>
 
-                   
+
+                <Paper elevation={5} sx={{ width: '30%', padding: '2rem' }}>
+                    <form
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        }}
+                        onSubmit={formik.handleSubmit}
+                    >
+
+
 
 
                         <FormControl
                             sx={{
                                 m: 1,
-                                width: '250px',
+                                width: '100%',
+                                maxWidth: '300px',
                                 //height:'44px',
-                                backgroundColor: '#fff',
-                                borderRadius: '10px'
+                                borderRadius: '20px'
                             }}
                             variant='filled'
                         >
@@ -124,17 +137,17 @@ const Login = () => {
                                 variant='filled'
                                 InputProps={{
                                     startAdornment: (
-                                      <InputAdornment position="start">
-                                        <Email />
-                                      </InputAdornment>
+                                        <InputAdornment position="start">
+                                            <Email />
+                                        </InputAdornment>
                                     ),
-                                  }}
+                                }}
                                 sx={{
-                                    borderRadius: '40px',
+                                    borderRadius: '20px',
                                     overflow: 'hidden',
                                     '& .MuiFilledInput-root': {
-                                        borderRadius: '40px',
-                                        backgroundColor: '#fff', // Asegura que el color de fondo coincida
+                                        borderRadius: '20px',
+                                        backgroundColor: '#F0F0F0', // Asegura que el color de fondo coincida
                                     }
                                 }}
                             />
@@ -142,9 +155,10 @@ const Login = () => {
                         <FormControl
                             sx={{
                                 m: 1,
-                                width: '250px',
+                                width: '100%',
+                                maxWidth: '300px',
                                 backgroundColor: '#fff',
-                                borderRadius: '40px'
+                                borderRadius: '20px'
                             }}
                             variant='filled'
                         >
@@ -163,8 +177,8 @@ const Login = () => {
                                 }
                                 startAdornment={
                                     <InputAdornment position="start">
-                                    <LockIcon />
-                                  </InputAdornment>
+                                        <LockIcon />
+                                    </InputAdornment>
                                 }
                                 endAdornment={
                                     <InputAdornment position='end'>
@@ -187,10 +201,10 @@ const Login = () => {
                                 }
                                 variant='filled'
                                 sx={{
-                                    borderRadius: '40px',
+                                    borderRadius: '20px',
                                     overflow: 'hidden',
                                     '& .MuiFilledInput-root': {
-                                        borderRadius: '40px',
+                                        borderRadius: '20px',
                                         backgroundColor: '#fff',// Asegura que el color de fondo coincida
                                     }
                                 }}
@@ -206,11 +220,15 @@ const Login = () => {
                                 width: '10',
                                 display: 'flex',
                                 alignItems: 'center',
-                                color: 'black',
+                                color: colorTextSecondary,
                                 justifyContent: 'center',
                                 marginTop: '4px',
                                 textTransform: 'none',
-                                ':hover': { backgroundColor: 'white', color: '#00A78E' }
+                                '&:focus': {
+                                    outline: 'none',
+                                  },
+                       
+                                ':hover': {textDecoration:'underline', backgroundColor: 'white', color: colorTextPrimary }
                             }}
                         >
                             ¿Olvidaste tu contraseña?
@@ -221,24 +239,50 @@ const Login = () => {
                             sx={{
                                 padding: '10px 20px',
                                 fontSize: '16px',
+                                width: '100%',
                                 backgroundColor: colorBgPrimary,
-                                borderRadius: '30px',
+                                borderRadius: '20px',
                                 border: '0',
-                                width: '250px',
+                                maxWidth: '300px',
                                 height: '44px',
                                 display: 'flex',
                                 justifyContent: 'center',
+                                textTransform: 'none',
                                 alignItems: 'center',
                                 cursor: 'pointer',
                                 color: 'white',
-                                ':hover': { backgroundColor: colorBgSecondary }
+                                ':hover': { backgroundColor: colorBgSecondary },
+                                '&:focus': {
+                                    outline: 'none',
+                                  },
                             }}
                         >
-                            Ingresar
+                            Iniciar Sesión
                         </Button>
-                    
-                </form>
+
+                        <Typography variant="body2"  align="center" >
+                            ¿No tienes una cuenta?
+                            <Button
+                            variant='text'
+                            sx={{
+                                color: colorTextSecondary,
+                                textTransform: 'none',
+                                '&:focus': {
+                                    outline: 'none',
+                                  },
+                                ':hover': {textDecoration:'underline', backgroundColor: 'white', color: colorTextPrimary }
+                                
+                            }}
+                        >
+                            Regístrate aquí
+                        </Button>
+                        </Typography>
+
+
+
+                    </form>
                 </Paper>
+                <Typography variant='body2' color='#5D5D5D' marginTop={2}>© 2025 Sistema de Registro. Todos los derechos reservados.</Typography>
             </Container>
         </>
     )
