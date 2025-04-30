@@ -38,12 +38,6 @@ const validationSchema = Yup.object({
   puestoVotacion: Yup.string().required("Requerido"),
   zona: Yup.string().required("Requerido"),
   comuna: Yup.string().required("Requerido"),
-  referido: Yup.string(),
-  password: Yup.string(),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref("password"), null],
-    "Las contraseñas no coinciden"
-  ),
 });
 
 const FormCreation = () => {
@@ -70,31 +64,7 @@ const FormCreation = () => {
       crearRegistro(values);
     },
   });
-    const formik = useFormik({
-        initialValues: {
-            cedula: '',
-            nombres: '',
-            apellidos: '',
-            fechaNacimiento: '',
-            genero: '',
-            telefono: '',
-            correo: '',
-            direccion: '',
-            municipio: '',
-            barrio: '',
-            puestoVotacion: '',
-            zona: '',
-            comuna: '',
-            referido: '',
-            password: '',
-            confirmPassword: '',
-            imagen: null
-        },
-        validationSchema,
-        onSubmit: (values) => {
-            console.log(values);
-        }
-    });
+
 
   return (
     <Container
