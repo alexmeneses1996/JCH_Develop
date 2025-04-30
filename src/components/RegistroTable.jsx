@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import { Edit, Delete, Visibility, CloudDownload, Add } from '@mui/icons-material';
 import axios from 'axios';
+import { supabase } from '../supabase/supabaseConfig';
 //import { supabase } from '../supabase/supabaseConfig';
 
 const statusColors = {
@@ -19,6 +20,7 @@ const RegistrosTable = () => {
 
   const [registros, setRegistros] = useState([]);
   const [filtered, setFiltered] = useState([]);
+  const [datos, setDatos] = useState(null)
   const [busqueda, setBusqueda] = useState('');
   const [pais, setPais] = useState('');
   const [estatus, setEstatus] = useState('');
@@ -27,6 +29,7 @@ const RegistrosTable = () => {
 
   useEffect(() => {
     fetchRegistros();
+    retornarVotantes();
   }, []);
 
   /*const fetchRegistros = async () => {
@@ -45,9 +48,21 @@ const RegistrosTable = () => {
       .catch(err => console.error(err));
   }
 
+  const retornarVotantes = async () =>{
+    const cedula_referido = JSON.parse(localStorage.getItem('usuario'))
+    const {data, error} = await supabase
+    .from("votante")
+    .select("*")
+    //.eq("referido",cedula_referido)
+
+    setDatos(data)
+    console.log(datos)
+  }
+
 
 
   useEffect(() => {
+    console.log(datos)
     let result = registros.filter(r =>
       r.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
       (pais ? r.pais === pais : true) &&

@@ -15,7 +15,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { isValid, parseISO, subYears } from "date-fns";
-import { crearRegistro, mostrarRegistro } from "../helppers/create_users";
+import { crearRegistro, mostrarRegistro } from "../helppers/crearVotante";
 
 const municipios = ["CALI"];
 const barrios = ["ALFONSO BONILLA ARAGON"];
@@ -36,7 +36,6 @@ const validationSchema = Yup.object({
   municipio: Yup.string().required("Requerido"),
   barrio: Yup.string().required("Requerido"),
   puestoVotacion: Yup.string().required("Requerido"),
-  zona: Yup.string().required("Requerido"),
   comuna: Yup.string().required("Requerido"),
 });
 
@@ -55,7 +54,6 @@ const FormCreation = () => {
       barrio: "",
       puestoVotacion: "",
       comuna: "",
-      referido: "",
     },
     validationSchema,
     onSubmit: (values) => {
@@ -135,7 +133,7 @@ const FormCreation = () => {
           </Box>
         </CardContent>
       </Card>
-      <Button onClick={crearRegistro}>MOSTRAR</Button>
+      <Button onClick={mostrarRegistro}>MOSTRAR</Button>
     </Container>
   );
 };

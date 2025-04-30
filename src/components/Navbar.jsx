@@ -70,7 +70,7 @@ const Navbar = () => {
                 to="/"
                 onClick={() => {
                   setOpenDrawer(false);
-                  navegate("/");
+                  navegate("/inicio");
                 }}
               >
                 Inicio

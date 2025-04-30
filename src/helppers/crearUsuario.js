@@ -25,8 +25,8 @@ export const crearUsuario = async (datos) => {
 
   if (error) {
     console.error("❌ Error al registrar:", error.message);
-    return { success: false, message: error.message };
+    return { success: false, message: error.message , data: data};
   }
 
-  return { success: true, message: "Usuario registrado con éxito" };
+  return { success: true, message: "Usuario registrado con éxito" , data: data};
 };

@@ -1,4 +1,4 @@
-import { Email, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -24,6 +24,7 @@ import {
   colorTextSecondary,
 } from "../styled/styled";
 import LockIcon from "@mui/icons-material/Lock";
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import { Link, useNavigate } from "react-router-dom";
 import { loginConCedula } from "../helppers/loginCedula";
 
@@ -47,8 +48,8 @@ const Login = () => {
       password: yup
         .string()
         .min(6, "Mínimo 6 caracteres")
-        .matches(/[A-Z]/, "Debe contener al menos una letra mayúscula")
-        .matches(/[0-9]/, "Debe contener al menos un número")
+        //.matches(/[A-Z]/, "Debe contener al menos una letra mayúscula")
+        //.matches(/[0-9]/, "Debe contener al menos un número")
         .required("La contraseña es obligatoria"),
     }),
 
@@ -153,7 +154,7 @@ const Login = () => {
               variant="filled"
             >
               <TextField
-                label="Usuario"
+                label="Cedula"
                 id="cedula"
                 value={formik.values.cedula}
                 onChange={formik.handleChange}
@@ -164,7 +165,7 @@ const Login = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Email />
+                      <PermIdentityIcon />
                     </InputAdornment>
                   ),
                 }}

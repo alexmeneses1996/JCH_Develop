@@ -6,7 +6,7 @@ export const crearRegistro = async (datos) => {
 
   // Tu lógica para crear el usuario
   const { data, error } = await supabase
-    .from("usuario") // Nombre de la tabla
+    .from("votante") // Nombre de la tabla
     .insert([
       {
         cedula: datos.cedula,
@@ -27,14 +27,14 @@ export const crearRegistro = async (datos) => {
   if (error) {
     console.error("❌ Error al insertar:", error.message);
   } else {
-    console.log("✅ Registro iinsertado:", data);
+    console.log("✅ Registro insertado:", data);
   }
 };
 
 export const mostrarRegistro = async () => {
   // Tu lógica para crear el usuario
   const { data, error } = await supabase
-    .from("usuario") // Nombre de la tabla
+    .from("votante") // Nombre de la tabla
     .select("*"); // Datos a insertar
   console.log(data);
 };
