@@ -59,7 +59,7 @@ const Login = () => {
       if (res.success) {
         alert("✅ Bienvenido " + res.user.nombre);
         localStorage.setItem("usuario", JSON.stringify(res.user.cedula));
-        navegate("/inicio");
+        navegate("/");
         // podés guardar en localStorage o context el user
       } else {
         alert("❌ " + res.message);

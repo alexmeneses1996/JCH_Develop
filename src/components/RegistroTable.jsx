@@ -136,7 +136,8 @@ const RegistrosTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filtered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((r, i) => (
+            {datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((r, i) => (
               <TableRow key={r.id}>
                 <TableCell>{i + 1 + page * rowsPerPage}</TableCell>
                 <TableCell>{r.nombre}</TableCell>

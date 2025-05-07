@@ -98,9 +98,9 @@ const Inicio = () => {
 
                             <Box>
                                 <Typography variant="body1">
-                                    <strong>YO PUEDO, YO QUIERO, YO VOY A LOGRARLO</strong>
+                                    <strong>NO SOMOS UNA GENERACIÓN QUE  ESPERA EL CAMBIO, SOMOS LA QUE LO CONSTRUYE.</strong>
                                     <Typography component="span" sx={{ fontWeight: 300, fontSize: '0.875rem', ml: 1 }}>
-                                        - Tony Melendez
+                                        
                                     </Typography>
                                 </Typography>
                             </Box>

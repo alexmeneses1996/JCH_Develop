@@ -67,7 +67,7 @@ const Navbar = () => {
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               <Button
                 component={Link}
-                to="/"
+                to="/inicio"
                 onClick={() => {
                   setOpenDrawer(false);
                   navegate("/inicio");
