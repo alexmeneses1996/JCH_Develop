@@ -7,7 +7,6 @@ import {
 import { Edit, Delete, Visibility, CloudDownload, Add } from '@mui/icons-material';
 import axios from 'axios';
 import { supabase } from '../supabase/supabaseConfig';
-//import { supabase } from '../supabase/supabaseConfig';
 
 const statusColors = {
   Activo: 'success',
@@ -28,7 +27,7 @@ const RegistrosTable = () => {
   const rowsPerPage = 5;
 
   useEffect(() => {
-    fetchRegistros();
+    //fetchRegistros();
     retornarVotantes();
   }, []);
 
@@ -136,7 +135,7 @@ const RegistrosTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            {filtered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((r, i) => (
               <TableRow key={r.id}>
                 <TableCell>{i + 1 + page * rowsPerPage}</TableCell>
