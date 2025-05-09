@@ -4,14 +4,15 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import Login from '../components/Login'
 import Home from '../components/Home'
 import Navbar from '../components/Navbar'
-import Inicio from '../components/Inicio'
-import Graphics from '../components/Graphics'
-import FormCreation from '../components/FormCreation'
+import Available from './Available'
+import Private from './Private'
 
 const AppRoutes = () => {
 
     const routeSinNavbar = ["/login"]
     const location = useLocation()
+    const [autenticacion, setAutenticacion] = useState()
+
   return (
     <>
           <GlobalStyles
@@ -32,12 +33,16 @@ const AppRoutes = () => {
       {!location.pathname.includes(routeSinNavbar) && <Navbar  />}
     <Suspense fallback={<CircularProgress />}>
         <Routes>
-            <Route path='/login' element={<Login />}/>
+          {/* Rutas Públicas */}
+            <Route path='/login' element={<Login setAutenticacion={setAutenticacion} />}/>
             <Route path='/' element={<Home />}/>
-            <Route path='/inicio' element={<Inicio />}/>
-            <Route path='/nuevoRegistro' element={<FormCreation />}/>
-            <Route path='/graficos' element={<Graphics />}/>
 
+          {/* Rutas Privadas */}
+          <Route path="/*" element={
+            <Private autenticacion={autenticacion}>
+              <Available />
+            </Private>
+          }/>
 
         </Routes>
     </Suspense>

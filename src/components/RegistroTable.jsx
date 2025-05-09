@@ -52,7 +52,7 @@ const RegistrosTable = () => {
     const {data, error} = await supabase
     .from("votante")
     .select("*")
-    //.eq("referido",cedula_referido)
+    .eq("referido",cedula_referido)
 
     setDatos(data)
     console.log(datos)

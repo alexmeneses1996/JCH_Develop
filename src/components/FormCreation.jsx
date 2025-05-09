@@ -16,11 +16,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { isValid, parseISO, subYears } from "date-fns";
 import { crearRegistro, mostrarRegistro } from "../helppers/crearVotante";
+import { barriosPorComuna, comunas } from "../helppers/data";
 
 const municipios = ["CALI"];
 const barrios = ["ALFONSO BONILLA ARAGON"];
-const generos = ["Femenino", "Masculino", "Otro"];
-const comunas = ["Comuna 1", "Comuna 22", "Comuna 3"];
+const sexos = ["Femenino", "Masculino"];
 
 const validationSchema = Yup.object({
   cedula: Yup.string()
@@ -29,7 +29,7 @@ const validationSchema = Yup.object({
   nombre: Yup.string().required("Requerido"),
   apellidos: Yup.string().required("Requerido"),
   edad: Yup.string().required("Requerido"),
-  genero: Yup.string().required("Requerido"),
+  sexo: Yup.string().required("Requerido"),
   telefono: Yup.string().required("Requerido"),
   correo: Yup.string().email("Correo inválido").required("Requerido"),
   direccion: Yup.string().required("Requerido"),
@@ -46,7 +46,7 @@ const FormCreation = () => {
       nombre: "",
       apellidos: "",
       edad: "",
-      genero: "",
+      sexo: "",
       telefono: "",
       correo: "",
       direccion: "",
@@ -63,6 +63,8 @@ const FormCreation = () => {
     },
   });
 
+  const selectedComuna = formik.values.comuna;
+  const barrios = selectedComuna ? barriosPorComuna[selectedComuna] || [] : [];
 
   return (
     <Container
@@ -102,7 +104,7 @@ const FormCreation = () => {
             >
               <Box sx={{ display: "flex", width: "100%" }}>
                 {renderField("cedula", "Número de Cédula", formik)}
-                {renderField("nombre", "nombre", formik)}
+                {renderField("nombre", "Nombre", formik)}
                 {renderField("apellidos", "Apellidos", formik)}
                 {renderField("telefono", "Teléfono o Celular", formik)}
               </Box>
@@ -110,7 +112,7 @@ const FormCreation = () => {
                 {renderField("direccion", "Dirección", formik)}
                 {renderField("correo", "Correo", formik)}
                 {renderField("edad", "Edad", formik)}
-                {renderSelect("genero", "Género", generos, formik)}
+                {renderSelect("sexo", "Sexo", sexos, formik)}
               </Box>
               <Box sx={{ display: "flex", width: "100%" }}>
                 {renderSelect("municipio", "Municipio", municipios, formik)}
@@ -156,6 +158,7 @@ const renderField = (name, label, formik, type = "text") => (
   </Grid>
 );
 
+
 const renderSelect = (name, label, options, formik) => (
   <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
     <TextField
@@ -164,7 +167,12 @@ const renderSelect = (name, label, options, formik) => (
       label={label}
       name={name}
       value={formik.values[name]}
-      onChange={formik.handleChange}
+      onChange={(e) => {
+        formik.handleChange(e);
+        if (name === "comuna") {
+          formik.setFieldValue("barrio", ""); // Resetea barrio si cambia comuna
+        }
+      }}
       error={formik.touched[name] && Boolean(formik.errors[name])}
       helperText={formik.touched[name] && formik.errors[name]}
       sx={{ minWidth: "150px" }}

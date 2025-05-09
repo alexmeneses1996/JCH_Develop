@@ -28,7 +28,7 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import { Link, useNavigate } from "react-router-dom";
 import { loginConCedula } from "../helppers/loginCedula";
 
-const Login = () => {
+const Login = ({setAutenticacion}) => {
   const navegate = useNavigate();
 
   const formik = useFormik({
@@ -59,6 +59,7 @@ const Login = () => {
       if (res.success) {
         alert("✅ Bienvenido " + res.user.nombre);
         localStorage.setItem("usuario", JSON.stringify(res.user.cedula));
+        setAutenticacion(true)
         navegate("/");
         // podés guardar en localStorage o context el user
       } else {

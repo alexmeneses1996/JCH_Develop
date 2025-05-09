@@ -15,6 +15,7 @@ import logo from "/imagen.jpg";
 import PersonIcon from "@mui/icons-material/Person";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
+import { color_primario } from "../styled/styled";
 
 const Navbar = () => {
   //const [open, setOpen] = useState(false);
@@ -39,7 +40,7 @@ const Navbar = () => {
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor: "#1e3a8a", //BACKGROUND_COLOR,
+        backgroundColor: color_primario, //BACKGROUND_COLOR,#0b5345 #117a65
         color: "#000",
         boxShadow: "none",
         width: "100%",
@@ -56,7 +57,7 @@ const Navbar = () => {
           sx={{
             "& .MuiDrawer-paper": {
               width: 200,
-              backgroundColor: "green",
+              backgroundColor: color_primario,
               color: "white",
               padding: 2,
             },
