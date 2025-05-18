@@ -3,17 +3,38 @@ import React, { useEffect, useState } from 'react'
 import PersonIcon from "@mui/icons-material/Person";
 //import FormEdition from './FormEdition';
 import RegistrosTable from './RegistroTable';
+import { supabase } from '../supabase/supabaseConfig';
 
 const Inicio = () => {
 
     const [count, setCount] = useState(0)
     //const [valor, setValor] = useState(0);
-    const valorFinal = 100;
+    const valorFinal = 4;
     const incremento = Math.max(1, Math.floor(valorFinal / 20));
     const duracion = 1000; // 1 segundo
     const pasos = valorFinal / incremento;
     const intervalo = duracion / pasos;
+    
+    const [filtered, setFiltered] = useState([]);
+    const [datos, setDatos] = useState(null)
 
+    useEffect(() => {
+        const retornarVotantes = async () => {
+            const cedula_referido = JSON.parse(localStorage.getItem('usuario'));
+            const { data, error } = await supabase
+                .from("votante")
+                .select("*")
+                .eq("referido", cedula_referido);
+
+            setDatos(data);
+            setFiltered(data)
+            console.log("Consulta DB")
+        };
+
+        retornarVotantes();
+    }, []);
+
+/*
     useEffect(() => {
         const timer = setInterval(() => {
             setCount((prev) => {
@@ -23,11 +44,33 @@ const Inicio = () => {
                 }
                 return prev + incremento;
             });
-        }, intervalo);
+            retornarVotantes()
+        }, [intervalo, datos]);
 
         return () => clearInterval(timer); // Limpieza
     }, []);
+*/
 
+    useEffect(() => {
+        if (!datos || datos.length === 0) return;
+
+        const valorFinal = datos.length; // o el campo que necesitas
+
+        const timer = setInterval(() => {
+            setCount((prev) => {
+                const next = prev + incremento;
+
+                if (next >= valorFinal) {
+                    clearInterval(timer);
+                    return valorFinal;
+                }
+
+                return next;
+            });
+        }, intervalo);
+
+        return () => clearInterval(timer);
+    }, [datos, incremento, intervalo]);
 
 
     return (
@@ -37,7 +80,7 @@ const Inicio = () => {
             sx={{
                 width: '100vw',
                 height: '100vh',
-                backgroundColor: 'rgb( 248, 249, 250)',
+                backgroundColor: '#1e3a8a',//'rgb( 248, 249, 250)',1e3a8a
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -66,9 +109,9 @@ const Inicio = () => {
                         <Button>Gráficas</Button>
                     </Box>
                 </Box>*/}
-                
 
-              
+
+
                 {/* Contenido scrollable */}
                 <Box
                     sx={{
@@ -81,7 +124,7 @@ const Inicio = () => {
 
                 >
                     <Box sx={{ display: 'flex' }}>
-                        <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#4CAF50', color: 'white', p: 2, borderRadius: 2, minWidth: '160px' }}>
+                        <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px' }}>
                             <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>
                                 <PersonIcon />
                             </Avatar>
@@ -92,7 +135,7 @@ const Inicio = () => {
                         </Card>
 
                         <Card sx={{
-                            display: 'flex', alignItems: 'center', backgroundColor: '#00BCD4', color: 'white', p: 2, borderRadius: 2, marginLeft: '1rem', width: '80%',
+                            display: 'flex', alignItems: 'center', backgroundColor: '#90d8b2', color: '#0b5345', p: 2, borderRadius: 2, marginLeft: '1rem', width: '80%',
                             minHeight: '64px'
                         }}>
 
@@ -100,7 +143,7 @@ const Inicio = () => {
                                 <Typography variant="body1">
                                     <strong>NO SOMOS UNA GENERACIÓN QUE  ESPERA EL CAMBIO, SOMOS LA QUE LO CONSTRUYE.</strong>
                                     <Typography component="span" sx={{ fontWeight: 300, fontSize: '0.875rem', ml: 1 }}>
-                                        
+
                                     </Typography>
                                 </Typography>
                             </Box>
@@ -108,11 +151,11 @@ const Inicio = () => {
 
                     </Box>
                     {/*<FormEdition /> */}
-                    <RegistrosTable />
+                    <RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />
                     {/* Simulamos contenido largo */}
-                    {Array.from({ length: 3 }).map((_, i) => (
+                    {/*Array.from({ length: 3 }).map((_, i) => (
                         <Typography key={i} color='black'>Contenido línea {i + 1}</Typography>
-                    ))}
+                    ))*/}
                 </Box>
             </Box>
         </Container>

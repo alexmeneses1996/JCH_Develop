@@ -7,6 +7,9 @@ import {
 import { Edit, Delete, Visibility, CloudDownload, Add } from '@mui/icons-material';
 import axios from 'axios';
 import { supabase } from '../supabase/supabaseConfig';
+import { comunas } from '../helppers/data';
+import {  useNavigate } from 'react-router-dom';
+import { bg_boton } from '../styled/styled';
 
 const statusColors = {
   Activo: 'success',
@@ -15,21 +18,18 @@ const statusColors = {
   Cancelado: 'error',
 };
 
-const RegistrosTable = () => {
+const RegistrosTable = ({datos,filtered,setFiltered}) => {
 
   const [registros, setRegistros] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [datos, setDatos] = useState(null)
+  //const [datos, setDatos] = useState(null)
   const [busqueda, setBusqueda] = useState('');
-  const [pais, setPais] = useState('');
-  const [estatus, setEstatus] = useState('');
+  const [comuna, setComuna] = useState('');
+  const [edad, setEdad] = useState('');
   const [page, setPage] = useState(0);
+  const navigate = useNavigate()
   const rowsPerPage = 5;
 
-  useEffect(() => {
-    //fetchRegistros();
-    retornarVotantes();
-  }, []);
+
 
   /*const fetchRegistros = async () => {
     const { data, error } = await supabase.from('registros').select('*');
@@ -47,7 +47,7 @@ const RegistrosTable = () => {
       .catch(err => console.error(err));
   }
 
-  const retornarVotantes = async () =>{
+  /*const retornarVotantes = async () =>{
     const cedula_referido = JSON.parse(localStorage.getItem('usuario'))
     const {data, error} = await supabase
     .from("votante")
@@ -56,19 +56,21 @@ const RegistrosTable = () => {
 
     setDatos(data)
     console.log(datos)
-  }
-
+  }*/
 
 
   useEffect(() => {
-    console.log(datos)
-    let result = registros.filter(r =>
-      r.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
-      (pais ? r.pais === pais : true) &&
-      (estatus ? r.estatus === estatus : true)
+
+    let result = datos?.filter(dato =>
+      //Se realiza busqueda por escritura (Nombre)
+      dato.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
+      //filtro por comuna
+      (edad ? dato.edad === edad : true) &&
+      //filtro por 
+      (comuna ? dato.comuna === comuna : true)
     );
     setFiltered(result);
-  }, [busqueda, pais, estatus, registros]);
+  }, [busqueda, comuna, edad]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -79,8 +81,8 @@ const RegistrosTable = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>
         <Box>
-          <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1 }}>Exportar</Button>
-          <Button startIcon={<Add />} variant="contained">Nuevo Registro</Button>
+          <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1 ,backgroundColor: "#90d8b2"}}>Exportar</Button>
+          <Button sx={{backgroundColor: bg_boton}} startIcon={<Add />} variant="contained" onClick={()=> {navigate("/nuevoRegistro")}}>Nuevo Registro</Button>
         </Box>
       </Box>
 
@@ -94,30 +96,30 @@ const RegistrosTable = () => {
           onChange={(e) => setBusqueda(e.target.value)}
         />
         <Select
-          value={pais}
+          value={edad}
           displayEmpty
           size="small"
-          onChange={(e) => setPais(e.target.value)}
+          onChange={(e) => setEdad(e.target.value)}
           fullWidth
         >
-          <MenuItem value="">Todos los países</MenuItem>
-          {[...new Set(registros.map(r => r.pais))].map(p => (
+          <MenuItem value="">Todos las edades</MenuItem>
+          {[...new Set(datos?.map(r => r.edad))].map(p => (
             <MenuItem key={p} value={p}>{p}</MenuItem>
           ))}
         </Select>
         <Select
-          value={estatus}
+          value={comuna}
           displayEmpty
           size="small"
-          onChange={(e) => setEstatus(e.target.value)}
+          onChange={(e) => setComuna(e.target.value)}
           fullWidth
         >
-          <MenuItem value="">Todos los estatus</MenuItem>
-          {Object.keys(statusColors).map(status => (
-            <MenuItem key={status} value={status}>{status}</MenuItem>
+          <MenuItem value="">Todos las comunas</MenuItem>
+          {[...new Set(datos?.map(r => r.comuna))].map(c => (
+            <MenuItem key={c} value={c}>{c}</MenuItem>
           ))}
         </Select>
-        <Button onClick={() => { setBusqueda(''); setPais(''); setEstatus(''); }} variant="outlined">Limpiar</Button>
+        <Button onClick={() => { setBusqueda(''); setComuna(''); setEdad(''); }} variant="outlined">Limpiar</Button>
       </Box>
 
       {/* Tabla */}
@@ -126,26 +128,24 @@ const RegistrosTable = () => {
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell>Nombre</TableCell>
+              <TableCell>Nombre Completo</TableCell>
               <TableCell>Documento</TableCell>
-              <TableCell>País</TableCell>
-              <TableCell>Estatus</TableCell>
-              <TableCell>Fecha Registro</TableCell>
-              <TableCell>Acciones</TableCell>
+              <TableCell>Edad</TableCell>
+              <TableCell>Sexo</TableCell>
+              <TableCell>Comuna</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filtered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            {filtered?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((r, i) => (
-              <TableRow key={r.id}>
-                <TableCell>{i + 1 + page * rowsPerPage}</TableCell>
-                <TableCell>{r.nombre}</TableCell>
-                <TableCell>{r.documento}</TableCell>
-                <TableCell>{r.pais}</TableCell>
-                <TableCell>
-                  <Chip label={r.estatus} color={statusColors[r.estatus] || 'default'} size="small" />
-                </TableCell>
-                <TableCell>{new Date(r.fecha_registro).toLocaleDateString()}</TableCell>
+              <TableRow key={r.cedula}>
+                <TableCell >{i + 1 + page * rowsPerPage}</TableCell>
+                <TableCell >{r.nombre +" "+ r.apellidos}</TableCell>
+                <TableCell >{r.cedula}</TableCell>
+                <TableCell >{r.edad}</TableCell>
+                <TableCell>{r.sexo}</TableCell>
+                <TableCell >{r.comuna}</TableCell>
+
                 <TableCell>
                   <IconButton><Visibility color="primary" /></IconButton>
                   <IconButton><Edit color="info" /></IconButton>
@@ -157,7 +157,7 @@ const RegistrosTable = () => {
         </Table>
         <TablePagination
           component="div"
-          count={filtered.length}
+          count={filtered?.length}
           page={page}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

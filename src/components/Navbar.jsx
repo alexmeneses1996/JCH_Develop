@@ -12,10 +12,11 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "/imagen.jpg";
+import logo_1 from "/logo.png";
 import PersonIcon from "@mui/icons-material/Person";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
-import { color_primario } from "../styled/styled";
+import { bgcolor_select_menu, color_primario, color_select_menu } from "../styled/styled";
 
 const Navbar = () => {
   //const [open, setOpen] = useState(false);
@@ -64,7 +65,8 @@ const Navbar = () => {
           }}
         >
           <Box>
-            <Box sx={{ height: "30%" }}>logo</Box>
+            <Box component="img" src={logo_1} alt="Logo" sx={{ height: "30%",width:"100%", objectFit: "cover" }} />
+                       
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               <Button
                 component={Link}
@@ -73,6 +75,7 @@ const Navbar = () => {
                   setOpenDrawer(false);
                   navegate("/inicio");
                 }}
+                sx={{fontWeight:"bold",color: bgcolor_select_menu,":hover":{backgroundColor:bgcolor_select_menu, color:color_select_menu, fontWeight:"bold"}}}
               >
                 Inicio
               </Button>
@@ -82,6 +85,8 @@ const Navbar = () => {
                   setOpenDrawer(false);
                   navegate("/nuevoRegistro");
                 }}
+              sx={{fontWeight:"bold",color: bgcolor_select_menu,":hover":{backgroundColor:bgcolor_select_menu, color:color_select_menu, fontWeight:"bold"}}}
+
               >
                 Registrar Votantes
               </Button>
@@ -91,6 +96,7 @@ const Navbar = () => {
                   setOpenDrawer(false);
                   navegate("/graficos");
                 }}
+                sx={{fontWeight:"bold",color: bgcolor_select_menu, ":hover":{backgroundColor:bgcolor_select_menu, color:color_select_menu, fontWeight:"bold"}}}
               >
                 Gráficas
               </Button>
@@ -122,9 +128,9 @@ const Navbar = () => {
           >
             <Box
               component="img"
-              src={logo}
-              alt="Baby Mater Logo"
-              sx={{ height: 38, width: 80, objectFit: "cover" }}
+              src={logo_1}
+              alt="Logo"
+              sx={{ height: 50, width: 80, objectFit: "cover" }}
             />
             <Typography
               variant="h6"
@@ -134,7 +140,7 @@ const Navbar = () => {
                 fontSize: "1.4rem",
               }}
             >
-              JUNTOS CREAMOS HISTORIA
+              JCH
             </Typography>
           </Box>
         </Box>

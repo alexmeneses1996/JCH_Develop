@@ -16,11 +16,12 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { isValid, parseISO, subYears } from "date-fns";
-import { crearRegistro, mostrarRegistro } from "../helppers/crearVotante";
+import { mostrarRegistro } from "../helppers/crearVotante";
 import { barriosPorComuna, comunas } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
+import { crearUsuario } from "../helppers/crearUsuario";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
@@ -39,8 +40,7 @@ const validationSchema = Yup.object({
   puestoVotacion: Yup.string().required("Requerido"),
   comuna: Yup.string().required("Requerido"),
 });
-
-const FormCreation = () => {
+const RegistroUser = () => {
   const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
@@ -56,12 +56,14 @@ const FormCreation = () => {
       barrio: "",
       puestoVotacion: "",
       comuna: "",
+      password: "",
+      confirmPassword: "",
     },
     validationSchema,
     onSubmit: (values) => {
       console.log("prueba");
       console.log(values);
-      crearRegistro(values);
+      crearUsuario(values);
     },
   });
   let valor = 1
@@ -85,7 +87,7 @@ const FormCreation = () => {
     >
       <Card elevation={3} sx={{ position: 'relative' }}>
         <IconButton  sx={{ position: "absolute", top: 18, left: 18, "&:hover": { color: bg_boton } }} onClick={
-          () => { navigate("/inicio")
+          () => { navigate("/login")
 
           }
         }><ArrowBackIcon /></IconButton>
@@ -97,7 +99,7 @@ const FormCreation = () => {
             gutterBottom
             fontWeight="bold"
           >
-            Registrar Votantes
+            Registrar Usuario
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
@@ -112,15 +114,21 @@ const FormCreation = () => {
             >
               <Box sx={{ display: "flex", width: "100%" }}>
                 {renderField("cedula", "Número de Cédula", formik)}
+                {renderField("password", "Contraseña", formik)}
+                {renderField("confirmPassword", "Confirmar contraseña", formik)}
+
+              </Box>
+              <Box sx={{ display: "flex", width: "100%" }}>
                 {renderField("nombre", "Nombre", formik)}
                 {renderField("apellidos", "Apellidos", formik)}
                 {renderField("telefono", "Teléfono o Celular", formik)}
+                {renderSelect("sexo", "Sexo", sexos, formik)}
+
               </Box>
               <Box sx={{ display: "flex", width: "100%" }}>
                 {renderField("direccion", "Dirección", formik)}
                 {renderField("correo", "Correo", formik)}
                 {renderField("edad", "Edad", formik)}
-                {renderSelect("sexo", "Sexo", sexos, formik)}
               </Box>
               <Box sx={{ display: "flex", width: "100%" }}>
                 {renderSelect("municipio", "Municipio", municipios, formik)}
@@ -141,7 +149,6 @@ const FormCreation = () => {
               >
                 Realizar Registro
               </Button>
-              <Button type="button" onClick={mostrarRegistro}>MOSTRAR</Button>
             </Box>
           </Box>
         </CardContent>
@@ -209,5 +216,4 @@ const renderSelect = (name, label, options, formik) => (
     </TextField>
   </Grid>
 );
-
-export default FormCreation;
+export default RegistroUser

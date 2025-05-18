@@ -13,7 +13,7 @@ export const crearRegistro = async (datos) => {
         nombre: datos.nombre,
         apellidos: datos.apellidos,
         edad: datos.edad,
-        sexo: datos.genero,
+        sexo: datos.sexo,
         telefono: datos.telefono,
         correo: datos.correo,
         direccion: datos.direccion,

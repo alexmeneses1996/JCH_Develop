@@ -1,5 +1,6 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  //Alert,
   Box,
   Button,
   Container,
@@ -11,11 +12,12 @@ import {
   InputAdornment,
   InputLabel,
   Paper,
+  //Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import * as yup from "yup";
 import {
   colorBgPrimary,
@@ -27,9 +29,11 @@ import LockIcon from "@mui/icons-material/Lock";
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import { Link, useNavigate } from "react-router-dom";
 import { loginConCedula } from "../helppers/loginCedula";
+import AdminLogin from "./AdminLogin";
 
-const Login = ({setAutenticacion}) => {
+const Login = ({ setAutenticacion }) => {
   const navegate = useNavigate();
+
 
   const formik = useFormik({
     initialValues: {
@@ -308,16 +312,27 @@ const Login = ({setAutenticacion}) => {
                     color: colorTextPrimary,
                   },
                 }}
+                onClick={()=>{navegate("/registrar")}}
               >
                 Regístrate aquí
               </Button>
             </Typography>
           </form>
+          <AdminLogin setAutenticacion={setAutenticacion} />
+
         </Paper>
         <Typography variant="body2" color="#5D5D5D" marginTop={2}>
           © 2025 Sistema de Registro. Todos los derechos reservados.
         </Typography>
       </Container>
+
+      {/*<div>
+        <Snackbar open={openAddCart} autoHideDuration={3400} onClose={() => setOpenAddCart(false)}>
+          <Alert onClose={() => setOpenAddCart(false)} severity="success" sx={{ width: "100%", backgroundColor: "#00A78E", color: 'white' }}>
+            ¡Producto Agregado al carrito con éxito!
+          </Alert>
+        </Snackbar>
+      </div>*/}
     </>
   );
 };

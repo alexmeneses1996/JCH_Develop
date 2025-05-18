@@ -1,17 +1,21 @@
 import { CircularProgress, GlobalStyles } from '@mui/material'
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Login from '../components/Login'
 import Home from '../components/Home'
 import Navbar from '../components/Navbar'
 import Available from './Available'
 import Private from './Private'
+import RegistroUser from '../components/RegistroUser'
 
 const AppRoutes = () => {
 
-    const routeSinNavbar = ["/login"]
+    const routeSinNavbar = ["/login", "/registrar"]
     const location = useLocation()
     const [autenticacion, setAutenticacion] = useState()
+
+
+    
 
   return (
     <>
@@ -30,16 +34,17 @@ const AppRoutes = () => {
         }}
       />
 
-      {!location.pathname.includes(routeSinNavbar) && <Navbar  />}
+      {!routeSinNavbar.includes(location.pathname)  && <Navbar  />}
     <Suspense fallback={<CircularProgress />}>
         <Routes>
           {/* Rutas Públicas */}
             <Route path='/login' element={<Login setAutenticacion={setAutenticacion} />}/>
+            <Route path='/registrar' element={<RegistroUser />}/>
             <Route path='/' element={<Home />}/>
 
           {/* Rutas Privadas */}
           <Route path="/*" element={
-            <Private autenticacion={autenticacion}>
+            <Private autenticacion={autenticacion} setAutenticacion={setAutenticacion}>
               <Available />
             </Private>
           }/>

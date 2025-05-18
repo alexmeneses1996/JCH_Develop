@@ -3,7 +3,7 @@ import { Email, Phone, Facebook, Twitter, Instagram } from '@mui/icons-material'
 
 const Footer = () => {
   return (
-    <Box sx={{ backgroundColor: '#1e3a8a', color: 'white', py: 5, px: 2, width:'100%'}}>
+    <Box sx={{ backgroundColor: '#0b5345', color: 'white', py: 5, px: 2, width:'100%'}}>
       <Box mx="auto" display="flex" flexDirection="column" gap={4}>
         {/* Sección 1 */}
         <Box>
@@ -34,13 +34,7 @@ const Footer = () => {
             Síguenos
           </Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <IconButton color="inherit">
-              <Facebook />
-            </IconButton>
-            <IconButton color="inherit">
-              <Twitter />
-            </IconButton>
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={()=>{window.open('https://www.instagram.com/jcreamoshistoria?igsh=bHQ0NDFteW54bjc4','_blank')}}>
               <Instagram />
             </IconButton>
           </Box>
