@@ -26,15 +26,26 @@ export const crearRegistro = async (datos) => {
 
   if (error) {
     console.error("❌ Error al insertar:", error.message);
-  } else {
-    console.log("✅ Registro insertado:", data);
+    return { success: false, message: error.message , data: data};
   }
+
+  return { success: true, message: "Contacto registrado con éxito" , data: data};
 };
 
-export const mostrarRegistro = async () => {
+export const retornarVotantes = async () => {
   // Tu lógica para crear el usuario
   const { data, error } = await supabase
     .from("votante") // Nombre de la tabla
     .select("*"); // Datos a insertar
   console.log(data);
+};
+
+
+export const validarCedulaVotante = async (cedula) => {
+  const { data, error } = await supabase
+    .from('votante') // reemplaza con tu tabla
+    .select('cedula')
+    .eq('cedula', cedula);
+
+  return data?.length > 0;
 };

@@ -14,8 +14,8 @@ export const loginConCedula = async (cedula, password) => {
   }
 
   // 2. Comparar contraseñas
-  // const passwordValida = await bcrypt.compare(password, data.password);
-  const passwordValida = password == data.password ? true : false;
+  const passwordValida = await bcrypt.compare(password, data.password);
+  //const passwordValida = password == data.password ? true : false;
   if (!passwordValida) {
     return { success: false, message: "Contraseña incorrecta" };
   }

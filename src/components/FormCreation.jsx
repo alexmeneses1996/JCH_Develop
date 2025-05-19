@@ -16,7 +16,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { isValid, parseISO, subYears } from "date-fns";
-import { crearRegistro, mostrarRegistro } from "../helppers/crearVotante";
+import { crearRegistro, validarCedulaVotante } from "../helppers/crearVotante";
 import { barriosPorComuna, comunas } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -41,6 +41,7 @@ const validationSchema = Yup.object({
 });
 
 const FormCreation = () => {
+
   const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
@@ -58,10 +59,13 @@ const FormCreation = () => {
       comuna: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      console.log("prueba");
-      console.log(values);
-      crearRegistro(values);
+    onSubmit: async (values) => {
+      const result  = await crearRegistro(values);
+
+      if (result.success) {
+        alert("✅ " + result.message)
+        formik.resetForm(); 
+      }
     },
   });
   let valor = 1
@@ -84,8 +88,9 @@ const FormCreation = () => {
       }}
     >
       <Card elevation={3} sx={{ position: 'relative' }}>
-        <IconButton  sx={{ position: "absolute", top: 18, left: 18, "&:hover": { color: bg_boton } }} onClick={
-          () => { navigate("/inicio")
+        <IconButton sx={{ position: "absolute", top: 18, left: 18, "&:hover": { color: bg_boton } }} onClick={
+          () => {
+            navigate("/inicio")
 
           }
         }><ArrowBackIcon /></IconButton>
@@ -111,7 +116,31 @@ const FormCreation = () => {
               alignItems="center"
             >
               <Box sx={{ display: "flex", width: "100%" }}>
-                {renderField("cedula", "Número de Cédula", formik)}
+                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                  <TextField
+                    fullWidth
+                    type='text'
+                    name='cedula'
+                    label="Número de Cédula"
+                    value={formik.values.cedula}
+                    onChange={(e) => {
+                      formik.handleChange(e);
+                    }}
+                    onBlur={async (e) => {
+                      formik.handleBlur(e);
+                      const cedula = e.target.value.trim();
+
+                      if (!cedula) return;
+
+                      const yaExiste = await validarCedulaVotante(parseInt(cedula, 10));
+                      if (yaExiste) {
+                        formik.setFieldError('cedula', 'Esta cédula ya está registrada');
+                      }
+                    }}
+                    error={formik.touched.cedula && Boolean(formik.errors.cedula)}
+                    helperText={formik.touched.cedula && formik.errors.cedula}
+                  />
+                </Grid>
                 {renderField("nombre", "Nombre", formik)}
                 {renderField("apellidos", "Apellidos", formik)}
                 {renderField("telefono", "Teléfono o Celular", formik)}
@@ -141,7 +170,6 @@ const FormCreation = () => {
               >
                 Realizar Registro
               </Button>
-              <Button type="button" onClick={mostrarRegistro}>MOSTRAR</Button>
             </Box>
           </Box>
         </CardContent>

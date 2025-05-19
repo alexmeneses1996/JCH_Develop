@@ -30,3 +30,28 @@ export const crearUsuario = async (datos) => {
 
   return { success: true, message: "Usuario registrado con éxito" , data: data};
 };
+
+
+export const retornarUsuarios = async () => {
+  // Tu lógica para crear el usuario
+  const { data, error } = await supabase
+    .from("usuario") // Nombre de la tabla
+    .select("*"); // Datos a insertar
+
+    if (error) {
+    console.error("❌ Error al retornar los usuarios:", error.message);
+    return { success: false, message: error.message , data: data};
+  }
+
+  return { success: true, message: "Retornado los usuarios con Exito" , data: data};
+
+};
+
+export const validarCedulaUsuario = async (cedula) => {
+  const { data, error } = await supabase
+    .from('usuario') // reemplaza con tu tabla
+    .select('cedula')
+    .eq('cedula', cedula);
+
+  return data?.length > 0;
+};
