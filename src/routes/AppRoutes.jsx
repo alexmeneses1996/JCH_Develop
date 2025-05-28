@@ -1,25 +1,50 @@
 import { CircularProgress, GlobalStyles } from '@mui/material'
-import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import React, { Suspense, useContext, useEffect, useState } from 'react'
+import {  Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import Login from '../components/Login'
 import Home from '../components/Home'
 import Navbar from '../components/Navbar'
 import Available from './Available'
 import Private from './Private'
 import RegistroUser from '../components/RegistroUser'
+import { userActivo } from '../helppers/crearUsuario'
+import { AppContext } from '../context/userContext'
 
 const AppRoutes = () => {
 
+    
+
     const routeSinNavbar = ["/login", "/registrar"]
     const location = useLocation()
+    const navegate = useNavigate()
     const [autenticacion, setAutenticacion] = useState()
+    const {context, setContext } = useContext(AppContext)
+    
 
+    useEffect( () => {
+
+       const obtenerUsuario  = async () =>{
+       
+        const result = await userActivo()
+        if(result.success){
+          setContext(result.data)
+          setAutenticacion(true)
+          navegate('/')
+          
+        }
+        
+        
+       } 
+       obtenerUsuario ()
+    
+    }, [])
+    
 
     
 
   return (
     <>
-          <GlobalStyles
+      <GlobalStyles
         styles={{
           'input:-webkit-autofill': {
             WebkitBoxShadow: '0 0 0 1000px #F0F0F0 inset !important',

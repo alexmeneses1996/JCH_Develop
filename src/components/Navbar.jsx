@@ -17,6 +17,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
 import { bgcolor_select_menu, color_primario, color_select_menu } from "../styled/styled";
+import { cerrarSesion, userActivo } from "../helppers/crearUsuario";
 
 const Navbar = () => {
   //const [open, setOpen] = useState(false);
@@ -34,6 +35,8 @@ const Navbar = () => {
   };
   const handleCerrarSesion = () => {
     localStorage.removeItem("usuario");
+    cerrarSesion()
+    userActivo()
     navegate("/login"); // Redirige a la página de login
   };
 

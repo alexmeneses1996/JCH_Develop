@@ -1,9 +1,10 @@
 import { Avatar, Box, Button, Card, Container, Drawer, IconButton, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PersonIcon from "@mui/icons-material/Person";
 //import FormEdition from './FormEdition';
 import RegistrosTable from './RegistroTable';
 import { supabase } from '../supabase/supabaseConfig';
+import { AppContext } from '../context/userContext';
 
 const Inicio = () => {
 
@@ -17,10 +18,11 @@ const Inicio = () => {
     
     const [filtered, setFiltered] = useState([]);
     const [datos, setDatos] = useState(null)
+    const {context, setContext} = useContext(AppContext)
 
     useEffect(() => {
         const retornarVotantes = async () => {
-            const cedula_referido = JSON.parse(localStorage.getItem('usuario'));
+            const cedula_referido = context.cedula;
             const { data, error } = await supabase
                 .from("votante")
                 .select("*")

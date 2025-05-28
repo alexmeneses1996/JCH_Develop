@@ -6,6 +6,8 @@ import CarruselSlick from './CarruselSlick'
 
 
 const Home = () => {
+
+
     return (
 
 

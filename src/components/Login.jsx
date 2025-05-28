@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as yup from "yup";
 import {
   colorBgPrimary,
@@ -30,10 +30,12 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import { Link, useNavigate } from "react-router-dom";
 import { loginConCedula } from "../helppers/loginCedula";
 import AdminLogin from "./AdminLogin";
+import { devolverUsuario, loginUsuarioAuth } from "../helppers/crearUsuario";
+import { AppContext } from "../context/userContext";
 
 const Login = ({ setAutenticacion }) => {
   const navegate = useNavigate();
-
+  const {contex, setContext} = useContext(AppContext)
 
   const formik = useFormik({
     initialValues: {
@@ -44,10 +46,10 @@ const Login = ({ setAutenticacion }) => {
     validationSchema: yup.object({
       cedula: yup
         .string()
-        .matches(
-          /^[0-9]{6,12}$/,
-          "La cédula debe tener entre 6 y 12 dígitos numéricos"
-        )
+    //.matches(
+       //   /^[0-9]{6,12}$/,
+        //  "La cédula debe tener entre 6 y 12 dígitos numéricos"
+        //)
         .required("La cédula es obligatoria"),
       password: yup
         .string()
@@ -58,11 +60,14 @@ const Login = ({ setAutenticacion }) => {
     }),
 
     onSubmit: async (values, { setErrors }) => {
-      const res = await loginConCedula(values.cedula, values.password);
-
+      //const res = await loginConCedula(values.cedula, values.password);
+      const res = await loginUsuarioAuth(values.cedula, values.password)
       if (res.success) {
-        alert("✅ Bienvenido " + res.user.nombre);
-        localStorage.setItem("usuario", JSON.stringify(res.user.cedula));
+        alert("✅ Bienvenido " + res.data.user);
+        console.log(res.data)
+        //localStorage.setItem("usuario", JSON.stringify(res.data.user));
+        const usuario = await devolverUsuario(cedula)
+        setContext(usuario)
         setAutenticacion(true)
         navegate("/");
         // podés guardar en localStorage o context el user

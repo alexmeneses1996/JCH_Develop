@@ -2,14 +2,22 @@ import { useState } from 'react'
 import './App.css'
 import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './routes/AppRoutes'
+import { AppContext } from './context/userContext'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [context, setContext] = useState({})
 
   return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <AppContext.Provider
+      value={{
+        context,
+        setContext
+      }}
+    >
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AppContext.Provider>
   )
 }
 

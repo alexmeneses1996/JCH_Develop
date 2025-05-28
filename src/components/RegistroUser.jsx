@@ -20,7 +20,7 @@ import { barriosPorComuna, comunas } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
-import { crearUsuario, validarCedulaUsuario } from "../helppers/crearUsuario";
+import { crearUsuario, registrarUsuarioAuth, validarCedulaUsuario } from "../helppers/crearUsuario";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
@@ -67,12 +67,17 @@ const RegistroUser = () => {
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {
-           const result = await crearUsuario(values)
+           //const result = await crearUsuario(values)
+           const result = await registrarUsuarioAuth(values,values.password)
+
 
            if(result.success){
             alert("✅ " + result.message)
             formik.resetForm(); 
            }
+
+          
+
         },
     });
     let valor = 1
