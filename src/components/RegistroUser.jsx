@@ -67,19 +67,34 @@ const RegistroUser = () => {
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {
-           //const result = await crearUsuario(values)
-           const result = await registrarUsuarioAuth(values,values.password)
+            //const result = await crearUsuario(values)
+            const result = await registrarUsuarioAuth(values, values.password)
 
 
-           if(result.success){
-            alert("✅ " + result.message)
-            formik.resetForm(); 
-           }
-
-          
-
+            if (result.success) {
+                alert("✅ " + result.message)
+                formik.resetForm();
+            }
         },
     });
+
+
+    const validacionRepetido = async (e) => {
+        formik.handleBlur(e);
+        const cedula = e.target.value.trim();
+
+        if (!cedula) return;
+
+        const yaExiste = await validarCedulaUsuario(cedula);
+        console.log(yaExiste)
+        if (yaExiste) {
+            formik.setFieldError('cedula', 'Esta cédula ya está registrada');
+        }
+    }
+
+
+
+
     let valor = 1
     const selectedComuna = formik.values.comuna;
     const barrios = selectedComuna ? barriosPorComuna[selectedComuna] || [] : [];
@@ -137,17 +152,7 @@ const RegistroUser = () => {
                                         onChange={(e) => {
                                             formik.handleChange(e);
                                         }}
-                                        onBlur={async (e) => {
-                                            formik.handleBlur(e);
-                                            const cedula = e.target.value.trim();
-
-                                            if (!cedula) return;
-
-                                            const yaExiste = await validarCedulaUsuario(parseInt(cedula));
-                                            if (yaExiste) {
-                                                formik.setFieldError('cedula', 'Esta cédula ya está registrada');
-                                            } 
-                                        }}
+                                        onBlur={validacionRepetido}
                                         error={formik.touched.cedula && Boolean(formik.errors.cedula)}
                                         helperText={formik.touched.cedula && formik.errors.cedula}
                                     />

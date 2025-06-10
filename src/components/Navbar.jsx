@@ -2,6 +2,10 @@ import {
   AppBar,
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Drawer,
   IconButton,
   Menu,
@@ -9,20 +13,28 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "/imagen.jpg";
 import logo_1 from "/logo.png";
 import PersonIcon from "@mui/icons-material/Person";
+import Person3Icon from '@mui/icons-material/Person3';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
 import { bgcolor_select_menu, color_primario, color_select_menu } from "../styled/styled";
-import { cerrarSesion, userActivo } from "../helppers/crearUsuario";
+import { cerrarSesion } from "../helppers/crearUsuario";
+import { AppContext } from "../context/userContext";
 
-const Navbar = () => {
-  //const [open, setOpen] = useState(false);
+const Navbar = ({setAutenticacion}) => {
+  const [openSession, setOpenSession] = useState(false);
+  const handleOpenSession = () => { setOpenSession(true); handleClose()}
+  const handleCloseSession = () => setOpenSession(false)
+
+
+
   const [openDrawer, setOpenDrawer] = useState(false);
   const navegate = useNavigate();
+  const {context, setContext} = useContext(AppContext)
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -34,9 +46,10 @@ const Navbar = () => {
     setAnchorEl(null);
   };
   const handleCerrarSesion = () => {
-    localStorage.removeItem("usuario");
+    handleCloseSession()
     cerrarSesion()
-    userActivo()
+    setContext({}) //se reinicia el contexto
+    setAutenticacion(false)
     navegate("/login"); // Redirige a la página de login
   };
 
@@ -156,7 +169,7 @@ const Navbar = () => {
             justifyContent: "center",
           }}
         >
-          <Button
+         {!context?.nombre && ( <Button
             component={Link}
             to="/login"
             sx={{
@@ -169,9 +182,10 @@ const Navbar = () => {
             }}
           >
             Ingresar
-          </Button>
+          </Button>)}
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+
+        { context?.nombre && (<Box sx={{ display: "flex", alignItems: "center" }}>
           <Button
             onClick={handleClick}
             sx={{
@@ -181,9 +195,9 @@ const Navbar = () => {
               },
             }}
           >
-            <PersonIcon />
+            {context.sexo == "femenino" ? (<Person3Icon />): (<PersonIcon />) }
             <Typography variant="subtitle2" sx={{ mx: 1, fontWeight: 500 }}>
-              MARIA HORMAZA <span style={{ fontWeight: 300 }}>(LIDER)</span>
+              {context.nombre} {context.apellidos} <span style={{ fontWeight: 300 }}>({context.tipo})</span>
             </Typography>
             <ExpandMoreIcon />
           </Button>
@@ -196,9 +210,27 @@ const Navbar = () => {
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
             <MenuItem onClick={handleClose}>Mi perfil</MenuItem>
-            <MenuItem onClick={handleCerrarSesion}>Cerrar sesión</MenuItem>
+            <MenuItem onClick={handleOpenSession}>Cerrar sesión</MenuItem>
           </Menu>
-        </Box>
+        </Box>)}
+
+         <Dialog open={openSession} onClose={handleCloseSession}>
+        <DialogTitle>¿Cerrar sesión?</DialogTitle>
+        <DialogContent>
+          ¿Estás seguro de que deseas cerrar sesión? Perderás el acceso hasta iniciar sesión nuevamente.
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseSession} color="primary">
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleCerrarSesion}
+            color="error"
+          >
+            Cerrar sesión
+          </Button>
+        </DialogActions>
+      </Dialog>
       </Toolbar>
     </AppBar>
   );

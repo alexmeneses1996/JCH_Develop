@@ -20,6 +20,7 @@ import { useFormik } from "formik";
 import React, { useContext, useState } from "react";
 import * as yup from "yup";
 import {
+  bg_boton,
   colorBgPrimary,
   colorBgSecondary,
   colorTextPrimary,
@@ -32,10 +33,13 @@ import { loginConCedula } from "../helppers/loginCedula";
 import AdminLogin from "./AdminLogin";
 import { devolverUsuario, loginUsuarioAuth } from "../helppers/crearUsuario";
 import { AppContext } from "../context/userContext";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { mostrarSolicitudes } from "../helppers/solicitudes";
+
 
 const Login = ({ setAutenticacion }) => {
-  const navegate = useNavigate();
-  const {contex, setContext} = useContext(AppContext)
+  const navigate = useNavigate();
+  const { contex, setContext } = useContext(AppContext)
 
   const formik = useFormik({
     initialValues: {
@@ -46,8 +50,8 @@ const Login = ({ setAutenticacion }) => {
     validationSchema: yup.object({
       cedula: yup
         .string()
-    //.matches(
-       //   /^[0-9]{6,12}$/,
+        //.matches(
+        //   /^[0-9]{6,12}$/,
         //  "La cédula debe tener entre 6 y 12 dígitos numéricos"
         //)
         .required("La cédula es obligatoria"),
@@ -60,17 +64,21 @@ const Login = ({ setAutenticacion }) => {
     }),
 
     onSubmit: async (values, { setErrors }) => {
-      //const res = await loginConCedula(values.cedula, values.password);
       const res = await loginUsuarioAuth(values.cedula, values.password)
       if (res.success) {
-        alert("✅ Bienvenido " + res.data.user);
-        console.log(res.data)
-        //localStorage.setItem("usuario", JSON.stringify(res.data.user));
-        const usuario = await devolverUsuario(cedula)
-        setContext(usuario)
-        setAutenticacion(true)
-        navegate("/");
-        // podés guardar en localStorage o context el user
+        console.log(res)
+        const result = await devolverUsuario(values.cedula)
+        
+        if (result.success) {
+              const usuario = result.data
+                  alert("✅ Bienvenido " + usuario.nombre);
+                  setContext(usuario)
+                  setAutenticacion(true)
+                  navigate("/inicio");
+              }
+              else{
+                alert("❌ " + result.message);
+              }
       } else {
         alert("❌ " + res.message);
       }
@@ -109,6 +117,13 @@ const Login = ({ setAutenticacion }) => {
     },
   });
 
+  const olvidarContrasenia =  async () =>{
+
+    navigate("/cambiar_password")
+    
+
+  }
+
   return (
     <>
       <Container
@@ -127,6 +142,10 @@ const Login = ({ setAutenticacion }) => {
         }}
       >
         <Box>
+           <IconButton sx={{ position: "absolute", top: 18, left: 18, "&:hover": { color: bg_boton } }} onClick={
+            () => { navigate("/")}
+          }><ArrowBackIcon /></IconButton>
+
           <Typography
             sx={{
               display: "flex",
@@ -145,6 +164,7 @@ const Login = ({ setAutenticacion }) => {
         </Box>
 
         <Paper elevation={5} sx={{ width: "30%", padding: "2rem" }}>
+         
           <form
             style={{
               display: "flex",
@@ -271,6 +291,7 @@ const Login = ({ setAutenticacion }) => {
                   color: colorTextPrimary,
                 },
               }}
+              onClick={olvidarContrasenia}
             >
               ¿Olvidaste tu contraseña?
             </Button>
@@ -317,7 +338,7 @@ const Login = ({ setAutenticacion }) => {
                     color: colorTextPrimary,
                   },
                 }}
-                onClick={()=>{navegate("/registrar")}}
+                onClick={() => { navigate("/registrar") }}
               >
                 Regístrate aquí
               </Button>

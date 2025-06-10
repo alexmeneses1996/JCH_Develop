@@ -50,19 +50,26 @@ export const retornarUsuarios = async () => {
 export const validarCedulaUsuario = async (cedula) => {
   const { data, error } = await supabase
     .from('usuario') // reemplaza con tu tabla
-    .select('cedula')
-    .eq('cedula', cedula);
+    .select('*')
+    .eq('cedula', cedula);///Validar los permisos de la tablaa porque debe dar error por no tener permisos
+
+    console.log(data)
 
   return data?.length > 0;
 };
 
 export const devolverUsuario = async (cedula) => {
   const { data, error } = await supabase
-    .from('usuario_info') // reemplaza con tu tabla
+    .from('usuario') // reemplaza con tu tabla
     .select('*')
     .eq('cedula', cedula).single();
 
-  return data;
+  if (error) {
+    console.error("❌ Error al retornar el usuario:", error.message);
+    return { success: false, message: error.message, data: data };
+  }
+
+  return { success: true, message: "Retornando el usuario con exito", data: data };
 };
 
 
@@ -70,7 +77,7 @@ export const devolverUsuario = async (cedula) => {
 export const registrarUsuarioAuth = async (datos, password) => {
   const cedulaLimpia = datos.cedula.toString().trim().replace(/\s+/g, '');
 
-  const correoOculto = `usuario_${cedulaLimpia}@example.com`; // genera correo oculto
+  const correoOculto = `usuario_${cedulaLimpia}@jcreamoshistoria.com`; // genera correo oculto
   console.log(datos.cedula)
   console.log(correoOculto)
 
@@ -82,14 +89,13 @@ export const registrarUsuarioAuth = async (datos, password) => {
 
   if (errorSignUp) {
     console.error('Error de Supabase Auth:', errorSignUp);
-    //setMensaje(`Error al registrar usuario: ${errorSignUp.message}`);
     return { success: false, message: errorSignUp.message };
   }
 
   const user_id = signUpData.user.id;
 
-  // 2. Guardar en la tabla usuarios_info
-  const { error: errorInsert } = await supabase.from('usuarios_info').insert([
+  // 2. Guardar en la tabla usuario
+  const { error: errorInsert } = await supabase.from('usuario').insert([
     {
       correo_oculto: correoOculto,
       user_id: user_id,
@@ -104,30 +110,23 @@ export const registrarUsuarioAuth = async (datos, password) => {
       barrio: datos.barrio,
       puesto_votacion: datos.puestoVotacion,
       comuna: datos.comuna,
+      tipo:'User'
     },
   ]);
 
   if (errorInsert) {
-    //setMensaje(`Usuario creado, pero error guardando información adicional: ${errorInsert.message}`);
     console.log(`Usuario creado, pero error guardando información adicional: ${errorInsert.message}`)
     return { success: false, message: errorInsert.message };
 
   } else {
     return { success: true, message: "Usuario registrado con éxito" };
-
-    //setMensaje('¡Usuario registrado exitosamente!');
-    // Opcional: limpia el formulario
-    //setDocumento('');
-    //setTelefono('');
-    //setCorreoReal('');
-    //setPassword('');
   }
 };
 
 
 export const loginUsuarioAuth = async (cedula, password) => {
   //const correoOculto = `usuario_${cedula}@jcreamoshistoria.com`;
-  const correoOculto = `usuario_${cedula}@example.com`
+  const correoOculto = `usuario_${cedula}@jcreamoshistoria.com`
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: correoOculto,
@@ -142,19 +141,23 @@ export const loginUsuarioAuth = async (cedula, password) => {
 };
 
 
-export const userActivo = async () => {
+export const userActivo = async (tipo) => {
 
   const { data, error } = await supabase.auth.getUser(); // o .getSession()
   if (!error) {
 
     const correo = data.user.email
+    const tipo = correo.split('_')[0]
     const cedula = correo.split('_')[1].split('@')[0];
-    const usuario = await devolverUsuario(cedula)
+    console.log(tipo)
+    let result = {}
+    if(tipo == "admin")   result = await devolverUsuarioAdmin(cedula)
+      else result = await devolverUsuario(cedula)
     console.log(data.user.email)
-    console.log(usuario)
+    console.log(result)
 
     
-  return { success: true, message: "Registro exitoso", data: usuario };
+  return { success: true, message: "Registro exitoso", data: result.data };
   } else {
     return { success: false, message: error.message, data: null };
   }
@@ -168,4 +171,35 @@ export const cerrarSesion = async () => {
   } else {
     return { success: true, message: "Sesión cerrada exitosamente"};
   }
+};
+
+
+
+export const loginUsuarioAuthAdmin = async (cedula, password) =>{
+    //const correoOculto = `usuario_${cedula}@jcreamoshistoria.com`;
+  const correoOculto = `admin_${cedula}@jcreamoshistoria.com`
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: correoOculto,
+    password: password,
+  });
+
+  if (error) {
+    return { success: false, message: error.message, data: null };
+  }
+
+  return { success: true, message: "Registro exitoso", data: data };
+}
+
+export const devolverUsuarioAdmin = async (cedula) => {
+  const { data, error } = await supabase
+    .from('administrator') // de la tabla de administradores
+    .select('*')
+    .eq('cedula', cedula).single();
+
+  if (error) {
+    return { success: false, message: error.message, data: null };
+  }
+
+  return { success: true, message: "Se encontró el usuario", data: data };
 };

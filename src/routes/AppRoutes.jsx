@@ -9,12 +9,13 @@ import Private from './Private'
 import RegistroUser from '../components/RegistroUser'
 import { userActivo } from '../helppers/crearUsuario'
 import { AppContext } from '../context/userContext'
+import CambiarPassword from '../components/CambiarPassword'
 
 const AppRoutes = () => {
 
     
 
-    const routeSinNavbar = ["/login", "/registrar"]
+    const routeSinNavbar = ["/login", "/registrar","/cambiar_password"]
     const location = useLocation()
     const navegate = useNavigate()
     const [autenticacion, setAutenticacion] = useState()
@@ -30,7 +31,6 @@ const AppRoutes = () => {
           setContext(result.data)
           setAutenticacion(true)
           navegate('/')
-          
         }
         
         
@@ -59,12 +59,13 @@ const AppRoutes = () => {
         }}
       />
 
-      {!routeSinNavbar.includes(location.pathname)  && <Navbar  />}
+      {!routeSinNavbar.includes(location.pathname)  && <Navbar  setAutenticacion={setAutenticacion}  />}
     <Suspense fallback={<CircularProgress />}>
         <Routes>
           {/* Rutas Públicas */}
             <Route path='/login' element={<Login setAutenticacion={setAutenticacion} />}/>
             <Route path='/registrar' element={<RegistroUser />}/>
+            <Route path='/cambiar_password' element={<CambiarPassword />} />
             <Route path='/' element={<Home />}/>
 
           {/* Rutas Privadas */}

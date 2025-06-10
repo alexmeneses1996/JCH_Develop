@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Grid,
@@ -21,6 +21,7 @@ import { barriosPorComuna, comunas } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/userContext";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
@@ -42,6 +43,7 @@ const validationSchema = Yup.object({
 
 const FormCreation = () => {
 
+ const {context, setContext} = useContext(AppContext)
   const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
@@ -60,7 +62,7 @@ const FormCreation = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      const result  = await crearRegistro(values);
+      const result  = await crearRegistro(values, context.cedula);
 
       if (result.success) {
         alert("✅ " + result.message)

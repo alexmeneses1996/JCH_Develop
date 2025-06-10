@@ -12,18 +12,21 @@ import {
   TextField,
   Typography
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import CancelIcon from '@mui/icons-material/Cancel'
 import { useNavigate } from 'react-router-dom'
 //import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import { devolverUsuarioAdmin, loginUsuarioAuthAdmin } from '../helppers/crearUsuario'
+import { AppContext } from '../context/userContext'
 //import { saveUser } from '../redux/slices/currentUser'
 
 const AdminLogin = ({setAutenticacion}) => {
-  const navegate = useNavigate()
-  //const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { contex, setContext } = useContext(AppContext)
+  
 
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -62,17 +65,36 @@ const AdminLogin = ({setAutenticacion}) => {
         .min(6, 'Mínimo 6 caracteres')
         .required('La contraseña es obligatoria')
     }),
-    onSubmit: (values, { setErrors }) => {
+    onSubmit: async (values, { setErrors }) => {
       //Validacion de correo electronico
-      if (values.cedulaAdmin !== usuarioReferencia.cedula) {
+      /*if (values.cedulaAdmin !== usuarioReferencia.cedula) {
         setErrors({ cedulaAdmin: 'La cedula no está registrada' })
         return
-      }
+      }*/
       //Validacion de contraseña
-      if (values.passwordAdmin !== usuarioReferencia.password) {
+      /*if (values.passwordAdmin !== usuarioReferencia.password) {
         setErrors({ passwordAdmin: 'Contraseña incorrecta' })
         return
-      }
+      }*/
+
+            const res = await loginUsuarioAuthAdmin(values.cedulaAdmin, values.passwordAdmin)
+            if (res.success) {
+      
+              const result = await devolverUsuarioAdmin(values.cedulaAdmin)
+               if (result.success) {
+                  
+                const usuario = result.data
+                  alert("✅ Bienvenido " + usuario.nombre);
+                  setContext(usuario)
+                  setAutenticacion(true)
+                  navigate("/inicio");
+              }
+              else{
+                alert("❌ " + result.message);
+              }
+            } else {
+              alert("❌ " + res.message);
+            }
 
      /*dispatch(
        saveUser({
@@ -81,8 +103,6 @@ const AdminLogin = ({setAutenticacion}) => {
           role: 'Administrador'
         })
       ) */
-      setAutenticacion(true)
-      navegate('/inicio')
     }
   })
 

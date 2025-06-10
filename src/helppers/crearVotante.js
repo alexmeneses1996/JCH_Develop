@@ -1,8 +1,7 @@
 import { Password } from "@mui/icons-material";
 import { supabase } from "../supabase/supabaseConfig";
 
-export const crearRegistro = async (datos) => {
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+export const crearRegistro = async (datos,cedula_usuario) => {
 
   // Tu lógica para crear el usuario
   const { data, error } = await supabase
@@ -20,7 +19,7 @@ export const crearRegistro = async (datos) => {
         barrio: datos.barrio,
         puesto_votacion: datos.puestoVotacion,
         comuna: datos.comuna,
-        referido: usuario,
+        referido: cedula_usuario,
       }, // Datos a insertar
     ]);
 

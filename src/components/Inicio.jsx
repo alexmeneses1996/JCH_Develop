@@ -5,10 +5,12 @@ import PersonIcon from "@mui/icons-material/Person";
 import RegistrosTable from './RegistroTable';
 import { supabase } from '../supabase/supabaseConfig';
 import { AppContext } from '../context/userContext';
+import { retornarUsuarios } from '../helppers/crearUsuario';
 
 const Inicio = () => {
 
     const [count, setCount] = useState(0)
+    const [countUsuarios, setCountUsuarios] = useState(0)
     //const [valor, setValor] = useState(0);
     const valorFinal = 4;
     const incremento = Math.max(1, Math.floor(valorFinal / 20));
@@ -18,19 +20,34 @@ const Inicio = () => {
     
     const [filtered, setFiltered] = useState([]);
     const [datos, setDatos] = useState(null)
+    const [usuarios, setUsuarios] = useState(null)
     const {context, setContext} = useContext(AppContext)
 
     useEffect(() => {
         const retornarVotantes = async () => {
-            const cedula_referido = context.cedula;
-            const { data, error } = await supabase
-                .from("votante")
-                .select("*")
-                .eq("referido", cedula_referido);
 
-            setDatos(data);
-            setFiltered(data)
-            console.log("Consulta DB")
+                if (context.tipo == "User") {
+                    const cedula_referido = context.cedula;
+                    const { data, error } = await supabase
+                        .from("votante")
+                        .select("*")
+                        .eq("referido", cedula_referido);
+
+                    setDatos(data);
+                    setFiltered(data)
+                    console.log("Consulta DB. Estoy en sesion Admin")
+                }else if(context.tipo == "Admin"){ //Se valida que sea de tipo Admin.
+                    const { data, error } = await supabase
+                        .from("votante")
+                        .select("*")
+
+                    setDatos(data);
+                    setFiltered(data);
+
+                    const result = await retornarUsuarios()
+                    if (result.success) setUsuarios(result.data) //Se actualiza la cantidad de usuarios
+                    console.log("Consulta DB. Estoy en sesion Admin") 
+                }
         };
 
         retornarVotantes();
@@ -54,10 +71,13 @@ const Inicio = () => {
 */
 
     useEffect(() => {
+
+        if (usuarios?.length != 0) setCountUsuarios(usuarios?.length) //Se establece el conteo de usuarios
+
         if (!datos || datos.length === 0) return;
 
         const valorFinal = datos.length; // o el campo que necesitas
-
+        
         const timer = setInterval(() => {
             setCount((prev) => {
                 const next = prev + incremento;
@@ -72,6 +92,7 @@ const Inicio = () => {
         }, intervalo);
 
         return () => clearInterval(timer);
+
     }, [datos, incremento, intervalo]);
 
 
@@ -135,6 +156,16 @@ const Inicio = () => {
                                 <Typography variant="h5">{count}</Typography>
                             </Box>
                         </Card>
+                        {/*se valida que este en el usuario Admin */}
+                        { context.tipo == "Admin" && (<Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2,ml:2, borderRadius: 2, minWidth: '160px' }}>
+                            <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>
+                                <PersonIcon />
+                            </Avatar>
+                            <Box>
+                                <Typography variant="subtitle2">USUARIOS</Typography>
+                                <Typography variant="h5">{countUsuarios}</Typography>
+                            </Box>
+                        </Card> )}                      
 
                         <Card sx={{
                             display: 'flex', alignItems: 'center', backgroundColor: '#90d8b2', color: '#0b5345', p: 2, borderRadius: 2, marginLeft: '1rem', width: '80%',
