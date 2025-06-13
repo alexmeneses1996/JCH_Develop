@@ -37,7 +37,7 @@ const validationSchema = Yup.object({
   direccion: Yup.string().required("Requerido"),
   municipio: Yup.string().required("Requerido"),
   barrio: Yup.string().required("Requerido"),
-  puestoVotacion: Yup.string().required("Requerido"),
+  puesto_votacion: Yup.string().required("Requerido"),
   comuna: Yup.string().required("Requerido"),
 });
 
@@ -57,7 +57,7 @@ const FormCreation = () => {
       direccion: "",
       municipio: "",
       barrio: "",
-      puestoVotacion: "",
+      puesto_votacion: "",
       comuna: "",
     },
     validationSchema,
@@ -157,7 +157,7 @@ const FormCreation = () => {
                 {renderSelect("municipio", "Municipio", municipios, formik)}
                 {renderSelect("comuna", "Comuna", comunas, formik)}
                 {renderSelect("barrio", "Barrio", barrios, formik)}
-                {renderField("puestoVotacion", "Puesto de Votación", formik)}
+                {renderField("puesto_votacion", "Puesto de Votación", formik)}
               </Box>
             </Grid>
 

@@ -17,7 +17,7 @@ export const crearRegistro = async (datos,cedula_usuario) => {
         correo: datos.correo,
         direccion: datos.direccion,
         barrio: datos.barrio,
-        puesto_votacion: datos.puestoVotacion,
+        puesto_votacion: datos.puesto_votacion,
         comuna: datos.comuna,
         referido: cedula_usuario,
       }, // Datos a insertar

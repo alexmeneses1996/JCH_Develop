@@ -45,10 +45,13 @@ const Inicio = () => {
                     setFiltered(data);
 
                     const result = await retornarUsuarios()
-                    if (result.success) setUsuarios(result.data) //Se actualiza la cantidad de usuarios
-                    console.log("Consulta DB. Estoy en sesion Admin") 
+                    console.log(result)
+                    if (result.success) {
+                        setUsuarios(result.data) //Se actualiza la cantidad de usuarios
+                        setCountUsuarios(result.data.length)
+                    console.log("Consulta DB. Estoy en sesion Admin") }
                 }
-        };
+        };//corregimiento ,, club blanco have retornarVotantes,,,,san rafeal,, llendo santander --- 40 
 
         retornarVotantes();
     }, []);
@@ -72,7 +75,6 @@ const Inicio = () => {
 
     useEffect(() => {
 
-        if (usuarios?.length != 0) setCountUsuarios(usuarios?.length) //Se establece el conteo de usuarios
 
         if (!datos || datos.length === 0) return;
 
@@ -152,7 +154,7 @@ const Inicio = () => {
                                 <PersonIcon />
                             </Avatar>
                             <Box>
-                                <Typography variant="subtitle2">CONTACTOS</Typography>
+                                <Typography variant="subtitle2">VOTANTES</Typography>
                                 <Typography variant="h5">{count}</Typography>
                             </Box>
                         </Card>

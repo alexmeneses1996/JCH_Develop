@@ -25,16 +25,16 @@ import { bgcolor_select_menu, color_primario, color_select_menu } from "../style
 import { cerrarSesion } from "../helppers/crearUsuario";
 import { AppContext } from "../context/userContext";
 
-const Navbar = ({setAutenticacion}) => {
+const Navbar = ({ setAutenticacion }) => {
   const [openSession, setOpenSession] = useState(false);
-  const handleOpenSession = () => { setOpenSession(true); handleClose()}
+  const handleOpenSession = () => { setOpenSession(true); handleClose() }
   const handleCloseSession = () => setOpenSession(false)
 
 
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const navegate = useNavigate();
-  const {context, setContext} = useContext(AppContext)
+  const { context, setContext } = useContext(AppContext)
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -45,13 +45,24 @@ const Navbar = ({setAutenticacion}) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleCerrarSesion = () => {
-    handleCloseSession()
-    cerrarSesion()
-    setContext({}) //se reinicia el contexto
-    setAutenticacion(false)
-    navegate("/login"); // Redirige a la página de login
+  const handleCerrarSesion = async () => {
+    const sessionCerrada = await cerrarSesion()
+    if (sessionCerrada.success) {
+      handleCloseSession()
+      setContext({}) //se reinicia el contexto
+      setAutenticacion(false)
+      navegate("/login"); // Redirige a la página de login
+    }else{
+      alert(sessionCerrada.message)
+    }
+
   };
+
+  const handlePerfil = () => {
+    handleClose()
+    navegate("/perfil");
+
+  }
 
   return (
     <AppBar
@@ -81,8 +92,8 @@ const Navbar = ({setAutenticacion}) => {
           }}
         >
           <Box>
-            <Box component="img" src={logo_1} alt="Logo" sx={{ height: "30%",width:"100%", objectFit: "cover" }} />
-                       
+            <Box component="img" src={logo_1} alt="Logo" sx={{ height: "30%", width: "100%", objectFit: "cover" }} />
+
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               <Button
                 component={Link}
@@ -91,28 +102,28 @@ const Navbar = ({setAutenticacion}) => {
                   setOpenDrawer(false);
                   navegate("/inicio");
                 }}
-                sx={{fontWeight:"bold",color: bgcolor_select_menu,":hover":{backgroundColor:bgcolor_select_menu, color:color_select_menu, fontWeight:"bold"}}}
+                sx={{ fontWeight: "bold", color: bgcolor_select_menu, ":hover": { backgroundColor: bgcolor_select_menu, color: color_select_menu, fontWeight: "bold" } }}
               >
                 Inicio
               </Button>
 
-              <Button
+              {context.tipo != "Admin" && (<Button
                 onClick={() => {
                   setOpenDrawer(false);
                   navegate("/nuevoRegistro");
                 }}
-              sx={{fontWeight:"bold",color: bgcolor_select_menu,":hover":{backgroundColor:bgcolor_select_menu, color:color_select_menu, fontWeight:"bold"}}}
+                sx={{ fontWeight: "bold", color: bgcolor_select_menu, ":hover": { backgroundColor: bgcolor_select_menu, color: color_select_menu, fontWeight: "bold" } }}
 
               >
                 Registrar Votantes
-              </Button>
+              </Button>)}
 
               <Button
                 onClick={() => {
                   setOpenDrawer(false);
                   navegate("/graficos");
                 }}
-                sx={{fontWeight:"bold",color: bgcolor_select_menu, ":hover":{backgroundColor:bgcolor_select_menu, color:color_select_menu, fontWeight:"bold"}}}
+                sx={{ fontWeight: "bold", color: bgcolor_select_menu, ":hover": { backgroundColor: bgcolor_select_menu, color: color_select_menu, fontWeight: "bold" } }}
               >
                 Gráficas
               </Button>
@@ -169,7 +180,7 @@ const Navbar = ({setAutenticacion}) => {
             justifyContent: "center",
           }}
         >
-         {!context?.nombre && ( <Button
+          {!context?.nombre && (<Button
             component={Link}
             to="/login"
             sx={{
@@ -185,7 +196,7 @@ const Navbar = ({setAutenticacion}) => {
           </Button>)}
         </Box>
 
-        { context?.nombre && (<Box sx={{ display: "flex", alignItems: "center" }}>
+        {context?.nombre && (<Box sx={{ display: "flex", alignItems: "center" }}>
           <Button
             onClick={handleClick}
             sx={{
@@ -195,7 +206,7 @@ const Navbar = ({setAutenticacion}) => {
               },
             }}
           >
-            {context.sexo == "femenino" ? (<Person3Icon />): (<PersonIcon />) }
+            {context.sexo == "femenino" ? (<Person3Icon />) : (<PersonIcon />)}
             <Typography variant="subtitle2" sx={{ mx: 1, fontWeight: 500 }}>
               {context.nombre} {context.apellidos} <span style={{ fontWeight: 300 }}>({context.tipo})</span>
             </Typography>
@@ -209,28 +220,29 @@ const Navbar = ({setAutenticacion}) => {
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
-            <MenuItem onClick={handleClose}>Mi perfil</MenuItem>
+            {context.tipo != "Admin" && (<MenuItem onClick={handlePerfil}>Mi perfil</MenuItem>)}
             <MenuItem onClick={handleOpenSession}>Cerrar sesión</MenuItem>
           </Menu>
         </Box>)}
 
-         <Dialog open={openSession} onClose={handleCloseSession}>
-        <DialogTitle>¿Cerrar sesión?</DialogTitle>
-        <DialogContent>
-          ¿Estás seguro de que deseas cerrar sesión? Perderás el acceso hasta iniciar sesión nuevamente.
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseSession} color="primary">
-            Cancelar
-          </Button>
-          <Button
-            onClick={handleCerrarSesion}
-            color="error"
-          >
-            Cerrar sesión
-          </Button>
-        </DialogActions>
-      </Dialog>
+
+        <Dialog open={openSession} onClose={handleCloseSession}>
+          <DialogTitle>¿Cerrar sesión?</DialogTitle>
+          <DialogContent>
+            ¿Estás seguro de que deseas cerrar sesión? Perderás el acceso hasta iniciar sesión nuevamente.
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseSession} color="primary">
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleCerrarSesion}
+              color="error"
+            >
+              Cerrar sesión
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Toolbar>
     </AppBar>
   );

@@ -9,3 +9,5 @@ export const bgcolor_select_menu = "#90d8b2"
 export const color_select_menu = "#0b5345"
 
 export const bg_boton = "#059669"
+
+export const colorViewVotante = '#A3E2BF'//'#90d8b2' A3E2BF

@@ -29,6 +29,7 @@ const AppRoutes = () => {
         const result = await userActivo()
         if(result.success){
           setContext(result.data)
+          console.log(result.data)
           setAutenticacion(true)
           navegate('/')
         }
@@ -71,7 +72,7 @@ const AppRoutes = () => {
           {/* Rutas Privadas */}
           <Route path="/*" element={
             <Private autenticacion={autenticacion} setAutenticacion={setAutenticacion}>
-              <Available />
+              <Available  user={context} setAutenticacion={setAutenticacion}/>
             </Private>
           }/>
 

@@ -16,7 +16,7 @@ export const crearUsuario = async (datos) => {
       correo: datos.correo,
       direccion: datos.direccion,
       barrio: datos.barrio,
-      puesto_votacion: datos.puestoVotacion,
+      puesto_votacion: datos.puesto_votacion,
       comuna: datos.comuna,
       password: hashedPassword, // guardar la contraseña encriptada
       // ...otros campos
@@ -108,7 +108,7 @@ export const registrarUsuarioAuth = async (datos, password) => {
       correo: datos.correo,
       direccion: datos.direccion,
       barrio: datos.barrio,
-      puesto_votacion: datos.puestoVotacion,
+      puesto_votacion: datos.puesto_votacion,
       comuna: datos.comuna,
       tipo:'User'
     },
@@ -203,3 +203,21 @@ export const devolverUsuarioAdmin = async (cedula) => {
 
   return { success: true, message: "Se encontró el usuario", data: data };
 };
+
+
+
+
+export  const updateUser = async (cedula, userData) => {
+  const { data, error } = await supabase
+    .from('usuario') // Reemplaza con tu tabla
+    .update(userData)
+    .eq('cedula', cedula) // o el campo que identifique al usuario
+    .select(); // opcional: para obtener el nuevo dato
+
+  if (error) {
+    console.error('Error al actualizar usuario:', error.message);
+    return { success: false, message: error.message, data: null };
+  }
+
+  return { success: true, message: "Usuario Editado correctamente", data: data };
+}

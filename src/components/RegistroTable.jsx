@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Box, Button, Table, TableBody, TableCell, TableContainer, TableHead,
   TableRow, Paper, Typography, MenuItem, Select, TextField, IconButton,
@@ -10,6 +10,11 @@ import { supabase } from '../supabase/supabaseConfig';
 import { comunas } from '../helppers/data';
 import {  useNavigate } from 'react-router-dom';
 import { bg_boton } from '../styled/styled';
+import { AppContext } from '../context/userContext';
+import AdminEditVotante from './AdminEditVotante';
+import AdminViewVotante from './AdminViewVotante';
+import AdminDeleteVotante from './AdminDeleteVotante';
+import { exportToExcel } from '../helppers/functions';
 
 const statusColors = {
   Activo: 'success',
@@ -28,35 +33,8 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
   const [page, setPage] = useState(0);
   const navigate = useNavigate()
   const rowsPerPage = 5;
+  const {context, setContext} = useContext(AppContext)
 
-
-
-  /*const fetchRegistros = async () => {
-    const { data, error } = await supabase.from('registros').select('*');
-    if (error) console.error(error);
-    else {
-      setRegistros(data);
-      setFiltered(data);
-    }
-  };*/
-
- const fetchRegistros = async () => {
-    
-   await axios.get('http://localhost:4000/registros')
-      .then(res => setRegistros(res.data))
-      .catch(err => console.error(err));
-  }
-
-  /*const retornarVotantes = async () =>{
-    const cedula_referido = JSON.parse(localStorage.getItem('usuario'))
-    const {data, error} = await supabase
-    .from("votante")
-    .select("*")
-    .eq("referido",cedula_referido)
-
-    setDatos(data)
-    console.log(datos)
-  }*/
 
 
   useEffect(() => {
@@ -76,13 +54,17 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
     setPage(newPage);
   };
 
+  const hanldeExportData = () => {
+    exportToExcel(filtered,"votantes.xlsx")
+  }
+
   return (
     <Box sx={{ padding: 2 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>
         <Box>
-          <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1 ,backgroundColor: "#90d8b2"}}>Exportar</Button>
-          <Button sx={{backgroundColor: bg_boton}} startIcon={<Add />} variant="contained" onClick={()=> {navigate("/nuevoRegistro")}}>Nuevo Registro</Button>
+          <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1 ,backgroundColor: "#90d8b2"}} onClick={hanldeExportData}>Exportar</Button>
+          { context.tipo != "Admin" && (<Button sx={{backgroundColor: bg_boton}} startIcon={<Add />} variant="contained" onClick={()=> {navigate("/nuevoRegistro")}}>Nuevo Registro</Button>)}
         </Box>
       </Box>
 
@@ -147,9 +129,9 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
                 <TableCell >{r.comuna}</TableCell>
 
                 <TableCell>
-                  <IconButton><Visibility color="primary" /></IconButton>
-                  <IconButton><Edit color="info" /></IconButton>
-                  <IconButton><Delete color="error" /></IconButton>
+                  <AdminViewVotante  key={r.referido} votante={r}/>
+                  <AdminEditVotante key={r.cedula} votante={r} />
+                  <AdminDeleteVotante cedula={r.cedula}/>
                 </TableCell>
               </TableRow>
             ))}

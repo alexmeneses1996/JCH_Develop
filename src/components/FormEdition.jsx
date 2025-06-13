@@ -19,7 +19,7 @@ const validationSchema = Yup.object({
   direccion: Yup.string().required('Requerido'),
   municipio: Yup.string().required('Requerido'),
   barrio: Yup.string().required('Requerido'),
-  puestoVotacion: Yup.string().required('Requerido'),
+  puesto_votacion: Yup.string().required('Requerido'),
   zona: Yup.string().required('Requerido'),
   comuna: Yup.string().required('Requerido'),
   referido: Yup.string(),
@@ -40,7 +40,7 @@ const FormEdition = () => {
       direccion: '',
       municipio: '',
       barrio: '',
-      puestoVotacion: '',
+      puesto_votacion: '',
       zona: '',
       comuna: '',
       referido: '',
@@ -208,11 +208,11 @@ const FormEdition = () => {
             <TextField
               fullWidth
               label="Puesto de Votación"
-              name="puestoVotacion"
-              value={formik.values.puestoVotacion}
+              name="puesto_votacion"
+              value={formik.values.puesto_votacion}
               onChange={formik.handleChange}
-              error={formik.touched.puestoVotacion && Boolean(formik.errors.puestoVotacion)}
-              helperText={formik.touched.puestoVotacion && formik.errors.puestoVotacion}
+              error={formik.touched.puesto-votacion && Boolean(formik.errors.puesto_votacion)}
+              helperText={formik.touched.puesto_votacion && formik.errors.puesto_votacion}
             />
           </Grid>
           <Grid item xs={12} sm={3}>

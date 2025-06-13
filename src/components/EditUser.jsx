@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
     Box,
     Grid,
@@ -12,6 +12,8 @@ import {
     CardContent,
     Divider,
     IconButton,
+    Checkbox,
+    FormControlLabel,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -20,12 +22,14 @@ import { barriosPorComuna, comunas } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
-import { crearUsuario, registrarUsuarioAuth, validarCedulaUsuario } from "../helppers/crearUsuario";
+import { devolverUsuario, updateUser } from "../helppers/crearUsuario";
+import { AppContext } from "../context/userContext";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
 
 const validationSchema = Yup.object({
+    actualizarContrasena: Yup.boolean(),
     cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
     nombre: Yup.string().required("Requerido"),
     apellidos: Yup.string().required("Requerido"),
@@ -38,43 +42,77 @@ const validationSchema = Yup.object({
     barrio: Yup.string().required("Requerido"),
     puesto_votacion: Yup.string().required("Requerido"),
     comuna: Yup.string().required("Requerido"),
-    password: Yup.string()
-        .min(6, 'Mínimo 6 caracteres')
-        .required('Requerido'),
-    confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden')
-        .required('Requerido'),
+    password: Yup.string().when("actualizarContrasena", {
+        is: true,
+        then: () => Yup.string().min(6, 'Mínimo 6 caracteres').required('Requerido'),
+        otherwise: () => Yup.string().notRequired(),
+    }),
+    confirmPassword: Yup.string().when("actualizarContrasena", {
+        is: true,
+        then: () => Yup.string().oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden').required('Requerido'),
+        otherwise: () => Yup.string().notRequired(),
+    })
+
 });
-const RegistroUser = () => {
+const EditUser = ({ user }) => {
 
     const navigate = useNavigate()
+    const { context, setContext } = useContext(AppContext)
     const formik = useFormik({
         initialValues: {
-            cedula: "",
-            nombre: "",
-            apellidos: "",
-            edad: "",
-            sexo: "",
-            telefono: "",
-            correo: "",
-            direccion: "",
-            municipio: "",
-            barrio: "",
-            puesto_votacion: "",
-            comuna: "",
+            actualizarContrasena: false,
+            cedula: user.cedula,
+            nombre: user.nombre,
+            apellidos: user.apellidos,
+            edad: user.edad,
+            sexo: user.sexo,
+            telefono: user.telefono,
+            correo: user.correo,
+            direccion: user.direccion,
+            municipio: "CALI",
+            barrio: user.barrio,
+            puesto_votacion: user.puesto_votacion,
+            comuna: user.comuna,
             password: "",
             confirmPassword: "",
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {
-            //const result = await crearUsuario(values)
-            const result = await registrarUsuarioAuth(values, values.password)
-
+            alert("editado correctamente")
+            const newData = {
+                nombre: values.nombre,
+                apellidos: values.apellidos,
+                edad: values.edad,
+                sexo: values.sexo,
+                telefono: values.telefono,
+                correo: values.correo,
+                direccion: values.direccion,
+                municipio: values.municipio,
+                barrio: values.barrio,
+                puesto_votacion: values.puesto_votacion,
+                comuna: values.comuna
+            }
+            const result = await updateUser(values.cedula, newData)
 
             if (result.success) {
-                alert("✅ " + result.message)
-                formik.resetForm();
+
+                const res = await devolverUsuario(values.cedula)
+                if (res.success) {
+                    setContext(res.data)
+                    alert("✅ " + result.message)
+                }
+
             }
+
+            navigate("/perfil")
+            //const result = await crearUsuario(values)
+            //const result = await registrarUsuarioAuth(values, values.password)
+
+
+            /* if (result.success) {
+                 alert("✅ " + result.message)
+                 formik.resetForm();
+             }*/
         },
     });
 
@@ -117,7 +155,7 @@ const RegistroUser = () => {
             <Card elevation={3} sx={{ position: 'relative' }}>
                 <IconButton sx={{ position: "absolute", top: 18, left: 18, "&:hover": { color: bg_boton } }} onClick={
                     () => {
-                        navigate("/login")
+                        navigate("/perfil")
                     }
                 }><ArrowBackIcon /></IconButton>
                 <CardContent>
@@ -128,7 +166,7 @@ const RegistroUser = () => {
                         gutterBottom
                         fontWeight="bold"
                     >
-                        Registrar Usuario
+                        Editar Perfil
                     </Typography>
 
                     <Divider sx={{ mb: 3 }} />
@@ -149,35 +187,54 @@ const RegistroUser = () => {
                                         name='cedula'
                                         label="Número de Cédula"
                                         value={formik.values.cedula}
-                                        onChange={(e) => {
-                                            formik.handleChange(e);
-                                        }}
-                                        onBlur={validacionRepetido}
+                                        InputProps={{ readOnly: true }}
+                                        onChange={formik.handleChange}
+                                        //onBlur={validacionRepetido}
                                         error={formik.touched.cedula && Boolean(formik.errors.cedula)}
                                         helperText={formik.touched.cedula && formik.errors.cedula}
                                     />
                                 </Grid>
-                                {renderField("password", "Contraseña", formik, "password")}
-                                {renderField("confirmPassword", "Confirmar contraseña", formik, "password")}
+                                {renderField("nombre", "Nombre", formik)}
+                                {renderField("apellidos", "Apellidos", formik)}
 
                             </Box>
                             <Box sx={{ display: "flex", width: "100%" }}>
-                                {renderField("nombre", "Nombre", formik)}
-                                {renderField("apellidos", "Apellidos", formik)}
                                 {renderField("telefono", "Teléfono o Celular", formik)}
                                 {renderSelect("sexo", "Sexo", sexos, formik)}
+                                {renderField("edad", "Edad", formik)}
+
 
                             </Box>
                             <Box sx={{ display: "flex", width: "100%" }}>
                                 {renderField("direccion", "Dirección", formik)}
                                 {renderField("correo", "Correo", formik)}
-                                {renderField("edad", "Edad", formik)}
+                                {renderSelect("municipio", "Municipio", municipios, formik)}
                             </Box>
                             <Box sx={{ display: "flex", width: "100%" }}>
-                                {renderSelect("municipio", "Municipio", municipios, formik)}
                                 {renderSelect("comuna", "Comuna", comunas, formik)}
                                 {renderSelect("barrio", "Barrio", barrios, formik)}
                                 {renderField("puesto_votacion", "Puesto de Votación", formik)}
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            name="actualizarContrasena"
+                                            checked={formik.values.actualizarContrasena}
+                                            onChange={formik.handleChange}
+                                            color="primary"
+                                        />
+                                    }
+                                    label="¿Deseas actualizar contraseña?"
+                                />
+                                {renderField("password", "Contraseña", formik, "password", !formik.values.actualizarContrasena)}
+                                {renderField("confirmPassword", "Confirmar contraseña", formik, "password", !formik.values.actualizarContrasena)}
+                                {/*formik.values.actualizarContrasena && (
+                                    <>
+                                        {renderField("password", "Contraseña", formik, "password", !formik.values.actualizarContrasena)}
+                                        {renderField("confirmPassword", "Confirmar contraseña", formik, "password", !formik.values.actualizarContrasena)}
+                                   /*</Box> </>)*/}
+
                             </Box>
                         </Grid>
 
@@ -190,7 +247,7 @@ const RegistroUser = () => {
                                 size="large"
 
                             >
-                                Realizar Registro
+                                Finalizar Edición
                             </Button>
                         </Box>
                     </Box>
@@ -203,7 +260,7 @@ const RegistroUser = () => {
 
 // 🧩 Componentes auxiliares:
 
-const renderField = (name, label, formik, type = "text") => (
+const renderField = (name, label, formik, type = "text", disabled = false) => (
     <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
         <TextField
             fullWidth
@@ -211,24 +268,16 @@ const renderField = (name, label, formik, type = "text") => (
             name={name}
             label={label}
             value={formik.values[name]}
-            onChange={(e) => {
-
-                formik.handleChange(e);
-                if (name === "cedula") {
-                    formik.setFieldValue("direccion", "hola1"); // Resetea barrio si cambia comuna
-                }
-            }}
-            onBlur={(e) => {
-                if (name === "cedula") {
-                    validarIdEnBD()
-                    //formik.setFieldValue("direccion", "es una prueba"); // Resetea barrio si cambia comuna
-                    //formik.setFieldError("cedula", "Error salio")
-                    //console.log("Error establecido:", formik.errors);
-                }
-            }}
+            onChange={formik.handleChange}
             error={formik.touched[name] && Boolean(formik.errors[name])}
             helperText={formik.touched[name] && formik.errors[name]}
             InputLabelProps={type === "date" ? { shrink: true } : {}}
+            disabled={disabled}
+            autoComplete={
+                name === "password" ? "new-password" :
+                    name === "confirmPassword" ? "new-password" :
+                        "off"
+            }
         />
     </Grid>
 );
@@ -242,12 +291,7 @@ const renderSelect = (name, label, options, formik) => (
             label={label}
             name={name}
             value={formik.values[name]}
-            onChange={(e) => {
-                formik.handleChange(e);
-                if (name === "comuna") {
-                    formik.setFieldValue("barrio", ""); // Resetea barrio si cambia comuna
-                }
-            }}
+            onChange={formik.handleChange}
             error={formik.touched[name] && Boolean(formik.errors[name])}
             helperText={formik.touched[name] && formik.errors[name]}
             sx={{ minWidth: "150px" }}
@@ -260,4 +304,4 @@ const renderSelect = (name, label, options, formik) => (
         </TextField>
     </Grid>
 );
-export default RegistroUser
+export default EditUser
