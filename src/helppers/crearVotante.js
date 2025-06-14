@@ -1,7 +1,6 @@
-import { Password } from "@mui/icons-material";
 import { supabase } from "../supabase/supabaseConfig";
 
-export const crearRegistro = async (datos,cedula_usuario) => {
+export const crearRegistro = async (datos, cedula_usuario) => {
 
   // Tu lógica para crear el usuario
   const { data, error } = await supabase
@@ -25,26 +24,48 @@ export const crearRegistro = async (datos,cedula_usuario) => {
 
   if (error) {
     console.error("❌ Error al insertar:", error.message);
-    return { success: false, message: error.message , data: data};
+    return { success: false, message: error.message, data: data };
   }
 
-  return { success: true, message: "Contacto registrado con éxito" , data: data};
+  return { success: true, message: "Contacto registrado con éxito", data: data };
 };
 
-export const retornarVotantes = async () => {
+export const retornarTodosLosVotantes = async () => {
   // Tu lógica para crear el usuario
   const { data, error } = await supabase
-    .from("votante") // Nombre de la tabla
-    .select("*"); // Datos a insertar
-  console.log(data);
+    .from("votante")
+    .select("*");
+    if (error) {
+    console.error("❌ Error al retornar todos los votantes:", error.message);
+    return { success: false, message: error.message, data: data };
+  }
+
+  return { success: true, message: "Se retorna todos los votantes", data: data };
 };
 
 
 export const validarCedulaVotante = async (cedula) => {
   const { data, error } = await supabase
-    .from('votante') // reemplaza con tu tabla
+    .from('votante')
     .select('cedula')
     .eq('cedula', cedula);
 
   return data?.length > 0;
+};
+
+
+
+export const retornarVotantesPorUsuario = async (cedula) => {
+  const { data, error } = await supabase
+    .from("votante")
+    .select("*")
+    .eq('referido', cedula);
+    console.log(data)
+
+  if (error) {
+    console.error("❌ Error al retornar votantes por usuario:", error.message);
+    return { success: false, message: error.message, data: data };
+  }
+
+  return { success: true, message: "Se retorna los votantes por usuario", data: data };
 };

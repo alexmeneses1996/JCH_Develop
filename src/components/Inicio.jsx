@@ -13,7 +13,7 @@ const Inicio = () => {
     const [countUsuarios, setCountUsuarios] = useState(0)
     //const [valor, setValor] = useState(0);
     const valorFinal = 4;
-    const incremento = Math.max(1, Math.floor(valorFinal / 20));
+    const incremento = Math.max(1, Math.floor(valorFinal / 10));
     const duracion = 1000; // 1 segundo
     const pasos = valorFinal / incremento;
     const intervalo = duracion / pasos;
