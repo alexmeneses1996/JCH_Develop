@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "/imagen.jpg";
 import logo_1 from "/logo.png";
 import PersonIcon from "@mui/icons-material/Person";
 import Person3Icon from '@mui/icons-material/Person3';

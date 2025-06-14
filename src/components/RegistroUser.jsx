@@ -15,12 +15,11 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { isValid, parseISO, subYears } from "date-fns";
 import { barriosPorComuna, comunas } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
-import { crearUsuario, registrarUsuarioAuth, validarCedulaUsuario } from "../helppers/crearUsuario";
+import { registrarUsuarioAuth, validarCedulaUsuario } from "../helppers/crearUsuario";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];

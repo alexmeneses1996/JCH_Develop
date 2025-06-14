@@ -8,7 +8,6 @@ import {
   FormControl,
   FormHelperText,
   IconButton,
-  Input,
   InputAdornment,
   InputLabel,
   Paper,
@@ -28,8 +27,7 @@ import {
 } from "../styled/styled";
 import LockIcon from "@mui/icons-material/Lock";
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
-import { Link, useNavigate } from "react-router-dom";
-import { loginConCedula } from "../helppers/loginCedula";
+import {  useNavigate } from "react-router-dom";
 import AdminLogin from "./AdminLogin";
 import { devolverUsuario, loginUsuarioAuth } from "../helppers/crearUsuario";
 import { AppContext } from "../context/userContext";
@@ -119,7 +117,7 @@ const Login = ({ setAutenticacion }) => {
 
   const olvidarContrasenia =  async () =>{
 
-    navigate("/cambiar_password")
+    navigate("/olvide-mi-clave")
     
 
   }

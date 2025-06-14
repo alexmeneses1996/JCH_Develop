@@ -1,15 +1,28 @@
 import { CircularProgress, GlobalStyles } from '@mui/material'
-import React, { Suspense, useContext, useEffect, useState } from 'react'
+import React, { lazy, Suspense, useContext, useEffect, useState } from 'react'
 import {  Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import Login from '../components/Login'
-import Home from '../components/Home'
-import Navbar from '../components/Navbar'
-import Available from './Available'
+//import Login from '../components/Login'
+//import Home from '../components/Home'
+//import Available from './Available'
+//import RegistroUser from '../components/RegistroUser'
+//import CambiarPassword from '../components/CambiarPassword'
+
 import Private from './Private'
-import RegistroUser from '../components/RegistroUser'
+import Navbar from '../components/Navbar'
 import { userActivo } from '../helppers/crearUsuario'
 import { AppContext } from '../context/userContext'
-import CambiarPassword from '../components/CambiarPassword'
+
+
+const CambiarPassword = lazy(()=> import('../components/CambiarPassword'))
+const RegistroUser = lazy(()=> import('../components/RegistroUser'))
+const Available = lazy(()=> import('./Available'))
+const Login = lazy(()=> import('../components/Login'))
+const Home = lazy(()=> import('../components/Home'))
+const OlvideMiClave = lazy(()=> import('../components/OlvideMiClave'))
+const ResetPassword = lazy(()=> import('../components/ResetPassword'))
+
+
+
 
 const AppRoutes = () => {
 
@@ -66,7 +79,8 @@ const AppRoutes = () => {
           {/* Rutas Públicas */}
             <Route path='/login' element={<Login setAutenticacion={setAutenticacion} />}/>
             <Route path='/registrar' element={<RegistroUser />}/>
-            <Route path='/cambiar_password' element={<CambiarPassword />} />
+            <Route path='/olvide-mi-clave' element={<OlvideMiClave />} />
+            <Route path='/reset-password' element={<ResetPassword />} />
             <Route path='/' element={<Home />}/>
 
           {/* Rutas Privadas */}

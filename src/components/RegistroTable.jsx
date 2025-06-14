@@ -1,13 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
   Box, Button, Table, TableBody, TableCell, TableContainer, TableHead,
-  TableRow, Paper, Typography, MenuItem, Select, TextField, IconButton,
-  Chip, TablePagination
+  TableRow, Paper, Typography, MenuItem, Select, TextField, TablePagination
 } from '@mui/material';
-import { Edit, Delete, Visibility, CloudDownload, Add } from '@mui/icons-material';
-import axios from 'axios';
-import { supabase } from '../supabase/supabaseConfig';
-import { comunas } from '../helppers/data';
+import { CloudDownload, Add } from '@mui/icons-material';
 import {  useNavigate } from 'react-router-dom';
 import { bg_boton } from '../styled/styled';
 import { AppContext } from '../context/userContext';
