@@ -1,40 +1,97 @@
-// api/request-password-reset.js
+/*const { createClient } = require("@supabase/supabase-js");
+const { Resend } = require("resend");
+const { v4: uuidv4 } = require("uuid");
 
-import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // O usa tu anon key si es solo lectura
-);
-
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).send("Método no permitido");
 
   const { cedula } = req.body;
 
-  if (!cedula) return res.status(400).json({ error: "Cédula requerida" });
-
-  // 1. Buscar el correo real y el user_id en tu tabla de usuarios
-  const { data, error } = await supabase
+  const { data: user, error } = await supabase
     .from("usuario")
-    .select("correo")
+    .select("user_id, correo")
     .eq("cedula", cedula)
     .single();
 
-  if (error || !data) {
-    return res.status(404).json({ error: "Usuario no encontrado" });
-  }
+  if (error || !user) return res.status(404).json({ error: "Usuario no encontrado" });
 
-  const correoReal = data.correo;
+  const token = uuidv4();
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 30); // 30 minutos
 
-  // 2. Enviar el enlace de restablecimiento a ese correo
-  const { error: resetError } = await supabase.auth.resetPasswordForEmail(correoReal, {
-    redirectTo: "https://jcreamoshistoria.vercel.app/reset-password", // Cambia esta URL a la de tu app
+  await supabase.from("reset_tokens").insert({
+    token,
+    user_id: user.user_id,
+    expires_at: expiresAt.toISOString(),
   });
 
-  if (resetError) {
-    return res.status(500).json({ error: "Error enviando el correo" });
+  const resetLink = `https://tuapp.com/reset-password?token=${token}`;
+
+  await resend.emails.send({
+    from: "Soporte <tucorreo@tuapp.com>",
+    to: user.correo,
+    subject: "Restablece tu contraseña",
+    html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+           <a href="${resetLink}">${resetLink}</a>`,
+  });
+
+  res.status(200).json({ message: "Correo enviado" });
+};
+*/
+
+// /api/request-password-reset.js
+
+import { Resend } from 'resend';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY // importante: usa la clave de servicio aquí
+);
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).end();
+
+  const { cedula } = req.body;
+
+  // 1. Buscar el correo real desde la tabla usuario
+  const { data: user, error } = await supabase
+    .from('usuario')
+    .select('correo')
+    .eq('cedula', cedula)
+    .single();
+
+  if (error || !user) {
+    return res.status(404).json({ error: 'Usuario no encontrado' });
   }
 
-  return res.status(200).json({ mensaje: "Correo enviado" });
+  // 2. Crear enlace de recuperación de contraseña
+  const { data, error: resetError } = await supabase.auth.resetPasswordForEmail(
+    user.correo,
+    {
+      redirectTo: 'https://jcreamoshistoria.vercel.app/reset-password', // reemplaza con tu frontend
+    }
+  );
+
+  if (resetError) {
+    return res.status(500).json({ error: 'Error generando el enlace' });
+  }
+
+  // 3. Enviar el enlace por correo usando Resend
+  try {
+    const emailRes = await resend.emails.send({
+      from: 'TuNombre <noreply@tu-dominio.on.resend.dev>',
+      to: user.correo,
+      subject: 'Recuperación de contraseña',
+      html: `<p>Hola,</p><p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${data.action_link}">Restablecer contraseña</a></p>`,
+    });
+
+    return res.status(200).json({ message: 'Correo enviado', emailRes });
+  } catch (err) {
+    return res.status(500).json({ error: 'Error enviando el correo' });
+  }
 }
