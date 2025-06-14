@@ -45,6 +45,8 @@ module.exports = async (req, res) => {
 
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
+import { randomUUID } from "crypto";
+
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -69,8 +71,9 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
+
     // 2. Crear enlace de recuperación de contraseña
-    const token = randomUUID();
+     const token = randomUUID();
 
     // Guarda el token
     await supabase.from("reset_tokens").insert({
@@ -79,8 +82,10 @@ export default async function handler(req, res) {
         used: false,
     });
 
-    const resetLink = `https://jcreamoshistoria.vercel.app/reset-password?token=${token}`;
+    const  resetLink = `https://jcreamoshistoria.vercel.app/reset-password?token=${token}`;
+    
 
+   
     // 3. Enviar el enlace por correo usando Resend
     try {
         const emailRes = await resend.emails.send({
