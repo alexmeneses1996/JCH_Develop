@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo_1 from "/logo.png";
 import PersonIcon from "@mui/icons-material/Person";
 import Person3Icon from '@mui/icons-material/Person3';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -91,7 +90,7 @@ const Navbar = ({ setAutenticacion }) => {
           }}
         >
           <Box>
-            <Box component="img" src={logo_1} alt="Logo" sx={{ height: "30%", width: "100%", objectFit: "cover" }} />
+            <Box component="img" src="https://res.cloudinary.com/dqgbna4ni/image/upload/v1749935686/logo_xnitmu.png" alt="Logo" sx={{ height: "30%", width: "100%", objectFit: "cover" }} />
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
               <Button
@@ -154,7 +153,7 @@ const Navbar = ({ setAutenticacion }) => {
           >
             <Box
               component="img"
-              src={logo_1}
+              src="https://res.cloudinary.com/dqgbna4ni/image/upload/v1749935686/logo_xnitmu.png"
               alt="Logo"
               sx={{ height: 50, width: 80, objectFit: "cover" }}
             />
