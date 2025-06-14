@@ -1,5 +1,6 @@
 
 export const requestPasswordReset = async (cedula) => {
+    console.log("prueba")
   try {
     const response = await fetch("/api/request-password-reset", {
       method: "POST",

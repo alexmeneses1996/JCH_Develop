@@ -84,7 +84,7 @@ export default async function handler(req, res) {
   // 3. Enviar el enlace por correo usando Resend
   try {
     const emailRes = await resend.emails.send({
-      from: 'TuNombre <noreply@tu-dominio.on.resend.dev>',
+      from: 'jcreamoshistoria <onboarding@resend.dev>',
       to: user.correo,
       subject: 'Recuperación de contraseña',
       html: `<p>Hola,</p><p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${data.action_link}">Restablecer contraseña</a></p>`,
