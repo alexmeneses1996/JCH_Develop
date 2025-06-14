@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
   // 2. Enviar el enlace de restablecimiento a ese correo
   const { error: resetError } = await supabase.auth.resetPasswordForEmail(correoReal, {
-    redirectTo: "http://localhost:5173/reset-password",//"https://tusitio.vercel.app/reset-password", // Cambia esta URL a la de tu app
+    redirectTo: "https://jcreamoshistoria.vercel.app/reset-password", // Cambia esta URL a la de tu app
   });
 
   if (resetError) {
