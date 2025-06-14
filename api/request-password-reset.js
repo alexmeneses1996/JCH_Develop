@@ -47,51 +47,51 @@ import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // importante: usa la clave de servicio aquí
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY // importante: usa la clave de servicio aquí
 );
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+    if (req.method !== 'POST') return res.status(405).end();
 
-  const { cedula } = req.body;
+    const { cedula } = req.body;
 
-  // 1. Buscar el correo real desde la tabla usuario
-  const { data: user, error } = await supabase
-    .from('usuario')
-    .select('correo')
-    .eq('cedula', cedula)
-    .single();
+    // 1. Buscar el correo real desde la tabla usuario
+    const { data: user, error } = await supabase
+        .from('usuario')
+        .select('correo')
+        .eq('cedula', cedula)
+        .single();
 
-  if (error || !user) {
-    return res.status(404).json({ error: 'Usuario no encontrado' });
-  }
-
-  // 2. Crear enlace de recuperación de contraseña
-  const { data, error: resetError } = await supabase.auth.resetPasswordForEmail(
-    user.correo,
-    {
-      redirectTo: 'https://jcreamoshistoria.vercel.app/reset-password', // reemplaza con tu frontend
+    if (error || !user) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
     }
-  );
 
-  if (resetError) {
-    return res.status(500).json({ error: 'Error generando el enlace' });
-  }
+    // 2. Crear enlace de recuperación de contraseña
+    const token = randomUUID();
 
-  // 3. Enviar el enlace por correo usando Resend
-  try {
-    const emailRes = await resend.emails.send({
-      from: 'jcreamoshistoria <onboarding@resend.dev>',
-      to: user.correo,
-      subject: 'Recuperación de contraseña',
-      html: `<p>Hola,</p><p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${data.action_link}">Restablecer contraseña</a></p>`,
+    // Guarda el token
+    await supabase.from("reset_tokens").insert({
+        cedula,
+        token,
+        used: false,
     });
 
-    return res.status(200).json({ message: 'Correo enviado', emailRes });
-  } catch (err) {
-    return res.status(500).json({ error: 'Error enviando el correo' });
-  }
+    const resetLink = `https://jcreamoshistoria.vercel.app/reset-password?token=${token}`;
+
+    // 3. Enviar el enlace por correo usando Resend
+    try {
+        const emailRes = await resend.emails.send({
+            from: 'jcreamoshistoria <onboarding@resend.dev>',
+            to: user.correo,
+            subject: 'Recuperación de contraseña',
+            html: `<p>Hola,</p><p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${data.action_link}">Restablecer contraseña</a></p>`,
+        });
+
+        return res.status(200).json({ message: 'Correo enviado', emailRes });
+    } catch (err) {
+        return res.status(500).json({ error: 'Error enviando el correo' });
+    }
 }
