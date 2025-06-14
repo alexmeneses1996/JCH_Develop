@@ -1,45 +1,3 @@
-/*const { createClient } = require("@supabase/supabase-js");
-const { Resend } = require("resend");
-const { v4: uuidv4 } = require("uuid");
-
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-module.exports = async (req, res) => {
-  if (req.method !== "POST") return res.status(405).send("Método no permitido");
-
-  const { cedula } = req.body;
-
-  const { data: user, error } = await supabase
-    .from("usuario")
-    .select("user_id, correo")
-    .eq("cedula", cedula)
-    .single();
-
-  if (error || !user) return res.status(404).json({ error: "Usuario no encontrado" });
-
-  const token = uuidv4();
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 30); // 30 minutos
-
-  await supabase.from("reset_tokens").insert({
-    token,
-    user_id: user.user_id,
-    expires_at: expiresAt.toISOString(),
-  });
-
-  const resetLink = `https://tuapp.com/reset-password?token=${token}`;
-
-  await resend.emails.send({
-    from: "Soporte <tucorreo@tuapp.com>",
-    to: user.correo,
-    subject: "Restablece tu contraseña",
-    html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
-           <a href="${resetLink}">${resetLink}</a>`,
-  });
-
-  res.status(200).json({ message: "Correo enviado" });
-};
-*/
 
 // /api/request-password-reset.js
 
@@ -100,3 +58,47 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Error enviando el correo' });
     }
 }
+
+
+/*const { createClient } = require("@supabase/supabase-js");
+const { Resend } = require("resend");
+const { v4: uuidv4 } = require("uuid");
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+module.exports = async (req, res) => {
+  if (req.method !== "POST") return res.status(405).send("Método no permitido");
+
+  const { cedula } = req.body;
+
+  const { data: user, error } = await supabase
+    .from("usuario")
+    .select("user_id, correo")
+    .eq("cedula", cedula)
+    .single();
+
+  if (error || !user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+  const token = uuidv4();
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 30); // 30 minutos
+
+  await supabase.from("reset_tokens").insert({
+    token,
+    user_id: user.user_id,
+    expires_at: expiresAt.toISOString(),
+  });
+
+  const resetLink = `https://tuapp.com/reset-password?token=${token}`;
+
+  await resend.emails.send({
+    from: "Soporte <tucorreo@tuapp.com>",
+    to: user.correo,
+    subject: "Restablece tu contraseña",
+    html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+           <a href="${resetLink}">${resetLink}</a>`,
+  });
+
+  res.status(200).json({ message: "Correo enviado" });
+};
+*/

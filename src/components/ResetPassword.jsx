@@ -1,45 +1,111 @@
-
-// src/pages/reset-password.jsx
-import { useState } from "react";
+import React, { useState } from "react";
+import { Container, Paper, TextField, Button, Typography, Box } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
+import { bg_boton } from "../styled/styled";
 
 export default function ResetPasswordPage() {
-  const [params] = useSearchParams();
-  const token = params.get("token");
+    const [params] = useSearchParams();
+    const token = params.get("token");
 
-  const [password, setPassword] = useState("");
-  const [mensaje, setMensaje] = useState(null);
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [mensaje, setMensaje] = useState(null);
+    const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setMensaje(null);
+        setError(null);
 
-    const res = await fetch("/api/reset-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, nuevaClave: password }),
-    });
+        if (!password || !confirmPassword) {
+            setError("Por favor completa ambos campos.");
+            return;
+        }
 
-    const data = await res.json();
-    setMensaje(data.mensaje || data.error);
-  };
+        if (password.length < 6) {
+            setError("La contraseña debe tener al menos 6 caracteres.");
+            return;
+        }
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>Restablecer contraseña</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="password"
-          placeholder="Nueva contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Actualizar</button>
-      </form>
-      {mensaje && <p>{mensaje}</p>}
-    </div>
-  );
+        if (password !== confirmPassword) {
+            setError("Las contraseñas no coinciden.");
+            return;
+        }
+
+        const res = await fetch("/api/reset-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token, nuevaClave: password }),
+        });
+
+        const data = await res.json();
+        setMensaje(data.mensaje || data.error);
+    };
+
+    return (
+        <Container
+            maxWidth={false}
+            disableGutters
+            sx={{
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgb(248, 249, 250)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+        >
+
+
+            <h2>Restablecer contraseña</h2>
+            <Paper elevation={5} sx={{ width: "90%", maxWidth: 400, padding: "2rem", margin: 0 }}>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        fullWidth
+                        label="Nueva contraseña"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        margin="normal"
+                        error={!!error && (password.length < 6 || password !== confirmPassword)}
+                        helperText={error}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Confirmar contraseña"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        margin="normal"
+                        error={!!error && password !== confirmPassword}
+                        helperText={error}
+                    />
+                    <Button fullWidth type="submit" variant="contained" color="primary"
+                        sx={{ backgroundColor: bg_boton }} size="large">
+                        Actualizar contraseña
+                    </Button>
+                </form>
+
+                {mensaje && (
+                    <Typography variant="body2" color="success.main" mt={2}>
+                        {mensaje}
+                    </Typography>
+                )}
+
+            </Paper>
+            <Box sx={{ margin: 0 }}>
+                <img
+                    src="https://res.cloudinary.com/dqgbna4ni/image/upload/v1749935686/logo_xnitmu.png"
+                    alt="Logo"
+                    style={{ width: "200px", height: "250px" }}
+                />
+
+            </Box>
+        </Container>
+    );
 }
+
 
 
 // src/routes/ResetPassword.jsx
@@ -120,3 +186,68 @@ function ResetPassword() {
 
 export default ResetPassword;
 */
+
+
+
+
+/*// src/pages/reset-password.jsx
+import { Container, Paper } from "@mui/material";
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+
+export default function ResetPasswordPage() {
+    const [params] = useSearchParams();
+    const token = params.get("token");
+
+    const [password, setPassword] = useState("");
+    const [mensaje, setMensaje] = useState(null);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const res = await fetch("/api/reset-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token, nuevaClave: password }),
+        });
+
+        const data = await res.json();
+        setMensaje(data.mensaje || data.error);
+    };
+
+    return (
+        <Container
+            maxWidth={false}
+            disableGutters
+            sx={{
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgb( 248, 249, 250)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0px",
+                margin: "0px",
+            }}
+        >
+           
+                <h2>Restablecer contraseña</h2>
+                <Paper elevation={5} sx={{ width: "30%", padding: "2rem" }}>
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="password"
+                            placeholder="Nueva contraseña"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+
+                        <button type="submit">Actualizar</button>
+                    </form>
+                    {mensaje && <p>{mensaje}</p>}
+                </Paper>
+           
+        </Container>
+    );
+}*/

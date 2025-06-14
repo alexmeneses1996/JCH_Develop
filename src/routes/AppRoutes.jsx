@@ -28,7 +28,7 @@ const AppRoutes = () => {
 
     
 
-    const routeSinNavbar = ["/login", "/registrar","/cambiar_password"]
+    const routeSinNavbar = ["/login", "/registrar","/reset-password"]
     const location = useLocation()
     const navegate = useNavigate()
     const [autenticacion, setAutenticacion] = useState()
