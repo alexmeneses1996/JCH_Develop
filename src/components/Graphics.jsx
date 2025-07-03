@@ -4,6 +4,7 @@ import { supabase } from '../supabase/supabaseConfig';
 import { Container } from '@mui/material';
 import { AppContext } from '../context/userContext';
 import {  retornarTodosLosVotantes, retornarVotantesPorUsuario } from '../helppers/crearVotante';
+import { ordenarComuna } from '../helppers/functions';
 
 const Graphics = () => {
   const [data, setData] = useState([]);
@@ -47,11 +48,14 @@ const Graphics = () => {
     edad: item.edad,
   }));*/
 
-  const comunaData = [...comunaDataRaw].sort((a, b) => {
+  const comunaData = ordenarComuna(comunaDataRaw)
+   /*[...comunaDataRaw].sort((a, b) => {
   const numeroA = parseInt(a.name.toLowerCase().replace('comuna ', ''), 10);
   const numeroB = parseInt(b.name.toLowerCase().replace('comuna ', ''), 10);
   return numeroA - numeroB;
-});
+});*/
+
+
 
 
   return (

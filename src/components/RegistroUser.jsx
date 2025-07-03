@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Grid,
@@ -12,10 +12,11 @@ import {
     CardContent,
     Divider,
     IconButton,
+    Autocomplete,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { barriosPorComuna, comunas } from "../helppers/data";
+import { barriosPorComuna, comunas, listado_puestos_votacion, puestos_de_Votacion } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
@@ -24,18 +25,25 @@ import { registrarUsuarioAuth, validarCedulaUsuario } from "../helppers/crearUsu
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
 
+const puestos = [
+    'Institución Educativa Central',
+    'Colegio San Juan Bosco',
+    'Escuela Simón Bolívar',
+    'Centro Cultural La Merced',
+];
+
 const validationSchema = Yup.object({
     cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
     nombre: Yup.string().required("Requerido"),
     apellidos: Yup.string().required("Requerido"),
-    edad: Yup.string().required("Requerido"),
+    edad: Yup.number().typeError('Debe ser un número').moreThan(0, 'Debe ser mayor que 0').required("Requerido"),
     sexo: Yup.string().required("Requerido"),
     telefono: Yup.string().required("Requerido"),
     correo: Yup.string().email("Correo inválido").required("Requerido"),
     direccion: Yup.string().required("Requerido"),
     municipio: Yup.string().required("Requerido"),
     barrio: Yup.string().required("Requerido"),
-    puesto_votacion: Yup.string().required("Requerido"),
+    puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido').required("Requerido"),
     comuna: Yup.string().required("Requerido"),
     password: Yup.string()
         .min(6, 'Mínimo 6 caracteres')
@@ -63,6 +71,8 @@ const RegistroUser = () => {
             comuna: "",
             password: "",
             confirmPassword: "",
+            direccionPuestoVotacion: "",
+            comunaPuestoVotacion: "",
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {
@@ -92,6 +102,19 @@ const RegistroUser = () => {
     }
 
 
+  useEffect(() => {
+    const puesto = formik.values.puesto_votacion;
+    if (puesto && puestos_de_Votacion[puesto]) {
+      const info = puestos_de_Votacion[puesto];
+      formik.setFieldValue('comunaPuestoVotacion', info.Comuna);
+      formik.setFieldValue('direccionPuestoVotacion', info.Direccion);
+
+    } else {
+      formik.setFieldValue('comunaPuestoVotacion', '');
+      formik.setFieldValue('direccionPuestoVotacion', '');
+
+    }
+  }, [formik.values.puesto_votacion]);
 
 
     let valor = 1
@@ -176,7 +199,61 @@ const RegistroUser = () => {
                                 {renderSelect("municipio", "Municipio", municipios, formik)}
                                 {renderSelect("comuna", "Comuna", comunas, formik)}
                                 {renderSelect("barrio", "Barrio", barrios, formik)}
-                                {renderField("puesto_votacion", "Puesto de Votación", formik)}
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }}>
+                                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        freeSolo
+                                        options={listado_puestos_votacion}
+                                        value={formik.values.puesto_votacion}
+                                        onChange={(event, newValue) => {
+                                            formik.setFieldValue('puesto_votacion', newValue || '');
+                                        }}
+                                        sx={{ width: "300px" }}
+                                        onInputChange={(event, newInputValue) => {
+                                            formik.setFieldValue('puesto_votacion', newInputValue);
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Puesto de Votación"
+                                                name="puesto_votacion"
+                                                fullWidth
+                                                margin="normal"
+                                                error={
+                                                    formik.touched.puesto_votacion &&
+                                                    Boolean(formik.errors.puesto_votacion)
+                                                }
+                                                helperText={
+                                                    formik.touched.puesto_votacion && formik.errors.puesto_votacion
+                                                }
+                                                sx={{ marginTop: 0 }}
+                                                onBlur={formik.handleBlur}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                                    <TextField
+                                        fullWidth
+                                        label="Comuna por Puesto"
+                                        value={formik.values.comunaPuestoVotacion || ''}
+                                        margin="normal"
+                                        InputProps={{ readOnly: true }}
+                                        sx={{ marginTop: 0, width: '150px', backgroundColor: '#D3D3D3' }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                                    <TextField
+                                        fullWidth
+                                        label="Direccion por Puesto"
+                                        value={formik.values.direccionPuestoVotacion || ''}
+                                        margin="normal"
+                                        InputProps={{ readOnly: true }}
+                                        sx={{ marginTop: 0, minWidth: '300px', backgroundColor: '#D3D3D3' }}
+                                    />
+                                </Grid>
                             </Box>
                         </Grid>
 
@@ -249,7 +326,7 @@ const renderSelect = (name, label, options, formik) => (
             }}
             error={formik.touched[name] && Boolean(formik.errors[name])}
             helperText={formik.touched[name] && formik.errors[name]}
-            sx={{ minWidth: "150px" }}
+            sx={{ minWidth: "170px" }}
         >
             {options.map((option) => (
                 <MenuItem key={option} value={option}>

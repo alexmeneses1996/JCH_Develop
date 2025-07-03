@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { supabase } from "../supabase/supabaseConfig";
+import { capitalizarCadaPalabra } from "./functions";
 
 export const crearUsuario = async (datos) => {
   // Encriptar la contraseña antes de guardarla
@@ -100,8 +101,8 @@ export const registrarUsuarioAuth = async (datos, password) => {
       correo_oculto: correoOculto,
       user_id: user_id,
       cedula: datos.cedula,
-      nombre: datos.nombre,
-      apellidos: datos.apellidos,
+      nombre: capitalizarCadaPalabra(datos.nombre),
+      apellidos: capitalizarCadaPalabra(datos.apellidos),
       edad: datos.edad,
       sexo: datos.sexo,
       telefono: datos.telefono,
@@ -110,6 +111,8 @@ export const registrarUsuarioAuth = async (datos, password) => {
       barrio: datos.barrio,
       puesto_votacion: datos.puesto_votacion,
       comuna: datos.comuna,
+      nombre_completo: capitalizarCadaPalabra(datos.nombre +" "+ datos.apellidos),
+      municipio: datos.municipio,
       tipo:'User'
     },
   ]);
@@ -221,3 +224,16 @@ export  const updateUser = async (cedula, userData) => {
 
   return { success: true, message: "Usuario Editado correctamente", data: data };
 }
+
+
+export const actualizarContrasena = async (nuevaClave) => {
+  const { error } = await supabase.auth.updateUser({
+    password: nuevaClave,
+  });
+
+  if (error) {
+    return { success: false, message: error.message };
+  }
+
+  return { success: true, message: "Contraseña actualizada exitosamente." };
+};

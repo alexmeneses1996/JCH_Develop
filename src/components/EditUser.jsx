@@ -23,6 +23,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
 import { devolverUsuario, updateUser } from "../helppers/crearUsuario";
 import { AppContext } from "../context/userContext";
+import { capitalizarCadaPalabra } from "../helppers/functions";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
@@ -79,8 +80,8 @@ const EditUser = ({ user }) => {
         onSubmit: async (values, { setErrors }) => {
             alert("editado correctamente")
             const newData = {
-                nombre: values.nombre,
-                apellidos: values.apellidos,
+                nombre: capitalizarCadaPalabra(values.nombre),
+                apellidos: capitalizarCadaPalabra(values.apellidos),
                 edad: values.edad,
                 sexo: values.sexo,
                 telefono: values.telefono,
@@ -89,7 +90,8 @@ const EditUser = ({ user }) => {
                 municipio: values.municipio,
                 barrio: values.barrio,
                 puesto_votacion: values.puesto_votacion,
-                comuna: values.comuna
+                comuna: values.comuna,
+                nombre_completo: capitalizarCadaPalabra(values.nombre + " " + values.apellidos)
             }
             const result = await updateUser(values.cedula, newData)
 

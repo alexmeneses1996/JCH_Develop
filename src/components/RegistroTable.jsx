@@ -4,13 +4,13 @@ import {
   TableRow, Paper, Typography, MenuItem, Select, TextField, TablePagination
 } from '@mui/material';
 import { CloudDownload, Add } from '@mui/icons-material';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { bg_boton } from '../styled/styled';
 import { AppContext } from '../context/userContext';
 import AdminEditVotante from './AdminEditVotante';
 import AdminViewVotante from './AdminViewVotante';
 import AdminDeleteVotante from './AdminDeleteVotante';
-import { exportToExcel } from '../helppers/functions';
+import { exportToExcel, ordenarComuna } from '../helppers/functions';
 
 const statusColors = {
   Activo: 'success',
@@ -19,7 +19,7 @@ const statusColors = {
   Cancelado: 'error',
 };
 
-const RegistrosTable = ({datos,filtered,setFiltered}) => {
+const RegistrosTable = ({ datos, filtered, setFiltered }) => {
 
   const [registros, setRegistros] = useState([]);
   //const [datos, setDatos] = useState(null)
@@ -29,7 +29,7 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
   const [page, setPage] = useState(0);
   const navigate = useNavigate()
   const rowsPerPage = 5;
-  const {context, setContext} = useContext(AppContext)
+  const { context, setContext } = useContext(AppContext)
 
 
 
@@ -37,9 +37,8 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
 
     let result = datos?.filter(dato =>
       //Se realiza busqueda por escritura (Nombre)
-      dato.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
-      //filtro por comuna
-      (edad ? dato.edad === edad : true) &&
+      (busqueda ? dato.nombre_completo?.toLowerCase().includes(busqueda.toLowerCase()) : true) &&
+      (edad ? Number(dato.edad) === Number(edad) : true) &&
       //filtro por 
       (comuna ? dato.comuna === comuna : true)
     );
@@ -51,7 +50,7 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
   };
 
   const hanldeExportData = () => {
-    exportToExcel(filtered,"votantes.xlsx")
+    exportToExcel(filtered, "votantes.xlsx")
   }
 
   return (
@@ -59,8 +58,8 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>
         <Box>
-          <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1 ,backgroundColor: "#90d8b2"}} onClick={hanldeExportData}>Exportar</Button>
-          { context.tipo != "Admin" && (<Button sx={{backgroundColor: bg_boton}} startIcon={<Add />} variant="contained" onClick={()=> {navigate("/nuevoRegistro")}}>Nuevo Registro</Button>)}
+          <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1, backgroundColor: "#90d8b2" }} onClick={hanldeExportData}>Exportar</Button>
+          {context.tipo != "Admin" && (<Button sx={{ backgroundColor: bg_boton }} startIcon={<Add />} variant="contained" onClick={() => { navigate("/nuevoRegistro") }}>Nuevo Registro</Button>)}
         </Box>
       </Box>
 
@@ -81,7 +80,7 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
           fullWidth
         >
           <MenuItem value="">Todos las edades</MenuItem>
-          {[...new Set(datos?.map(r => r.edad))].map(p => (
+          {[...new Set(datos?.map(r => r.edad))].sort((a, b) => Number(a) - Number(b)).map(p => (
             <MenuItem key={p} value={p}>{p}</MenuItem>
           ))}
         </Select>
@@ -115,22 +114,22 @@ const RegistrosTable = ({datos,filtered,setFiltered}) => {
           </TableHead>
           <TableBody>
             {filtered?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((r, i) => (
-              <TableRow key={r.cedula}>
-                <TableCell >{i + 1 + page * rowsPerPage}</TableCell>
-                <TableCell >{r.nombre +" "+ r.apellidos}</TableCell>
-                <TableCell >{r.cedula}</TableCell>
-                <TableCell >{r.edad}</TableCell>
-                <TableCell>{r.sexo}</TableCell>
-                <TableCell >{r.comuna}</TableCell>
+              .map((r, i) => (
+                <TableRow key={r.cedula}>
+                  <TableCell >{i + 1 + page * rowsPerPage}</TableCell>
+                  <TableCell >{r.nombre_completo}</TableCell>
+                  <TableCell >{r.cedula}</TableCell>
+                  <TableCell >{r.edad}</TableCell>
+                  <TableCell>{r.sexo}</TableCell>
+                  <TableCell >{r.comuna}</TableCell>
 
-                <TableCell>
-                  <AdminViewVotante  key={r.referido} votante={r}/>
-                  <AdminEditVotante key={r.cedula} votante={r} />
-                  <AdminDeleteVotante cedula={r.cedula}/>
-                </TableCell>
-              </TableRow>
-            ))}
+                  <TableCell>
+                    <AdminViewVotante key={r.referido} votante={r} />
+                    <AdminEditVotante key={r.cedula} votante={r} />
+                    <AdminDeleteVotante votante={r}  usuario={context}/>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         <TablePagination

@@ -1,9 +1,88 @@
 import { Box, Button, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Select, Switch, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import CancelIcon from '@mui/icons-material/Cancel';
 import { Edit } from '@mui/icons-material';
 import { barriosPorComuna, comunas } from '../helppers/data';
+import * as Yup from "yup";
+import { useFormik } from 'formik';
+import { AppContext } from '../context/userContext';
+import { useNavigate } from 'react-router-dom';
+import { updateVotante } from '../helppers/crearVotante';
+import { capitalizarCadaPalabra } from '../helppers/functions';
+
+const validationSchema = Yup.object({
+    cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
+    nombre: Yup.string().required("Requerido"),
+    apellidos: Yup.string().required("Requerido"),
+    edad: Yup.string().required("Requerido"),
+    sexo: Yup.string().required("Requerido"),
+    telefono: Yup.string().required("Requerido"),
+    correo: Yup.string().email("Correo inválido").required("Requerido"),
+    direccion: Yup.string().required("Requerido"),
+    barrio: Yup.string().required("Requerido"),
+    puesto_votacion: Yup.string().required("Requerido"),
+    comuna: Yup.string().required("Requerido"),
+
+});
 const AdminEditVotante = ({ votante }) => {
+    const { context, setContext } = useContext(AppContext)
+    const navigate = useNavigate()
+
+    const formik = useFormik({
+        initialValues: {
+            cedula: votante.cedula,
+            nombre: votante.nombre,
+            apellidos: votante.apellidos,
+            edad: votante.edad,
+            sexo: votante.sexo,
+            telefono: votante.telefono,
+            correo: votante.correo,
+            direccion: votante.direccion,
+            municipio: "CALI",
+            barrio: votante.barrio,
+            puesto_votacion: votante.puesto_votacion,
+            comuna: votante.comuna,
+        },
+        validationSchema,
+        onSubmit: async (values, { setErrors }) => {
+           
+
+            const newData = {
+                nombre: capitalizarCadaPalabra(values.nombre),
+                apellidos: capitalizarCadaPalabra(values.apellidos),
+                edad: values.edad,
+                sexo: values.sexo,
+                telefono: values.telefono,
+                correo: values.correo,
+                direccion: values.direccion,
+                municipio: values.municipio,
+                barrio: values.barrio,
+                puesto_votacion: values.puesto_votacion,
+                comuna: values.comuna,
+                nombre_completo: capitalizarCadaPalabra(values.nombre + " " + values.apellidos)
+            }
+
+            
+            //
+            const result = await updateVotante(values.cedula, newData) 
+
+            //const result = await updateUser(values.cedula, newData)
+
+             if (result.success) {
+                alert("✅ " + result.message)
+                navigate("/inicio")
+ 
+                 //const res = await devolverUsuario(values.cedula)
+                 //if (res.success) {
+                   //  setContext(res.data)
+                   //  alert("✅ " + result.message)
+                 //}
+ 
+             }
+
+            // navigate("/perfil")
+        },
+    });
 
     const [cedula, setCedula] = useState(votante.cedula);
     const [nombre, setNombre] = useState(votante.nombre);
@@ -15,6 +94,8 @@ const AdminEditVotante = ({ votante }) => {
     const [comuna, setComuna] = useState(votante.comuna);
     const [barrio, setBarrio] = useState(votante.barrio);
     const [puesto_votacion, setPuesto_votacion] = useState(votante.puesto_votacion);
+
+
 
     const sexos = ["Femenino", "Masculino"];
 
@@ -42,7 +123,20 @@ const AdminEditVotante = ({ votante }) => {
         margin: '5px'
     };
 
-    const selectedComuna = comuna;
+
+
+    useEffect(() => {
+
+        const nuevaComuna = formik.values.comuna;
+        const barriosActualizados = nuevaComuna ? barriosPorComuna[nuevaComuna] || [] : [];
+
+        // Si el barrio actual no está en la nueva lista, lo reseteamos
+        if (!barriosActualizados.includes(formik.values.barrio)) {
+            formik.setFieldValue('barrio', '');
+        }
+    }, [formik.values.comuna]);
+
+    const selectedComuna = formik.values.comuna;
     const barrios = selectedComuna ? barriosPorComuna[selectedComuna] || [] : [];
 
     return (
@@ -57,7 +151,7 @@ const AdminEditVotante = ({ votante }) => {
                 <Box sx={style}>
                     <form
                         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-                        onSubmit={handleSubmitAdmin}
+                        onSubmit={formik.handleSubmit}
                     >
                         <IconButton onClick={handleClose} sx={{ position: "absolute", top: 8, left: 8, "&:hover": { color: 'red' } }}>
                             <CancelIcon />
@@ -73,10 +167,13 @@ const AdminEditVotante = ({ votante }) => {
                             <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Cedula"
-                                    id="Cedula"
-                                    value={cedula}
-                                    onChange={(event) => setCedula(event.target.value)}
+                                    name="cedula"
+                                    value={formik.values.cedula}
                                     variant='filled'
+                                    InputProps={{ readOnly: true }}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.cedula && Boolean(formik.errors.cedula)}
+                                    helperText={formik.touched.cedula && formik.errors.cedula}
                                     sx={{
                                         borderRadius: "40px",
                                         overflow: "hidden",
@@ -91,9 +188,11 @@ const AdminEditVotante = ({ votante }) => {
                             <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Nombre"
-                                    id="Nombre"
-                                    value={nombre}
-                                    onChange={(event) => setNombre(event.target.value)}
+                                    name="nombre"
+                                    value={formik.values.nombre}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.nombre && Boolean(formik.errors.nombre)}
+                                    helperText={formik.touched.nombre && formik.errors.nombre}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -110,9 +209,11 @@ const AdminEditVotante = ({ votante }) => {
                             <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Apellido"
-                                    id="Apellido"
-                                    value={apellido}
-                                    onChange={(event) => setApellido(event.target.value)}
+                                    name="apellidos"
+                                    value={formik.values.apellidos}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.apellidos && Boolean(formik.errors.apellidos)}
+                                    helperText={formik.touched.apellidos && formik.errors.apellidos}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -130,10 +231,12 @@ const AdminEditVotante = ({ votante }) => {
                             <FormControl sx={{ m: 1, width: '150px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Sexo"
-                                    id="Sexo"
+                                    name="sexo"
                                     select
-                                    value={sexo}
-                                    onChange={(event) => setSexo(event.target.value)}
+                                    value={formik.values.sexo}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.sexo && Boolean(formik.errors.sexo)}
+                                    helperText={formik.touched.sexo && formik.errors.sexo}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -145,19 +248,21 @@ const AdminEditVotante = ({ votante }) => {
                                     }}
                                 >
                                     {sexos.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
 
                             <FormControl sx={{ m: 1, width: '70px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Edad"
-                                    id="edad"
-                                    value={edad}
-                                    onChange={(event) => setEdad(event.target.value)}
+                                    name="edad"
+                                    value={formik.values.edad}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.edad && Boolean(formik.errors.edad)}
+                                    helperText={formik.touched.edad && formik.errors.edad}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -176,9 +281,11 @@ const AdminEditVotante = ({ votante }) => {
                             <FormControl sx={{ m: 1, width: '130px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Telefono"
-                                    id="Telefono"
-                                    value={telefono}
-                                    onChange={(event) => setTelefono(event.target.value)}
+                                    name="telefono"
+                                    value={formik.values.telefono}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.telefono && Boolean(formik.errors.telefono)}
+                                    helperText={formik.touched.telefono && formik.errors.telefono}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -193,9 +300,11 @@ const AdminEditVotante = ({ votante }) => {
                             <FormControl sx={{ m: 1, width: '240px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Correo"
-                                    id="Correo"
-                                    value={correo}
-                                    onChange={(event) => setCorreo(event.target.value)}
+                                    name="correo"
+                                    value={formik.values.correo}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.correo && Boolean(formik.errors.correo)}
+                                    helperText={formik.touched.correo && formik.errors.correo}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -213,9 +322,11 @@ const AdminEditVotante = ({ votante }) => {
                             <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Direccion"
-                                    id="Direccion"
-                                    value={direccion}
-                                    onChange={(event) => setDireccion(event.target.value)}
+                                    name="direccion"
+                                    value={formik.values.direccion}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.direccion && Boolean(formik.errors.direccion)}
+                                    helperText={formik.touched.direccion && formik.errors.direccion}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -231,10 +342,12 @@ const AdminEditVotante = ({ votante }) => {
                             <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Comuna"
-                                    id="Comuna"
+                                    name="comuna"
                                     select
-                                    value={comuna}
-                                    onChange={(event) => setComuna(event.target.value)}
+                                    value={formik.values.comuna}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.comuna && Boolean(formik.errors.comuna)}
+                                    helperText={formik.touched.comuna && formik.errors.comuna}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -244,21 +357,23 @@ const AdminEditVotante = ({ votante }) => {
                                             backgroundColor: "#efe7da" // Asegura que el color de fondo coincida
                                         }
                                     }} >
-                                {comunas.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
+                                    {comunas.map((option) => (
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
 
                             <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Barrio"
-                                    id="Barrio"
+                                    name="barrio"
                                     select
-                                    value={barrio}
-                                    onChange={(event) => setBarrio(event.target.value)}
+                                    value={formik.values.barrio}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.barrio && Boolean(formik.errors.barrio)}
+                                    helperText={formik.touched.barrio && formik.errors.barrio}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -268,21 +383,24 @@ const AdminEditVotante = ({ votante }) => {
                                             backgroundColor: "#efe7da" // Asegura que el color de fondo coincida
                                         }
                                     }}
-                                    >
-                                {barrios.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
+                                >
+                                    <MenuItem value="">Selecciona un barrio</MenuItem>
+                                    {barrios.map((option) => (
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </FormControl>
                         </Box>
                         <FormControl sx={{ m: 1, width: '450px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                             <TextField
                                 label="Puesto de Votacion"
-                                id="Puesto_votacion"
-                                value={puesto_votacion}
-                                onChange={(event) => setPuesto_votacion(event.target.value)}
+                                name="puesto_votacion"
+                                value={formik.values.puesto_votacion}
+                                onChange={formik.handleChange}
+                                error={formik.touched.puesto_votacion && Boolean(formik.errors.puesto_votacion)}
+                                helperText={formik.touched.puesto_votacion && formik.errors.puesto_votacion}
                                 variant='filled'
                                 sx={{
                                     borderRadius: "40px",
@@ -317,7 +435,7 @@ const AdminEditVotante = ({ votante }) => {
                                 }
                             }}
                         >
-                            Finalizar Edición
+                            Finalizar Edición3
                         </Button>
 
                     </form>

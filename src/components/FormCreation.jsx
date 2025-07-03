@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -12,12 +12,13 @@ import {
   CardContent,
   Divider,
   IconButton,
+  Autocomplete,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { isValid, parseISO, subYears } from "date-fns";
 import { crearRegistro, validarCedulaVotante } from "../helppers/crearVotante";
-import { barriosPorComuna, comunas } from "../helppers/data";
+import { barriosPorComuna, comunas, listado_puestos_votacion, puestos_de_Votacion } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
@@ -37,13 +38,13 @@ const validationSchema = Yup.object({
   direccion: Yup.string().required("Requerido"),
   municipio: Yup.string().required("Requerido"),
   barrio: Yup.string().required("Requerido"),
-  puesto_votacion: Yup.string().required("Requerido"),
+  puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido').required("Requerido"),
   comuna: Yup.string().required("Requerido"),
 });
 
 const FormCreation = () => {
 
- const {context, setContext} = useContext(AppContext)
+  const { context, setContext } = useContext(AppContext)
   const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
@@ -59,20 +60,41 @@ const FormCreation = () => {
       barrio: "",
       puesto_votacion: "",
       comuna: "",
+      comunaPuestoVotacion: "",
+      direccionPuestoVotacion: "",
     },
     validationSchema,
     onSubmit: async (values) => {
-      const result  = await crearRegistro(values, context.cedula);
+      const result = await crearRegistro(values, context.cedula);
 
       if (result.success) {
         alert("✅ " + result.message)
-        formik.resetForm(); 
+        formik.resetForm();
       }
     },
   });
+
+  useEffect(() => {
+    const puesto = formik.values.puesto_votacion;
+    if (puesto && puestos_de_Votacion[puesto]) {
+      const info = puestos_de_Votacion[puesto];
+      formik.setFieldValue('comunaPuestoVotacion', info.Comuna);
+      formik.setFieldValue('direccionPuestoVotacion', info.Direccion);
+
+    } else {
+      formik.setFieldValue('comunaPuestoVotacion', '');
+      formik.setFieldValue('direccionPuestoVotacion', '');
+
+    }
+  }, [formik.values.puesto_votacion]);
+
+
   let valor = 1
   const selectedComuna = formik.values.comuna;
   const barrios = selectedComuna ? barriosPorComuna[selectedComuna] || [] : [];
+
+  //const selectedPuesto = formik.values.puesto_votacion;
+  ///const comunaPuesto = selectedPuesto && formik.setFieldValue('comunaPuestoVotacion', puestos_de_Votacion[selectedPuesto].Comuna || 'ninguno');
 
   return (
     <Container
@@ -157,7 +179,61 @@ const FormCreation = () => {
                 {renderSelect("municipio", "Municipio", municipios, formik)}
                 {renderSelect("comuna", "Comuna", comunas, formik)}
                 {renderSelect("barrio", "Barrio", barrios, formik)}
-                {renderField("puesto_votacion", "Puesto de Votación", formik)}
+              </Box>
+              <Box sx={{ display: "flex", width: "100%" }}>
+                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                  <Autocomplete
+                    fullWidth
+                    freeSolo
+                    options={listado_puestos_votacion}
+                    value={formik.values.puesto_votacion}
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue('puesto_votacion', newValue || '');
+                    }}
+                    sx={{ width: "350px" }}
+                    onInputChange={(event, newInputValue) => {
+                      formik.setFieldValue('puesto_votacion', newInputValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Puesto de Votación"
+                        name="puesto_votacion"
+                        fullWidth
+                        margin="normal"
+                        error={
+                          formik.touched.puesto_votacion &&
+                          Boolean(formik.errors.puesto_votacion)
+                        }
+                        helperText={
+                          formik.touched.puesto_votacion && formik.errors.puesto_votacion
+                        }
+                        sx={{ marginTop: 0 }}
+                        onBlur={formik.handleBlur}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                  <TextField
+                    fullWidth
+                    label="Comuna por Puesto"
+                    value={formik.values.comunaPuestoVotacion || ''}
+                    margin="normal"
+                    InputProps={{ readOnly: true }}
+                    sx={{ marginTop: 0, width:'150px', backgroundColor:'#D3D3D3'}}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                  <TextField
+                    fullWidth
+                    label="Direccion por Puesto"
+                    value={formik.values.direccionPuestoVotacion || ''}
+                    margin="normal"
+                    InputProps={{ readOnly: true }}
+                    sx={{ marginTop: 0, minWidth:'300px', backgroundColor:'#D3D3D3' }}
+                  />
+                </Grid>
               </Box>
             </Grid>
 
@@ -194,16 +270,6 @@ const renderField = (name, label, formik, type = "text") => (
       onChange={(e) => {
 
         formik.handleChange(e);
-        if (name === "cedula") {
-          formik.setFieldValue("direccion", "hola1"); // Resetea barrio si cambia comuna
-        }
-      }}
-      onBlur={(e) => {
-        if (name === "cedula") {
-          formik.setFieldValue("direccion", "es una prueba"); // Resetea barrio si cambia comuna
-          formik.setFieldError("cedula", "Error salio")
-          console.log("Error establecido:", formik.errors);
-        }
       }}
       error={formik.touched[name] && Boolean(formik.errors[name])}
       helperText={formik.touched[name] && formik.errors[name]}
@@ -229,7 +295,7 @@ const renderSelect = (name, label, options, formik) => (
       }}
       error={formik.touched[name] && Boolean(formik.errors[name])}
       helperText={formik.touched[name] && formik.errors[name]}
-      sx={{ minWidth: "150px" }}
+      sx={{ minWidth: "200px" }}
     >
       {options.map((option) => (
         <MenuItem key={option} value={option}>
