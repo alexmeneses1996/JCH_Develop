@@ -21,10 +21,10 @@ const Footer = () => {
             Contacto
           </Typography>
           <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)', display: 'flex', alignItems: 'center', mb: 1 }}>
-            <Email sx={{ fontSize: 18, mr: 1 }} /> juntoscreamoshistoria@gmail.com
+            <Email sx={{ fontSize: 18, mr: 1 }} /> jcreamoshistoria@gmail.com
           </Typography>
           <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)', display: 'flex', alignItems: 'center' }}>
-            <Phone sx={{ fontSize: 18, mr: 1 }} /> +57 321 456 7890
+            <Phone sx={{ fontSize: 18, mr: 1 }} /> (+57) 317 499 0966
           </Typography>
         </Box>
 

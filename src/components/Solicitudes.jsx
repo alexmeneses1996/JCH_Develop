@@ -33,7 +33,6 @@ const Solicitudes = () => {
     
                         setDatos(data);
                         setFiltered(data)
-                        console.log("Consulta DB. Estoy en sesion Admin")
                     }else if(context.tipo == "admin"){ //Se valida que sea de tipo Admin.
                         const { data, error } = await supabase
                             .from("votante")
@@ -84,7 +83,7 @@ const Solicitudes = () => {
             sx={{
                 width: '100vw',
                 height: '100vh',
-                backgroundColor: '#1e3a8a',//'rgb( 248, 249, 250)',1e3a8a
+                backgroundColor: 'rgb( 248, 249, 250)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

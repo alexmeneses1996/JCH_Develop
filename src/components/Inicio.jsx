@@ -105,7 +105,7 @@ const Inicio = () => {
             sx={{
                 width: '100vw',
                 height: '100vh',
-                backgroundColor: '#1e3a8a',//'rgb( 248, 249, 250)',1e3a8a
+                backgroundColor: 'rgb( 248, 249, 250)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

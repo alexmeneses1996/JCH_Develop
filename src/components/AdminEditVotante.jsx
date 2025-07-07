@@ -70,7 +70,8 @@ const AdminEditVotante = ({ votante }) => {
 
              if (result.success) {
                 alert("✅ " + result.message)
-                navigate("/inicio")
+                handleClose()
+                navigate("/")
  
                  //const res = await devolverUsuario(values.cedula)
                  //if (res.success) {
@@ -435,7 +436,7 @@ const AdminEditVotante = ({ votante }) => {
                                 }
                             }}
                         >
-                            Finalizar Edición3
+                            Finalizar Edición
                         </Button>
 
                     </form>

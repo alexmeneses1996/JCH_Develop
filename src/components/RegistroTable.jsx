@@ -12,12 +12,6 @@ import AdminViewVotante from './AdminViewVotante';
 import AdminDeleteVotante from './AdminDeleteVotante';
 import { exportToExcel, ordenarComuna } from '../helppers/functions';
 
-const statusColors = {
-  Activo: 'success',
-  Verificado: 'info',
-  Pendiente: 'warning',
-  Cancelado: 'error',
-};
 
 const RegistrosTable = ({ datos, filtered, setFiltered }) => {
 
@@ -110,6 +104,7 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
               <TableCell>Edad</TableCell>
               <TableCell>Sexo</TableCell>
               <TableCell>Comuna</TableCell>
+              <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -1,11 +1,10 @@
 import { CircularProgress, GlobalStyles } from '@mui/material'
 import React, { lazy, Suspense, useContext, useEffect, useState } from 'react'
-import {  Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 //import Login from '../components/Login'
 //import Home from '../components/Home'
 //import Available from './Available'
 //import RegistroUser from '../components/RegistroUser'
-//import CambiarPassword from '../components/CambiarPassword'
 
 import Private from './Private'
 import Navbar from '../components/Navbar'
@@ -13,48 +12,47 @@ import { userActivo } from '../helppers/crearUsuario'
 import { AppContext } from '../context/userContext'
 
 
-const CambiarPassword = lazy(()=> import('../components/CambiarPassword'))
-const RegistroUser = lazy(()=> import('../components/RegistroUser'))
-const Available = lazy(()=> import('./Available'))
-const Login = lazy(()=> import('../components/Login'))
-const Home = lazy(()=> import('../components/Home'))
-const OlvideMiClave = lazy(()=> import('../components/OlvideMiClave'))
-const ResetPassword = lazy(()=> import('../components/ResetPassword'))
-
+const RegistroUser = lazy(() => import('../components/RegistroUser'))
+const Available = lazy(() => import('./Available'))
+const Login = lazy(() => import('../components/Login'))
+const Home = lazy(() => import('../components/Home'))
+const OlvideMiClave = lazy(() => import('../components/OlvideMiClave'))
+const ResetPassword = lazy(() => import('../components/ResetPassword'))
+const FormCreationBylink = lazy(() => import('../components/FormCreationBylink'))
 
 
 
 const AppRoutes = () => {
 
-    
 
-    const routeSinNavbar = ["/login", "/registrar","/reset-password"]
-    const location = useLocation()
-    const navegate = useNavigate()
-    const [autenticacion, setAutenticacion] = useState()
-    const {context, setContext } = useContext(AppContext)
-    
 
-    useEffect( () => {
+  const routeSinNavbar = ["/login", "/registrar", "/reset-password"]
+  const location = useLocation()
+  const navegate = useNavigate()
+  const [autenticacion, setAutenticacion] = useState()
+  const { context, setContext } = useContext(AppContext)
 
-       const obtenerUsuario  = async () =>{
-       
-        const result = await userActivo()
-        if(result.success){
-          setContext(result.data)
-          console.log(result.data)
-          setAutenticacion(true)
-          navegate('/')
-        }
-        
-        
-       } 
-       obtenerUsuario ()
-    
-    }, [])
-    
 
-    
+  useEffect(() => {
+
+    const obtenerUsuario = async () => {
+
+      const result = await userActivo()
+      if (result.success) {
+        setContext(result.data)
+        console.log(result.data)
+        setAutenticacion(true)
+        navegate('/')
+      }
+
+
+    }
+    obtenerUsuario()
+
+  }, [])
+
+
+
 
   return (
     <>
@@ -73,26 +71,28 @@ const AppRoutes = () => {
         }}
       />
 
-      {!routeSinNavbar.includes(location.pathname)  && <Navbar  setAutenticacion={setAutenticacion}  />}
-    <Suspense fallback={<CircularProgress />}>
+      {!(routeSinNavbar.includes(location.pathname) || location.pathname.startsWith("/nuevoRegistroLink/")) && <Navbar setAutenticacion={setAutenticacion} />}
+      <Suspense fallback={<CircularProgress />}>
         <Routes>
           {/* Rutas Públicas */}
-            <Route path='/login' element={<Login setAutenticacion={setAutenticacion} />}/>
-            <Route path='/registrar' element={<RegistroUser />}/>
-            <Route path='/olvide-mi-clave' element={<OlvideMiClave />} />
-            <Route path='/reset-password' element={<ResetPassword />} />
-            <Route path='/' element={<Home />}/>
+          <Route path='/login' element={<Login setAutenticacion={setAutenticacion} />} />
+          <Route path='/registrar' element={<RegistroUser />} />
+          <Route path='/olvide-mi-clave' element={<OlvideMiClave />} />
+          <Route path='/reset-password' element={<ResetPassword />} />
+          <Route path='/nuevoRegistroLink/:id_cedula' element={<FormCreationBylink />} />
+          <Route path='/' element={<Home />} />
+
 
           {/* Rutas Privadas */}
           <Route path="/*" element={
             <Private autenticacion={autenticacion} setAutenticacion={setAutenticacion}>
-              <Available  user={context} setAutenticacion={setAutenticacion}/>
+              <Available user={context} setAutenticacion={setAutenticacion} />
             </Private>
-          }/>
+          } />
 
         </Routes>
-    </Suspense>
-    
+      </Suspense>
+
     </>
   )
 }

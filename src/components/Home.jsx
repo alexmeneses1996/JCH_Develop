@@ -1,13 +1,21 @@
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Button, Container, IconButton, Typography } from '@mui/material'
 import React from 'react'
 import Footer from './Footer'
 import { color_fondo_home } from '../styled/styled'
 import CarruselSlick from './CarruselSlick'
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import { useNavigate } from 'react-router-dom'
+
 
 
 const Home = () => {
-
-
+    const navigate = useNavigate()
+    const phoneNumber = "+573174990966" //3214567890"; // Reemplaza con tu número
+    const message = "Hola, quiero más información";
+    const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    const clik = () =>{
+        navigate("/nuevoRegistroLink/444")
+    }
     return (
 
 
@@ -61,6 +69,27 @@ const Home = () => {
             </Box>
 
             <Footer />
+
+            {/* Botón de WhatsApp */}
+            <IconButton
+                component="a"
+                href={whatsappLink}
+                target="_blank"
+                sx={{
+                    position: "fixed",
+                    bottom: 20,
+                    right: 20,
+                    backgroundColor: "#25D366",
+                    color: "white",
+                    "&:hover": { backgroundColor: "#128C7E" },
+                    p: 1.5,
+                    borderRadius: "50%",
+                    boxShadow: 3,
+                }}
+            >
+                <WhatsAppIcon fontSize="large" />
+            </IconButton>
+            <Button onClick={clik}> da clik prueba</Button>
         </Container>
 
 

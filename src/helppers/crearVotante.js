@@ -1,7 +1,7 @@
 import { supabase } from "../supabase/supabaseConfig";
 import { capitalizarCadaPalabra } from "./functions";
 
-export const crearRegistro = async (datos, cedula_usuario) => {
+export const crearRegistro = async (datos, cedula_usuario,link) => {
 
   // Tu lógica para crear el usuario
   const { data, error } = await supabase
@@ -20,7 +20,8 @@ export const crearRegistro = async (datos, cedula_usuario) => {
         puesto_votacion: datos.puesto_votacion,
         comuna: datos.comuna,
         referido: cedula_usuario,
-        nombre_completo:capitalizarCadaPalabra(datos.nombre + " " + datos.apellidos)
+        nombre_completo:capitalizarCadaPalabra(datos.nombre + " " + datos.apellidos),
+        link: link,
       }, // Datos a insertar
     ]);
 
@@ -37,6 +38,7 @@ export const retornarTodosLosVotantes = async () => {
   const { data, error } = await supabase
     .from("votante")
     .select("*");
+
     if (error) {
     console.error("❌ Error al retornar todos los votantes:", error.message);
     return { success: false, message: error.message, data: data };
@@ -107,37 +109,3 @@ export const deleteVotante = async (cedula) => {
 
 
 
-export const registrarEliminacion = async (datos, usuario) =>{
-  
-    // Tu lógica para crear el usuario
-  const { data, error } = await supabase
-    .from("Listado_edicion_eliminacion") // Nombre de la tabla
-    .insert([
-      {
-        cedula: datos.cedula,
-        nombre: capitalizarCadaPalabra(datos.nombre),
-        apellidos: capitalizarCadaPalabra(datos.apellidos),
-        edad: datos.edad,
-        sexo: datos.sexo,
-        telefono: datos.telefono,
-        correo: datos.correo,
-        direccion: datos.direccion,
-        barrio: datos.barrio,
-        puesto_votacion: datos.puesto_votacion,
-        comuna: datos.comuna,
-        municipio: datos.municipio,
-        nombre_completo:capitalizarCadaPalabra(datos.nombre + " " + datos.apellidos),
-        accion_realizada: "ELIMINACION" ,
-        responsable: usuario.cedula ,
-        tipo_responsable: usuario.tipo
-        
-      }, // Datos a insertar
-    ]);
-
-  if (error) {
-    console.error("❌ Error al insertar:", error.message);
-    return { success: false, message: error.message, data: data };
-  }
-
-  return { success: true, message: "Contacto registrado con éxito", data: data };
-}

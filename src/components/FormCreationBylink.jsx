@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -21,8 +21,9 @@ import { crearRegistro, validarCedulaVotante } from "../helppers/crearVotante";
 import { barriosPorComuna, comunas, listado_puestos_votacion, puestos_de_Votacion } from "../helppers/data";
 import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../context/userContext";
+import { devolverUsuario } from "../helppers/crearUsuario";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
@@ -38,11 +39,13 @@ const validationSchema = Yup.object({
   direccion: Yup.string().required("Requerido"),
   municipio: Yup.string().required("Requerido"),
   barrio: Yup.string().required("Requerido"),
-  puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido').required("Requerido"),
+  puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido'),
   comuna: Yup.string().required("Requerido"),
 });
 
-const FormCreation = () => {
+const FormCreationBylink = () => {
+    const { id_cedula } = useParams(); 
+    const [nombreRefente,setNombreRefente] = useState("")
 
   const { context, setContext } = useContext(AppContext)
   const navigate = useNavigate()
@@ -65,15 +68,28 @@ const FormCreation = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      const result = await crearRegistro(values, context.cedula, "NO");
+      const result = await crearRegistro(values,id_cedula,"SI");
+
       if (result.success) {
         alert("✅ " + result.message)
         formik.resetForm();
       }else{
-        alert("❌ " + "El referido ya se encuentra registrado")
+        alert("❌ " + "El documento ya se encuentra registrado")
       }
     },
   });
+
+  useEffect( () => {
+
+    const fetchData = async () =>{
+         const result = await devolverUsuario(id_cedula)
+         if(result.success) setNombreRefente(result.data.nombre_completo)
+        else setNombreRefente("Error al buscar el nombre del referente")
+    }
+  
+    fetchData()
+  }, [])
+  
 
   useEffect(() => {
     const puesto = formik.values.puesto_votacion;
@@ -108,17 +124,13 @@ const FormCreation = () => {
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "center",
-        paddingTop: "64px",
+        paddingTop: "0px",
         margin: "0px",
       }}
-    >
+    >           
       <Card elevation={3} sx={{ position: 'relative' }}>
-        <IconButton sx={{ position: "absolute", top: 18, left: 18, "&:hover": { color: bg_boton } }} onClick={
-          () => {
-            navigate("/inicio")
-
-          }
-        }><ArrowBackIcon /></IconButton>
+       <Box component="img" src="https://res.cloudinary.com/dqgbna4ni/image/upload/v1749935686/logo_xnitmu.png" alt="Logo" sx={{ height: "100px", width: "300px", objectFit:'cover' }} />
+              <Typography>Nombre referente: {nombreRefente}</Typography>
         <CardContent>
 
           <Typography
@@ -127,7 +139,7 @@ const FormCreation = () => {
             gutterBottom
             fontWeight="bold"
           >
-            Registrar Votantes
+            Registro de Referido
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
@@ -307,4 +319,4 @@ const renderSelect = (name, label, options, formik) => (
   </Grid>
 );
 
-export default FormCreation;
+export default FormCreationBylink;

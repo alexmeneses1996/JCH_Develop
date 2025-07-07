@@ -7,6 +7,8 @@ const FormCreation = lazy(()=> import('../components/FormCreation'))
 const Graphics = lazy(()=> import('../components/Graphics'))
 const EditUser = lazy(()=> import('../components/EditUser'))
 const PerfilUser= lazy(()=> import('../components/PerfilUser'))
+const AdminSolicitudes= lazy(()=> import('../components/AdminSolicitudes'))
+
 const Available = ({user, setAutenticacion}) => {
     return (
         <Suspense fallback={<CircularProgress />}>
@@ -14,9 +16,9 @@ const Available = ({user, setAutenticacion}) => {
                 <Route path='/inicio' element={<Inicio />} />
                 <Route path='/nuevoRegistro' element={<FormCreation />} />
                 <Route path='/graficos' element={<Graphics />} />
+                <Route path='/solicitudes' element={<AdminSolicitudes />} />
                 <Route path='/editar_perfil' element={<EditUser user={user}/>} />
                 <Route path='/perfil' element={<PerfilUser user={user} setAutenticacion={setAutenticacion}/>} />
-
             </Routes>
         </Suspense>)
 }

@@ -22,6 +22,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { bgcolor_select_menu, color_primario, color_select_menu } from "../styled/styled";
 import { cerrarSesion } from "../helppers/crearUsuario";
 import { AppContext } from "../context/userContext";
+import UserCreationByLink from "./UserCreationByLink";
 
 const Navbar = ({ setAutenticacion }) => {
   const [openSession, setOpenSession] = useState(false);
@@ -50,7 +51,7 @@ const Navbar = ({ setAutenticacion }) => {
       setContext({}) //se reinicia el contexto
       setAutenticacion(false)
       navegate("/login"); // Redirige a la página de login
-    }else{
+    } else {
       alert(sessionCerrada.message)
     }
 
@@ -61,6 +62,13 @@ const Navbar = ({ setAutenticacion }) => {
     navegate("/perfil");
 
   }
+
+  const handleReferido = () => {
+    
+    ///navegate("/perfil");
+
+  }
+
 
   return (
     <AppBar
@@ -114,6 +122,16 @@ const Navbar = ({ setAutenticacion }) => {
 
               >
                 Registrar Votantes
+              </Button>)}
+              {context.tipo == "Admin" && (<Button
+                onClick={() => {
+                  setOpenDrawer(false);
+                  navegate("/solicitudes");
+                }}
+                sx={{ fontWeight: "bold", color: bgcolor_select_menu, ":hover": { backgroundColor: bgcolor_select_menu, color: color_select_menu, fontWeight: "bold" } }}
+
+              >
+                Solicitudes
               </Button>)}
 
               <Button
@@ -219,6 +237,8 @@ const Navbar = ({ setAutenticacion }) => {
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
             {context.tipo != "Admin" && (<MenuItem onClick={handlePerfil}>Mi perfil</MenuItem>)}
+            {context.tipo != "Admin" && (<MenuItem onClick={handleReferido}><UserCreationByLink handleClose={handleClose}/>
+            </MenuItem>)}
             <MenuItem onClick={handleOpenSession}>Cerrar sesión</MenuItem>
           </Menu>
         </Box>)}
