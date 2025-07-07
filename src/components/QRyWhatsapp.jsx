@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { QRCode } from 'react-qrcode-logo';
 
 const QRyWhatsapp = ({id_cedula}) => {
-const url = `https://jcreamoshistoria.vercel.app/nuevoRegistroLink/ ${id_cedula}`; // ← cambia esto por tu link
+const url = `https://jcreamoshistoria.vercel.app/nuevoRegistroLink/${id_cedula}`; // ← cambia esto por tu link
     const canvasRef = useRef(null);
 
 
