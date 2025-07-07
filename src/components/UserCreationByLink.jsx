@@ -3,8 +3,8 @@ import { Box, FormControl, IconButton, Modal, TextField, Typography } from '@mui
 import CancelIcon from '@mui/icons-material/Cancel';
 import { Visibility } from '@mui/icons-material';
 import { colorViewVotante } from '../styled/styled';
-import QRConWhatsapp from './QrConWhatsapp';
 import { AppContext } from '../context/userContext';
+import QRConWhatsapp from './QrConWhatsapp';
 
 
 const UserCreationByLink = ({ handleClose }) => {
