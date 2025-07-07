@@ -4,7 +4,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { Visibility } from '@mui/icons-material';
 import { colorViewVotante } from '../styled/styled';
 import { AppContext } from '../context/userContext';
-import QRConWhatsapp from './QrConWhatsapp';
+import QRyWhatsapp from './QRyWhatsapp';
 
 
 const UserCreationByLink = ({ handleClose }) => {
@@ -61,7 +61,7 @@ const UserCreationByLink = ({ handleClose }) => {
                         }}> Formulario de registro de Referido</Typography>
 
                         <Box sx={{ display: 'flex' }}>
-                            <QRConWhatsapp id_cedula={context.cedula} />
+                            <QRyWhatsapp id_cedula={context.cedula} />
                         </Box>
                     </form>
                 </Box>
