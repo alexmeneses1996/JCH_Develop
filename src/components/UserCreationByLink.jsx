@@ -12,7 +12,7 @@ const UserCreationByLink = ({ handleClose }) => {
     const { context, setContext } = useContext(AppContext)
     const [open, setOpen] = useState(false);
     const handleOpenWindow = () => setOpen(true);
-    const handleCloseWindow = () => { setOpen(false), handleClose() };
+    const handleCloseWindow = () => {setOpen(false), handleClose() };
 
 
     const handleSubmitAdmin = async (event) => {
