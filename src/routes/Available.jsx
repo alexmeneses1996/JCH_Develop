@@ -9,6 +9,7 @@ const EditUser = lazy(()=> import('../components/EditUser'))
 const PerfilUser= lazy(()=> import('../components/PerfilUser'))
 const AdminSolicitudes= lazy(()=> import('../components/AdminSolicitudes'))
 
+
 const Available = ({user, setAutenticacion}) => {
     return (
         <Suspense fallback={<CircularProgress />}>

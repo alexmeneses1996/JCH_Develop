@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -23,6 +23,7 @@ import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/userContext";
+import { validarCedulaUsuario } from "../helppers/crearUsuario";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
@@ -45,6 +46,7 @@ const validationSchema = Yup.object({
 const FormCreation = () => {
 
   const { context, setContext } = useContext(AppContext)
+  const [usuarioExistente, setUsuarioExistente] = useState(false)
   const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
@@ -65,12 +67,17 @@ const FormCreation = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      const result = await crearRegistro(values, context.cedula, "NO");
-      if (result.success) {
-        alert("✅ " + result.message)
-        formik.resetForm();
-      }else{
-        alert("❌ " + "El referido ya se encuentra registrado")
+
+      if (!usuarioExistente) {
+        const result = await crearRegistro(values, context.cedula, "NO");
+        if (result.success) {
+          alert("✅ " + result.message)
+          formik.resetForm();
+        } else {
+          alert("❌ " + "El referido ya se encuentra registrado")
+        }
+      } else {
+        alert("❌ " + "El referido ya se encuentra registrado como usuario")
       }
     },
   });
@@ -158,7 +165,10 @@ const FormCreation = () => {
                       if (!cedula) return;
 
                       const yaExiste = await validarCedulaVotante(parseInt(cedula, 10));
-                      if (yaExiste) {
+                      const yaExisteUsuario = await validarCedulaUsuario(parseInt(cedula, 10));
+                      setUsuarioExistente(yaExisteUsuario)
+
+                      if (yaExiste || yaExisteUsuario) {
                         formik.setFieldError('cedula', 'Esta cédula ya está registrada');
                       }
                     }}
@@ -222,7 +232,7 @@ const FormCreation = () => {
                     value={formik.values.comunaPuestoVotacion || ''}
                     margin="normal"
                     InputProps={{ readOnly: true }}
-                    sx={{ marginTop: 0, width:'150px', backgroundColor:'#D3D3D3'}}
+                    sx={{ marginTop: 0, width: '150px', backgroundColor: '#D3D3D3' }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
@@ -232,7 +242,7 @@ const FormCreation = () => {
                     value={formik.values.direccionPuestoVotacion || ''}
                     margin="normal"
                     InputProps={{ readOnly: true }}
-                    sx={{ marginTop: 0, minWidth:'300px', backgroundColor:'#D3D3D3' }}
+                    sx={{ marginTop: 0, minWidth: '300px', backgroundColor: '#D3D3D3' }}
                   />
                 </Grid>
               </Box>

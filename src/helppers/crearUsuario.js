@@ -54,7 +54,6 @@ export const validarCedulaUsuario = async (cedula) => {
     .select('*')
     .eq('cedula', cedula);///Validar los permisos de la tablaa porque debe dar error por no tener permisos
 
-    console.log(data)
 
   return data?.length > 0;
 };

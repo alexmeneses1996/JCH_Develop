@@ -44,7 +44,7 @@ const PerfilUser = ({ user, setAutenticacion }) => {
     };
 
     const handleVerActividad = () => {
-        alert("Actividad reciente: Has iniciado sesión 3 veces esta semana.");
+        navigate('/solicitudes')
     };
 
     return (

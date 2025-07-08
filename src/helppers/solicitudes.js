@@ -25,6 +25,7 @@ export const registrarEliminacion = async (datos, usuario) =>{
         accion_realizada: "ELIMINACION" ,
         responsable: usuario.cedula ,
         tipo_responsable: usuario.tipo,
+        nombre_responsable: usuario.nombre_completo,
         estado: "Pendiente"
         
       }, // Datos a insertar
@@ -61,6 +62,21 @@ export const retornarSolicitudes = async () =>{
   const { data, error }  = await supabase
     .from('Listado_edicion_eliminacion')              
     .select('*')                     
+
+  if (error) {
+    console.error("❌ Error al insertar:", error.message);
+    return { success: false, message: error.message, data: data };
+  }
+
+  return { success: true, message: "informacion retornada con éxito", data: data };
+}
+
+export const retornarSolicitudesPorUser = async (id_cedula) =>{
+  
+  const { data, error }  = await supabase
+    .from('Listado_edicion_eliminacion')              
+    .select('*')
+    .eq('responsable',id_cedula)                     
 
   if (error) {
     console.error("❌ Error al insertar:", error.message);

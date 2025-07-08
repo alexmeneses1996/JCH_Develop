@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/userContext';
 import { useNavigate } from 'react-router-dom';
 import AdminVerificarSolicitud from './AdminVerificarSolicitud';
-import { retornarSolicitudes } from '../helppers/solicitudes';
+import { retornarSolicitudes, retornarSolicitudesPorUser } from '../helppers/solicitudes';
 
 const AdminSolicitudes = () => {
     const statusColors = {
@@ -26,10 +26,21 @@ const AdminSolicitudes = () => {
     //consultando la base de datos para extraer la informacion
     useEffect(() => {
         const fetchDatos = async () => {
-            const result = await retornarSolicitudes()
-            setDatos(result.data);
-            setFiltered(result.data)
-            console.log(result.data)
+
+            if (context.tipo === "Admin") {
+                const result = await retornarSolicitudes()
+                if (result.success) {
+                    setDatos(result.data);
+                    setFiltered(result.data)
+                }
+            } else {
+                const result = await retornarSolicitudesPorUser(context.cedula)
+                if (result.success) {
+                    setDatos(result.data);
+                    setFiltered(result.data)
+                }
+            }
+
         };
 
         fetchDatos();
@@ -41,10 +52,10 @@ const AdminSolicitudes = () => {
 
         let result = datos?.filter(dato =>
             //Se realiza busqueda por escritura (Nombre)
-            (busqueda ? dato.responsable?.toLowerCase().includes(busqueda.toLowerCase()) : true) &&
+            (busqueda ? dato.nombre_completo?.toLowerCase().includes(busqueda.toLowerCase()) : true) &&
             (estado ? dato.estado === estado : true) &&
             //filtro por 
-            (responsable ? dato.responsable === responsable : true)
+            (responsable ? dato.nombre_responsable === responsable : true)
         );
         setFiltered(result);
     }, [busqueda, responsable, estado]);
@@ -112,7 +123,7 @@ const AdminSolicitudes = () => {
                             fullWidth
                         >
                             <MenuItem value="">Todos los responsables</MenuItem>
-                            {[...new Set(datos?.map(r => r.responsable))].map(c => (
+                            {[...new Set(datos?.map(r => r.nombre_responsable))].map(c => (
                                 <MenuItem key={c} value={c}>{c}</MenuItem>
                             ))}
                         </Select>
@@ -125,9 +136,10 @@ const AdminSolicitudes = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>#</TableCell>
-                                    <TableCell>Tipo Responsable</TableCell>
-                                    <TableCell>Responsable</TableCell>
+                                    <TableCell>Nombre Responsable</TableCell>
+                                    <TableCell>Id Responsable</TableCell>
                                     <TableCell>Accion Realizada</TableCell>
+                                    <TableCell>Nombre de referido</TableCell>
                                     <TableCell>Estado</TableCell>
                                     <TableCell>Creado</TableCell>
                                 </TableRow>
@@ -137,16 +149,17 @@ const AdminSolicitudes = () => {
                                     .map((r, i) => (
                                         <TableRow key={r.id}>
                                             <TableCell >{i + 1 + page * rowsPerPage}</TableCell>
-                                            <TableCell >{r.tipo_responsable}</TableCell>
+                                            <TableCell >{r.nombre_responsable}</TableCell>
                                             <TableCell >{r.responsable}</TableCell>
                                             <TableCell >{r.accion_realizada}</TableCell>
+                                            <TableCell >{r.nombre_completo}</TableCell>
                                             <TableCell >
                                                 <Chip label={r.estado} color={statusColors[r.estado] || 'default'} size="small" />
                                             </TableCell>
                                             <TableCell>{r.creado}</TableCell>
                                             <TableCell>
-                                                <AdminVerificarSolicitud votante={datos[0]} setFiltered={setFiltered} setDatos={setDatos} setBusqueda={setBusqueda}
-                                                setResponsable={setResponsable} setEstado={setEstado} estado={r.estado}/>
+                                                {context.tipo === "Admin" && <AdminVerificarSolicitud votante={datos[0]} setFiltered={setFiltered} setDatos={setDatos} setBusqueda={setBusqueda}
+                                                    setResponsable={setResponsable} setEstado={setEstado} estado={r.estado} />}
                                             </TableCell>
                                         </TableRow>
                                     ))}
