@@ -24,15 +24,20 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/userContext";
 import { validarCedulaUsuario } from "../helppers/crearUsuario";
+import { calcularEdad } from "../helppers/functions";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
+
+const fechaLimite = new Date('2011-10-18');
+
 
 const validationSchema = Yup.object({
   cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
   nombre: Yup.string().required("Requerido"),
   apellidos: Yup.string().required("Requerido"),
-  edad: Yup.string().required("Requerido"),
+  fecha_de_nacimiento: Yup.date().required("Requerido")
+      .max(new Date(), "No puede ser una fecha futura").max(fechaLimite, 'Debe tener al menos 14 años a la fecha de votacion'),
   sexo: Yup.string().required("Requerido"),
   telefono: Yup.string().required("Requerido"),
   correo: Yup.string().email("Correo inválido").required("Requerido"),
@@ -54,6 +59,7 @@ const FormCreation = () => {
       nombre: "",
       apellidos: "",
       edad: "",
+      fecha_de_nacimiento:"",
       sexo: "",
       telefono: "",
       correo: "",
@@ -184,7 +190,7 @@ const FormCreation = () => {
               <Box sx={{ display: "flex", width: "100%" }}>
                 {renderField("direccion", "Dirección", formik)}
                 {renderField("correo", "Correo", formik)}
-                {renderField("edad", "Edad", formik)}
+                {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik, "date")}
                 {renderSelect("sexo", "Sexo", sexos, formik)}
               </Box>
               <Box sx={{ display: "flex", width: "100%" }}>
@@ -278,10 +284,13 @@ const renderField = (name, label, formik, type = "text") => (
       type={type}
       name={name}
       label={label}
-      value={formik.values[name]}
+      value={formik.values[name] ?? ''}
       onChange={(e) => {
 
         formik.handleChange(e);
+        if (name === "fecha_de_nacimiento") {
+          formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
+        }
       }}
       error={formik.touched[name] && Boolean(formik.errors[name])}
       helperText={formik.touched[name] && formik.errors[name]}
@@ -301,9 +310,7 @@ const renderSelect = (name, label, options, formik) => (
       value={formik.values[name]}
       onChange={(e) => {
         formik.handleChange(e);
-        if (name === "comuna") {
-          formik.setFieldValue("barrio", ""); // Resetea barrio si cambia comuna
-        }
+        
       }}
       error={formik.touched[name] && Boolean(formik.errors[name])}
       helperText={formik.touched[name] && formik.errors[name]}

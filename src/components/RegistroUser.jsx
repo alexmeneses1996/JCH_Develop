@@ -21,22 +21,19 @@ import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
 import { registrarUsuarioAuth, validarCedulaUsuario } from "../helppers/crearUsuario";
+import { calcularEdad } from "../helppers/functions";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
 
-const puestos = [
-    'Institución Educativa Central',
-    'Colegio San Juan Bosco',
-    'Escuela Simón Bolívar',
-    'Centro Cultural La Merced',
-];
+const fechaLimite = new Date('2011-10-18');
 
 const validationSchema = Yup.object({
     cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
     nombre: Yup.string().required("Requerido"),
     apellidos: Yup.string().required("Requerido"),
-    edad: Yup.number().typeError('Debe ser un número').moreThan(0, 'Debe ser mayor que 0').required("Requerido"),
+    fecha_de_nacimiento: Yup.date().required("Requerido")
+    .max(new Date(), "No puede ser una fecha futura"),
     sexo: Yup.string().required("Requerido"),
     telefono: Yup.string().required("Requerido"),
     correo: Yup.string().email("Correo inválido").required("Requerido"),
@@ -62,6 +59,7 @@ const RegistroUser = () => {
             nombre: "",
             apellidos: "",
             edad: "",
+            fecha_de_nacimiento: "",
             sexo: "",
             telefono: "",
             correo: "",
@@ -74,22 +72,21 @@ const RegistroUser = () => {
             confirmPassword: "",
             direccionPuestoVotacion: "",
             comunaPuestoVotacion: "",
-            validacion_puesto:"NO",
+            validacion_puesto: "NO",
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {
-            //const result = await crearUsuario(values)
-            if(!usuarioExistente){
-            const result = await registrarUsuarioAuth(values, values.password)
+            if (!usuarioExistente) {
+                const result = await registrarUsuarioAuth(values, values.password)
 
 
-            if (result.success) {
-                alert("✅ " + result.message)
-                formik.resetForm();
+                if (result.success) {
+                    alert("✅ " + result.message)
+                    formik.resetForm();
+                }
+            } else {
+                alert("❌ " + "El Usuario ya se encuentra registrado")
             }
-        }else{
-            alert("❌ " + "El Usuario ya se encuentra registrado")
-        }
         },
     });
 
@@ -108,19 +105,19 @@ const RegistroUser = () => {
     }
 
 
-  useEffect(() => {
-    const puesto = formik.values.puesto_votacion;
-    if (puesto && puestos_de_Votacion[puesto]) {
-      const info = puestos_de_Votacion[puesto];
-      formik.setFieldValue('comunaPuestoVotacion', info.Comuna);
-      formik.setFieldValue('direccionPuestoVotacion', info.Direccion);
+    useEffect(() => {
+        const puesto = formik.values.puesto_votacion;
+        if (puesto && puestos_de_Votacion[puesto]) {
+            const info = puestos_de_Votacion[puesto];
+            formik.setFieldValue('comunaPuestoVotacion', info.Comuna);
+            formik.setFieldValue('direccionPuestoVotacion', info.Direccion);
 
-    } else {
-      formik.setFieldValue('comunaPuestoVotacion', '');
-      formik.setFieldValue('direccionPuestoVotacion', '');
+        } else {
+            formik.setFieldValue('comunaPuestoVotacion', '');
+            formik.setFieldValue('direccionPuestoVotacion', '');
 
-    }
-  }, [formik.values.puesto_votacion]);
+        }
+    }, [formik.values.puesto_votacion]);
 
 
     let valor = 1
@@ -199,7 +196,7 @@ const RegistroUser = () => {
                             <Box sx={{ display: "flex", width: "100%" }}>
                                 {renderField("direccion", "Dirección", formik)}
                                 {renderField("correo", "Correo", formik)}
-                                {renderField("edad", "Edad", formik)}
+                                {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik, "date")}
                             </Box>
                             <Box sx={{ display: "flex", width: "100%" }}>
                                 {renderSelect("municipio", "Municipio", municipios, formik)}
@@ -296,10 +293,13 @@ const renderField = (name, label, formik, type = "text") => (
             onChange={(e) => {
 
                 formik.handleChange(e);
-                
+               if (name === "fecha_de_nacimiento") {
+                         formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
+                       }
+
             }}
             onBlur={(e) => {
-                
+
             }}
             error={formik.touched[name] && Boolean(formik.errors[name])}
             helperText={formik.touched[name] && formik.errors[name]}
@@ -319,7 +319,7 @@ const renderSelect = (name, label, options, formik) => (
             value={formik.values[name]}
             onChange={(e) => {
                 formik.handleChange(e);
-                
+
             }}
             error={formik.touched[name] && Boolean(formik.errors[name])}
             helperText={formik.touched[name] && formik.errors[name]}

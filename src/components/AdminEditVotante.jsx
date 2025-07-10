@@ -8,13 +8,16 @@ import { useFormik } from 'formik';
 import { AppContext } from '../context/userContext';
 import { useNavigate } from 'react-router-dom';
 import { updateVotante } from '../helppers/crearVotante';
-import { capitalizarCadaPalabra } from '../helppers/functions';
+import { calcularEdad, capitalizarCadaPalabra } from '../helppers/functions';
+
+const fechaLimite = new Date('2011-10-18');
 
 const validationSchema = Yup.object({
     cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
     nombre: Yup.string().required("Requerido"),
     apellidos: Yup.string().required("Requerido"),
-    edad: Yup.string().required("Requerido"),
+    fecha_de_nacimiento: Yup.date().required("Requerido")
+    .max(new Date(), "No puede ser una fecha futura").max(fechaLimite, 'Debe tener al menos 14 años a la fecha de votacion'),
     sexo: Yup.string().required("Requerido"),
     telefono: Yup.string().required("Requerido"),
     correo: Yup.string().email("Correo inválido").required("Requerido"),
@@ -34,6 +37,7 @@ const AdminEditVotante = ({ votante }) => {
             nombre: votante.nombre,
             apellidos: votante.apellidos,
             edad: votante.edad,
+            fecha_de_nacimiento: votante.fecha_de_nacimiento,
             sexo: votante.sexo,
             telefono: votante.telefono,
             correo: votante.correo,
@@ -52,6 +56,7 @@ const AdminEditVotante = ({ votante }) => {
                 nombre: capitalizarCadaPalabra(values.nombre),
                 apellidos: capitalizarCadaPalabra(values.apellidos),
                 edad: values.edad,
+                fecha_de_nacimiento: values.fecha_de_nacimiento,
                 sexo: values.sexo,
                 telefono: values.telefono,
                 correo: values.correo,
@@ -101,7 +106,6 @@ const AdminEditVotante = ({ votante }) => {
 
     const sexos = ["Femenino", "Masculino"];
 
-    const [edad, setEdad] = useState(votante.edad);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -230,7 +234,7 @@ const AdminEditVotante = ({ votante }) => {
                         </Box>
 
                         <Box sx={{ display: 'flex' }}>
-                            <FormControl sx={{ m: 1, width: '150px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: '120px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Sexo"
                                     name="sexo"
@@ -257,14 +261,20 @@ const AdminEditVotante = ({ votante }) => {
                                 </TextField>
                             </FormControl>
 
-                            <FormControl sx={{ m: 1, width: '70px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: '130px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
-                                    label="Edad"
-                                    name="edad"
-                                    value={formik.values.edad}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.edad && Boolean(formik.errors.edad)}
-                                    helperText={formik.touched.edad && formik.errors.edad}
+                                    label="Fecha de nacimiento"
+                                    name="fecha_de_nacimiento"
+                                    value={formik.values.fecha_de_nacimiento}
+                                    type='date'
+                                    onChange={(e)=>{
+                                        formik.handleChange(e);
+                                        if (name === "fecha_de_nacimiento") {
+                                                  formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
+                                                }
+                                    }}
+                                    error={formik.touched.fecha_de_nacimiento && Boolean(formik.errors.fecha_de_nacimiento)}
+                                    helperText={formik.touched.fecha_de_nacimiento && formik.errors.fecha_de_nacimiento}
                                     variant='filled'
                                     sx={{
                                         borderRadius: "40px",
@@ -277,7 +287,7 @@ const AdminEditVotante = ({ votante }) => {
                                     inputProps={{
                                         maxLength: 2
                                     }}
-                                    type='number'
+                                    
                                 />
                             </FormControl>
                             <FormControl sx={{ m: 1, width: '130px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
@@ -299,7 +309,7 @@ const AdminEditVotante = ({ votante }) => {
                                     }}
                                 />
                             </FormControl>
-                            <FormControl sx={{ m: 1, width: '240px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: '230px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Correo"
                                     name="correo"

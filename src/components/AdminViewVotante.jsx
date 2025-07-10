@@ -20,7 +20,7 @@ const  AdminViewVotante = ({ votante }) => {
 
     const sexos = ["Femenino", "Masculino"];
 
-    const [edad, setEdad] = useState(votante.edad);
+    const [fecha_de_nacimiento, setFecha_de_nacimiento] = useState(votante.fecha_de_nacimiento);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -155,10 +155,11 @@ const  AdminViewVotante = ({ votante }) => {
 
                             <FormControl sx={{ m: 1, width: '70px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
-                                    label="Edad"
-                                    id="edad"
-                                    value={edad}
-                                    onChange={(event) => setEdad(event.target.value)}
+                                    label="Fecha de nacimiento"
+                                    id="fecha_de_nacimiento"
+                                    value={fecha_de_nacimiento}
+                                    type='date'
+                                    onChange={(event) => setFecha_de_nacimiento(event.target.value)}
                                     variant='filled'
                                     InputProps={{ readOnly: true }}
                                     sx={{

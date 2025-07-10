@@ -2,78 +2,7 @@ import bcrypt from "bcryptjs";
 import { supabase } from "../supabase/supabaseConfig";
 import { capitalizarCadaPalabra } from "./functions";
 
-export const crearUsuario = async (datos) => {
-  // Encriptar la contraseña antes de guardarla
-  const hashedPassword = await bcrypt.hash(datos.password, 10);
-
-  const { data, error } = await supabase.from("usuario").insert([
-    {
-      cedula: datos.cedula,
-      nombre: datos.nombre,
-      apellidos: datos.apellidos,
-      edad: datos.edad,
-      sexo: datos.sexo,
-      telefono: datos.telefono,
-      correo: datos.correo,
-      direccion: datos.direccion,
-      barrio: datos.barrio,
-      puesto_votacion: datos.puesto_votacion,
-      comuna: datos.comuna,
-      password: hashedPassword, // guardar la contraseña encriptada
-      // ...otros campos
-    },
-  ]);
-
-  if (error) {
-    console.error("❌ Error al registrar:", error.message);
-    return { success: false, message: error.message, data: data };
-  }
-
-  return { success: true, message: "Usuario registrado con éxito", data: data };
-};
-
-
-export const retornarUsuarios = async () => {
-  // Tu lógica para crear el usuario
-  const { data, error } = await supabase
-    .from("usuario") // Nombre de la tabla
-    .select("*"); // Datos a insertar
-
-  if (error) {
-    console.error("❌ Error al retornar los usuarios:", error.message);
-    return { success: false, message: error.message, data: data };
-  }
-
-  return { success: true, message: "Retornado los usuarios con Exito", data: data };
-
-};
-
-export const validarCedulaUsuario = async (cedula) => {
-  const { data, error } = await supabase
-    .from('usuario') // reemplaza con tu tabla
-    .select('*')
-    .eq('cedula', cedula);///Validar los permisos de la tablaa porque debe dar error por no tener permisos
-
-
-  return data?.length > 0;
-};
-
-export const devolverUsuario = async (cedula) => {
-  const { data, error } = await supabase
-    .from('usuario') // reemplaza con tu tabla
-    .select('*')
-    .eq('cedula', cedula).single();
-
-  if (error) {
-    console.error("❌ Error al retornar el usuario:", error.message);
-    return { success: false, message: error.message, data: data };
-  }
-
-  return { success: true, message: "Retornando el usuario con exito", data: data };
-};
-
-
-
+//*******************Funcion de creacion de usuario*********************//
 export const registrarUsuarioAuth = async (datos, password) => {
   const cedulaLimpia = datos.cedula.toString().trim().replace(/\s+/g, '');
 
@@ -103,6 +32,7 @@ export const registrarUsuarioAuth = async (datos, password) => {
       nombre: capitalizarCadaPalabra(datos.nombre),
       apellidos: capitalizarCadaPalabra(datos.apellidos),
       edad: datos.edad,
+      fecha_de_nacimiento: datos.fecha_de_nacimiento,
       sexo: datos.sexo,
       telefono: datos.telefono,
       correo: datos.correo,
@@ -126,7 +56,50 @@ export const registrarUsuarioAuth = async (datos, password) => {
   }
 };
 
+//*******************Funcion de retornar usuarios*********************//
+export const retornarUsuarios = async () => {
+  // Tu lógica para crear el usuario
+  const { data, error } = await supabase
+    .from("usuario") // Nombre de la tabla
+    .select("*"); // Datos a insertar
 
+  if (error) {
+    console.error("❌ Error al retornar los usuarios:", error.message);
+    return { success: false, message: error.message, data: data };
+  }
+
+  return { success: true, message: "Retornado los usuarios con Exito", data: data };
+
+};
+
+//*******************Funcion de Validar usuario*********************//
+export const validarCedulaUsuario = async (cedula) => {
+  const { data, error } = await supabase
+    .from('usuario') // reemplaza con tu tabla
+    .select('*')
+    .eq('cedula', cedula);///Validar los permisos de la tablaa porque debe dar error por no tener permisos
+
+
+  return data?.length > 0;
+};
+
+//*******************Funcion de devolver usuario*********************//
+export const devolverUsuario = async (cedula) => {
+  const { data, error } = await supabase
+    .from('usuario') // reemplaza con tu tabla
+    .select('*')
+    .eq('cedula', cedula).single();
+
+  if (error) {
+    console.error("❌ Error al retornar el usuario:", error.message);
+    return { success: false, message: error.message, data: data };
+  }
+
+  return { success: true, message: "Retornando el usuario con exito", data: data };
+};
+
+
+//*******************Funcion Login usuario*********************//
 export const loginUsuarioAuth = async (cedula, password) => {
   //const correoOculto = `usuario_${cedula}@jcreamoshistoria.com`;
   const correoOculto = `usuario_${cedula}@jcreamoshistoria.com`
@@ -143,9 +116,8 @@ export const loginUsuarioAuth = async (cedula, password) => {
   return { success: true, message: "Registro exitoso", data: data };
 };
 
-
+//*******************Funcion de validar sesion de usuario*********************//
 export const userActivo = async (tipo) => {
-
   const { data, error } = await supabase.auth.getUser(); // o .getSession()
   if (!error) {
 
@@ -165,7 +137,7 @@ export const userActivo = async (tipo) => {
     return { success: false, message: error.message, data: null };
   }
 }
-
+//*******************Funcion de cerrar sesion de usuario*********************//
 export const cerrarSesion = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) {
@@ -177,7 +149,7 @@ export const cerrarSesion = async () => {
 };
 
 
-
+//*******************Funcion de inicio de sesion de usuario Admin *********************//
 export const loginUsuarioAuthAdmin = async (cedula, password) =>{
     //const correoOculto = `usuario_${cedula}@jcreamoshistoria.com`;
   const correoOculto = `admin_${cedula}@jcreamoshistoria.com`
@@ -194,6 +166,7 @@ export const loginUsuarioAuthAdmin = async (cedula, password) =>{
   return { success: true, message: "Registro exitoso", data: data };
 }
 
+//*******************Funcion de devolver usuario Admin*********************//
 export const devolverUsuarioAdmin = async (cedula) => {
   const { data, error } = await supabase
     .from('administrator') // de la tabla de administradores
@@ -209,7 +182,7 @@ export const devolverUsuarioAdmin = async (cedula) => {
 
 
 
-
+//*******************Funcion de actualizar usuario*********************//
 export  const updateUser = async (cedula, userData) => {
   const { data, error } = await supabase
     .from('usuario') // Reemplaza con tu tabla
@@ -225,7 +198,7 @@ export  const updateUser = async (cedula, userData) => {
   return { success: true, message: "Usuario Editado correctamente", data: data };
 }
 
-
+//*******************Funcion de actualizar contraseña de usuario*********************//
 export const actualizarContrasena = async (nuevaClave) => {
   const { error } = await supabase.auth.updateUser({
     password: nuevaClave,

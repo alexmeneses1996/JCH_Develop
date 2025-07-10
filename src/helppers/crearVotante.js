@@ -12,6 +12,7 @@ export const crearRegistro = async (datos, cedula_usuario,link) => {
         nombre: capitalizarCadaPalabra(datos.nombre),
         apellidos: capitalizarCadaPalabra(datos.apellidos),
         edad: datos.edad,
+        fecha_de_nacimiento: datos.fecha_de_nacimiento,
         sexo: datos.sexo,
         telefono: datos.telefono,
         correo: datos.correo,

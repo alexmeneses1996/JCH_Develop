@@ -23,17 +23,19 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
 import { devolverUsuario, updateUser } from "../helppers/crearUsuario";
 import { AppContext } from "../context/userContext";
-import { capitalizarCadaPalabra } from "../helppers/functions";
+import { calcularEdad, capitalizarCadaPalabra } from "../helppers/functions";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
+
 
 const validationSchema = Yup.object({
     actualizarContrasena: Yup.boolean(),
     cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
     nombre: Yup.string().required("Requerido"),
     apellidos: Yup.string().required("Requerido"),
-    edad: Yup.string().required("Requerido"),
+    fecha_de_nacimiento: Yup.date().required("Requerido")
+        .max(new Date(), "No puede ser una fecha futura"),
     sexo: Yup.string().required("Requerido"),
     telefono: Yup.string().required("Requerido"),
     correo: Yup.string().email("Correo inválido").required("Requerido"),
@@ -65,6 +67,7 @@ const EditUser = ({ user }) => {
             nombre: user.nombre,
             apellidos: user.apellidos,
             edad: user.edad,
+            fecha_de_nacimiento: user.fecha_de_nacimiento,
             sexo: user.sexo,
             telefono: user.telefono,
             correo: user.correo,
@@ -84,6 +87,7 @@ const EditUser = ({ user }) => {
                 nombre: capitalizarCadaPalabra(values.nombre),
                 apellidos: capitalizarCadaPalabra(values.apellidos),
                 edad: values.edad,
+                fecha_de_nacimiento: values.fecha_de_nacimiento,
                 sexo: values.sexo,
                 telefono: values.telefono,
                 correo: values.correo,
@@ -107,14 +111,7 @@ const EditUser = ({ user }) => {
             }
 
             navigate("/perfil")
-            //const result = await crearUsuario(values)
-            //const result = await registrarUsuarioAuth(values, values.password)
-
-
-            /* if (result.success) {
-                 alert("✅ " + result.message)
-                 formik.resetForm();
-             }*/
+            
         },
     });
 
@@ -203,7 +200,7 @@ const EditUser = ({ user }) => {
                             <Box sx={{ display: "flex", width: "100%" }}>
                                 {renderField("telefono", "Teléfono o Celular", formik)}
                                 {renderSelect("sexo", "Sexo", sexos, formik)}
-                                {renderField("edad", "Edad", formik)}
+                                {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik,"date")}
 
 
                             </Box>
@@ -270,7 +267,12 @@ const renderField = (name, label, formik, type = "text", disabled = false) => (
             name={name}
             label={label}
             value={formik.values[name]}
-            onChange={formik.handleChange}
+            onChange={(e)=>{
+                formik.handleChange(e);
+                if (name === "fecha_de_nacimiento") {
+                          formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
+                        }
+            }}
             error={formik.touched[name] && Boolean(formik.errors[name])}
             helperText={formik.touched[name] && formik.errors[name]}
             InputLabelProps={type === "date" ? { shrink: true } : {}}
