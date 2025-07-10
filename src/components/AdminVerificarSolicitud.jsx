@@ -247,7 +247,7 @@ const AdminVerificarSolicitud = ({ votante, setFiltered, setDatos, setEstado, se
                                     }}
                                 />
                             </FormControl>
-                            <FormControl sx={{ m: 1, width: '240px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: '230px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Correo"
                                     id="Correo"

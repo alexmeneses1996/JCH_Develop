@@ -1,8 +1,8 @@
-import { Box, Button, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Select, Switch, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Button, FormControl, FormControlLabel, Grid, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Select, Switch, TextField, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import CancelIcon from '@mui/icons-material/Cancel';
 import { Edit } from '@mui/icons-material';
-import { barriosPorComuna, comunas } from '../helppers/data';
+import { barriosPorComuna, comunas, listado_puestos_votacion, puestos_de_Votacion } from '../helppers/data';
 import * as Yup from "yup";
 import { useFormik } from 'formik';
 import { AppContext } from '../context/userContext';
@@ -17,13 +17,13 @@ const validationSchema = Yup.object({
     nombre: Yup.string().required("Requerido"),
     apellidos: Yup.string().required("Requerido"),
     fecha_de_nacimiento: Yup.date().required("Requerido")
-    .max(new Date(), "No puede ser una fecha futura").max(fechaLimite, 'Debe tener al menos 14 años a la fecha de votacion'),
+        .max(new Date(), "No puede ser una fecha futura").max(fechaLimite, 'Debe tener al menos 14 años a la fecha de votacion'),
     sexo: Yup.string().required("Requerido"),
     telefono: Yup.string().required("Requerido"),
     correo: Yup.string().email("Correo inválido").required("Requerido"),
     direccion: Yup.string().required("Requerido"),
     barrio: Yup.string().required("Requerido"),
-    puesto_votacion: Yup.string().required("Requerido"),
+    puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido'),
     comuna: Yup.string().required("Requerido"),
 
 });
@@ -46,11 +46,13 @@ const AdminEditVotante = ({ votante }) => {
             barrio: votante.barrio,
             puesto_votacion: votante.puesto_votacion,
             comuna: votante.comuna,
-            validacion_puesto: votante.validacion_puesto
+            validacion_puesto: votante.validacion_puesto,
+            comunaPuestoVotacion:"",
+            direccionPuestoVotacion: "",
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {
-           
+
 
             const newData = {
                 nombre: capitalizarCadaPalabra(values.nombre),
@@ -68,24 +70,24 @@ const AdminEditVotante = ({ votante }) => {
                 nombre_completo: capitalizarCadaPalabra(values.nombre + " " + values.apellidos)
             }
 
-            
+
             //
-            const result = await updateVotante(values.cedula, newData) 
+            const result = await updateVotante(values.cedula, newData)
 
             //const result = await updateUser(values.cedula, newData)
 
-             if (result.success) {
+            if (result.success) {
                 alert("✅ " + result.message)
                 handleClose()
                 navigate("/")
- 
-                 //const res = await devolverUsuario(values.cedula)
-                 //if (res.success) {
-                   //  setContext(res.data)
-                   //  alert("✅ " + result.message)
-                 //}
- 
-             }
+
+                //const res = await devolverUsuario(values.cedula)
+                //if (res.success) {
+                //  setContext(res.data)
+                //  alert("✅ " + result.message)
+                //}
+
+            }
 
             // navigate("/perfil")
         },
@@ -141,6 +143,22 @@ const AdminEditVotante = ({ votante }) => {
             formik.setFieldValue('barrio', '');
         }
     }, [formik.values.comuna]);
+
+
+    useEffect(() => {
+        const puesto = formik.values.puesto_votacion;
+        if (puesto && puestos_de_Votacion[puesto]) {
+            const info = puestos_de_Votacion[puesto];
+            formik.setFieldValue('comunaPuestoVotacion', info.Comuna);
+            formik.setFieldValue('direccionPuestoVotacion', info.Direccion);
+
+        } else {
+            formik.setFieldValue('comunaPuestoVotacion', '');
+            formik.setFieldValue('direccionPuestoVotacion', '');
+
+        }
+    }, [formik.values.puesto_votacion]);
+
 
     const selectedComuna = formik.values.comuna;
     const barrios = selectedComuna ? barriosPorComuna[selectedComuna] || [] : [];
@@ -265,13 +283,13 @@ const AdminEditVotante = ({ votante }) => {
                                 <TextField
                                     label="Fecha de nacimiento"
                                     name="fecha_de_nacimiento"
-                                    value={formik.values.fecha_de_nacimiento}
+                                    value={formik.values.fecha_de_nacimiento ?? ""}
                                     type='date'
-                                    onChange={(e)=>{
+                                    onChange={(e) => {
                                         formik.handleChange(e);
                                         if (name === "fecha_de_nacimiento") {
-                                                  formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
-                                                }
+                                            formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
+                                        }
                                     }}
                                     error={formik.touched.fecha_de_nacimiento && Boolean(formik.errors.fecha_de_nacimiento)}
                                     helperText={formik.touched.fecha_de_nacimiento && formik.errors.fecha_de_nacimiento}
@@ -287,7 +305,7 @@ const AdminEditVotante = ({ votante }) => {
                                     inputProps={{
                                         maxLength: 2
                                     }}
-                                    
+
                                 />
                             </FormControl>
                             <FormControl sx={{ m: 1, width: '130px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
@@ -405,26 +423,100 @@ const AdminEditVotante = ({ votante }) => {
                                 </TextField>
                             </FormControl>
                         </Box>
-                        <FormControl sx={{ m: 1, width: '450px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
-                            <TextField
-                                label="Puesto de Votacion"
-                                name="puesto_votacion"
-                                value={formik.values.puesto_votacion}
-                                onChange={formik.handleChange}
-                                error={formik.touched.puesto_votacion && Boolean(formik.errors.puesto_votacion)}
-                                helperText={formik.touched.puesto_votacion && formik.errors.puesto_votacion}
-                                variant='filled'
+                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, width: "100%" }}>
+                            {/* Autocomplete - Puesto de Votación */}
+                            <FormControl
                                 sx={{
-                                    borderRadius: "40px",
-                                    overflow: "hidden",
-                                    '& .MuiFilledInput-root': {
-                                        borderRadius: "40px",
-                                        backgroundColor: "#efe7da" // Asegura que el color de fondo coincida
-                                    }
+                                    m: 1,
+                                    width: "350px",
+                                    backgroundColor: "#efe7da",
+                                    borderRadius: "20px",
                                 }}
-                            />
-                        </FormControl>
+                                variant="filled"
+                            >
+                                <Autocomplete
+                                    freeSolo
+                                    options={listado_puestos_votacion}
+                                    value={formik.values.puesto_votacion ?? ""}
+                                    onChange={(event, newValue) => {
+                                        formik.setFieldValue("puesto_votacion", newValue || "");
+                                    }}
+                                    onInputChange={(event, newInputValue) => {
+                                        formik.setFieldValue("puesto_votacion", newInputValue);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Puesto de Votación"
+                                            name="puesto_votacion"
+                                            variant="filled"
+                                            onBlur={formik.handleBlur}
+                                            error={
+                                                formik.touched.puesto_votacion &&
+                                                Boolean(formik.errors.puesto_votacion)
+                                            }
+                                            helperText={
+                                                formik.touched.puesto_votacion && formik.errors.puesto_votacion
+                                            }
+                                            sx={{
+                                                '& .MuiFilledInput-root': {
+                                                    borderRadius: "40px",
+                                                    backgroundColor: "#efe7da",
+                                                },
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </FormControl>
 
+                            {/* Comuna por Puesto (readonly) */}
+                            <FormControl
+                                sx={{
+                                    m: 1,
+                                    width: "150px",
+                                    backgroundColor: "#D3D3D3",
+                                    borderRadius: "20px",
+                                }}
+                                variant="filled"
+                            >
+                                <TextField
+                                    label="Comuna por Puesto"
+                                    variant="filled"
+                                    value={formik.values.comunaPuestoVotacion ?? ""}
+                                    InputProps={{ readOnly: true }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: "40px",
+                                            backgroundColor: "#D3D3D3",
+                                        },
+                                    }}
+                                />
+                            </FormControl>
+
+                            {/* Dirección por Puesto (readonly) */}
+                            <FormControl
+                                sx={{
+                                    m: 1,
+                                    minWidth: "300px",
+                                    backgroundColor: "#D3D3D3",
+                                    borderRadius: "20px",
+                                }}
+                                variant="filled"
+                            >
+                                <TextField
+                                    label="Dirección por Puesto"
+                                    variant="filled"
+                                    value={formik.values.direccionPuestoVotacion ?? ""}
+                                    InputProps={{ readOnly: true }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: "40px",
+                                            backgroundColor: "#D3D3D3",
+                                        },
+                                    }}
+                                />
+                            </FormControl>
+                        </Box>
                         <Button
                             type="submit"
                             sx={{

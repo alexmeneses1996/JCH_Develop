@@ -133,7 +133,7 @@ const  AdminViewVotante = ({ votante }) => {
                         </Box>
 
                         <Box sx={{ display: 'flex' }}>
-                            <FormControl sx={{ m: 1, width: '150px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: '110px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Sexo"
                                     id="Sexo"
@@ -153,7 +153,7 @@ const  AdminViewVotante = ({ votante }) => {
                                 />
                             </FormControl>
 
-                            <FormControl sx={{ m: 1, width: '70px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: '130px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Fecha de nacimiento"
                                     id="fecha_de_nacimiento"
@@ -174,7 +174,7 @@ const  AdminViewVotante = ({ votante }) => {
 
                                 />
                             </FormControl>
-                            <FormControl sx={{ m: 1, width: '130px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: '120px', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Telefono"
                                     id="Telefono"
