@@ -75,6 +75,7 @@ const EditUser = ({ user }) => {
             comuna: user.comuna,
             password: "",
             confirmPassword: "",
+            validacion_puesto: "NO",
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {

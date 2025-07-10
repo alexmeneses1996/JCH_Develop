@@ -19,9 +19,12 @@ export const crearRegistro = async (datos, cedula_usuario,link) => {
         barrio: datos.barrio,
         puesto_votacion: datos.puesto_votacion,
         comuna: datos.comuna,
+        municipio: datos.municipio,
         referido: cedula_usuario,
         nombre_completo:capitalizarCadaPalabra(datos.nombre + " " + datos.apellidos),
         link: link,
+        validacion_puesto: datos.validacion_puesto,
+
       }, // Datos a insertar
     ]);
 

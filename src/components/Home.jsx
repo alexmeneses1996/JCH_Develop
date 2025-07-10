@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 const Home = () => {
     const navigate = useNavigate()
     const phoneNumber = "+573174990966" //3214567890"; // Reemplaza con tu número
-    const message = "Hola, quiero más información";
+    const message = "Hola, me gustaría saber más acerca de juntos creamos historia";
     const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     const clik = () =>{
         navigate("/nuevoRegistroLink/444")

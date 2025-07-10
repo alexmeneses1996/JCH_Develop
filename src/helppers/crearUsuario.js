@@ -112,7 +112,8 @@ export const registrarUsuarioAuth = async (datos, password) => {
       comuna: datos.comuna,
       nombre_completo: capitalizarCadaPalabra(datos.nombre +" "+ datos.apellidos),
       municipio: datos.municipio,
-      tipo:'User'
+      tipo:'User',
+      validacion_puesto: datos.validacion_puesto
     },
   ]);
 

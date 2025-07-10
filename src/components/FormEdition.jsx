@@ -46,7 +46,8 @@ const FormEdition = () => {
       referido: '',
       password: '',
       confirmPassword: '',
-      imagen: null
+      imagen: null,
+      validacion_puesto:"NO",
     },
     validationSchema,
     onSubmit: values => {

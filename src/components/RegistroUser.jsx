@@ -43,7 +43,7 @@ const validationSchema = Yup.object({
     direccion: Yup.string().required("Requerido"),
     municipio: Yup.string().required("Requerido"),
     barrio: Yup.string().required("Requerido"),
-    puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido').required("Requerido"),
+    puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido'),
     comuna: Yup.string().required("Requerido"),
     password: Yup.string()
         .min(6, 'Mínimo 6 caracteres')
@@ -54,6 +54,7 @@ const validationSchema = Yup.object({
 });
 const RegistroUser = () => {
 
+    const [usuarioExistente, setUsuarioExistente] = useState(false)
     const navigate = useNavigate()
     const formik = useFormik({
         initialValues: {
@@ -73,10 +74,12 @@ const RegistroUser = () => {
             confirmPassword: "",
             direccionPuestoVotacion: "",
             comunaPuestoVotacion: "",
+            validacion_puesto:"NO",
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {
             //const result = await crearUsuario(values)
+            if(!usuarioExistente){
             const result = await registrarUsuarioAuth(values, values.password)
 
 
@@ -84,6 +87,9 @@ const RegistroUser = () => {
                 alert("✅ " + result.message)
                 formik.resetForm();
             }
+        }else{
+            alert("❌ " + "El Usuario ya se encuentra registrado")
+        }
         },
     });
 
@@ -95,7 +101,7 @@ const RegistroUser = () => {
         if (!cedula) return;
 
         const yaExiste = await validarCedulaUsuario(cedula);
-        console.log(yaExiste)
+        setUsuarioExistente(yaExiste)
         if (yaExiste) {
             formik.setFieldError('cedula', 'Esta cédula ya está registrada');
         }
@@ -290,17 +296,10 @@ const renderField = (name, label, formik, type = "text") => (
             onChange={(e) => {
 
                 formik.handleChange(e);
-                if (name === "cedula") {
-                    formik.setFieldValue("direccion", "hola1"); // Resetea barrio si cambia comuna
-                }
+                
             }}
             onBlur={(e) => {
-                if (name === "cedula") {
-                    validarIdEnBD()
-                    //formik.setFieldValue("direccion", "es una prueba"); // Resetea barrio si cambia comuna
-                    //formik.setFieldError("cedula", "Error salio")
-                    //console.log("Error establecido:", formik.errors);
-                }
+                
             }}
             error={formik.touched[name] && Boolean(formik.errors[name])}
             helperText={formik.touched[name] && formik.errors[name]}
@@ -320,9 +319,7 @@ const renderSelect = (name, label, options, formik) => (
             value={formik.values[name]}
             onChange={(e) => {
                 formik.handleChange(e);
-                if (name === "comuna") {
-                    formik.setFieldValue("barrio", ""); // Resetea barrio si cambia comuna
-                }
+                
             }}
             error={formik.touched[name] && Boolean(formik.errors[name])}
             helperText={formik.touched[name] && formik.errors[name]}

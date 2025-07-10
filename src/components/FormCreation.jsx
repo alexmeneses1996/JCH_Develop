@@ -39,7 +39,7 @@ const validationSchema = Yup.object({
   direccion: Yup.string().required("Requerido"),
   municipio: Yup.string().required("Requerido"),
   barrio: Yup.string().required("Requerido"),
-  puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido').required("Requerido"),
+  puesto_votacion: Yup.string().oneOf(listado_puestos_votacion, 'Selecciona un puesto válido'),
   comuna: Yup.string().required("Requerido"),
 });
 
@@ -64,6 +64,7 @@ const FormCreation = () => {
       comuna: "",
       comunaPuestoVotacion: "",
       direccionPuestoVotacion: "",
+      validacion_puesto:"NO",
     },
     validationSchema,
     onSubmit: async (values) => {

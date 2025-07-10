@@ -42,6 +42,7 @@ const AdminEditVotante = ({ votante }) => {
             barrio: votante.barrio,
             puesto_votacion: votante.puesto_votacion,
             comuna: votante.comuna,
+            validacion_puesto: votante.validacion_puesto
         },
         validationSchema,
         onSubmit: async (values, { setErrors }) => {

@@ -143,6 +143,15 @@ const Navbar = ({ setAutenticacion }) => {
               >
                 Gráficas
               </Button>
+                {context.tipo == "Admin" && (<Button
+                onClick={() => {
+                  setOpenDrawer(false);
+                  navegate("/proyeccion");
+                }}
+                sx={{ fontWeight: "bold", color: bgcolor_select_menu, ":hover": { backgroundColor: bgcolor_select_menu, color: color_select_menu, fontWeight: "bold" } }}
+              >
+                Proyeccion
+              </Button>)}
             </Box>
           </Box>
         </Drawer>

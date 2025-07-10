@@ -44,8 +44,10 @@ const validationSchema = Yup.object({
 });
 
 const FormCreationBylink = () => {
-    const { id_cedula } = useParams(); 
-    const [nombreRefente,setNombreRefente] = useState("")
+  const { id_cedula } = useParams();
+  const [nombreRefente, setNombreRefente] = useState("")
+  const [usuarioExistente, setUsuarioExistente] = useState(false)
+  
 
   const { context, setContext } = useContext(AppContext)
   const navigate = useNavigate()
@@ -65,34 +67,40 @@ const FormCreationBylink = () => {
       comuna: "",
       comunaPuestoVotacion: "",
       direccionPuestoVotacion: "",
+      validacion_puesto:"NO",
     },
     validationSchema,
     onSubmit: async (values) => {
-      const result = await crearRegistro(values,id_cedula,"SI");
+
+      if(!usuarioExistente){
+      const result = await crearRegistro(values, id_cedula, "SI");
 
       if (result.success) {
         alert("✅ " + result.message)
         formik.resetForm();
-      }else{
+      } else {
         alert("❌ " + "El documento ya se encuentra registrado")
+      }
+    } else {
+        alert("❌ " + "El referido ya se encuentra registrado como usuario")
       }
     },
   });
 
-  useEffect( () => {
+  useEffect(() => {
 
-    const fetchData = async () =>{
-         const result = await devolverUsuario(id_cedula)
-         if(result.success) setNombreRefente(result.data.nombre_completo)
-        else setNombreRefente("Error al buscar el nombre del referente")
+    const fetchData = async () => {
+      const result = await devolverUsuario(id_cedula)
+      if (result.success) setNombreRefente(result.data.nombre_completo)
+      else setNombreRefente("Error al buscar el nombre del referente")
 
-         console.log(id_cedula)
-         console.log(result)
+      console.log(id_cedula)
+      console.log(result)
     }
-  
+
     fetchData()
   }, [])
-  
+
 
   useEffect(() => {
     const puesto = formik.values.puesto_votacion;
@@ -130,10 +138,10 @@ const FormCreationBylink = () => {
         paddingTop: "0px",
         margin: "0px",
       }}
-    >           
+    >
       <Card elevation={3} sx={{ position: 'relative' }}>
-       <Box component="img" src="https://res.cloudinary.com/dqgbna4ni/image/upload/v1749935686/logo_xnitmu.png" alt="Logo" sx={{ height: "100px", width: "300px", objectFit:'cover' }} />
-              <Typography>Nombre referente: {nombreRefente}</Typography>
+        <Box component="img" src="https://res.cloudinary.com/dqgbna4ni/image/upload/v1749935686/logo_xnitmu.png" alt="Logo" sx={{ height: "100px", width: "300px", objectFit: 'cover' }} />
+        <Typography>Nombre referente: {nombreRefente}</Typography>
         <CardContent>
 
           <Typography
@@ -173,7 +181,11 @@ const FormCreationBylink = () => {
                       if (!cedula) return;
 
                       const yaExiste = await validarCedulaVotante(parseInt(cedula, 10));
-                      if (yaExiste) {
+
+                      const yaExisteUsuario = await validarCedulaUsuario(parseInt(cedula, 10));
+                      setUsuarioExistente(yaExisteUsuario)
+
+                      if (yaExiste || yaExisteUsuario) {
                         formik.setFieldError('cedula', 'Esta cédula ya está registrada');
                       }
                     }}
@@ -237,7 +249,7 @@ const FormCreationBylink = () => {
                     value={formik.values.comunaPuestoVotacion || ''}
                     margin="normal"
                     InputProps={{ readOnly: true }}
-                    sx={{ marginTop: 0, width:'150px', backgroundColor:'#D3D3D3'}}
+                    sx={{ marginTop: 0, width: '150px', backgroundColor: '#D3D3D3' }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
@@ -247,7 +259,7 @@ const FormCreationBylink = () => {
                     value={formik.values.direccionPuestoVotacion || ''}
                     margin="normal"
                     InputProps={{ readOnly: true }}
-                    sx={{ marginTop: 0, minWidth:'300px', backgroundColor:'#D3D3D3' }}
+                    sx={{ marginTop: 0, minWidth: '300px', backgroundColor: '#D3D3D3' }}
                   />
                 </Grid>
               </Box>

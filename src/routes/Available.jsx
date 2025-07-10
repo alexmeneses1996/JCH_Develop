@@ -8,6 +8,8 @@ const Graphics = lazy(()=> import('../components/Graphics'))
 const EditUser = lazy(()=> import('../components/EditUser'))
 const PerfilUser= lazy(()=> import('../components/PerfilUser'))
 const AdminSolicitudes= lazy(()=> import('../components/AdminSolicitudes'))
+const AdminEstadistico= lazy(()=> import('../components/AdminEstadistico'))
+
 
 
 const Available = ({user, setAutenticacion}) => {
@@ -18,6 +20,7 @@ const Available = ({user, setAutenticacion}) => {
                 <Route path='/nuevoRegistro' element={<FormCreation />} />
                 <Route path='/graficos' element={<Graphics />} />
                 <Route path='/solicitudes' element={<AdminSolicitudes />} />
+                <Route path='/proyeccion' element={<AdminEstadistico />} />
                 <Route path='/editar_perfil' element={<EditUser user={user}/>} />
                 <Route path='/perfil' element={<PerfilUser user={user} setAutenticacion={setAutenticacion}/>} />
             </Routes>
