@@ -184,13 +184,13 @@ const AdminEditVotante = ({ votante }) => {
                         <Typography sx={{
                             display: 'flex', alignItems: "center",
                             justifyContent: "center", fontSize: "40px", fontWeight: "bold"
-                        }}>Editar Votante</Typography>
+                        }}>Editar Referido</Typography>
 
                         <Box sx={{ display: 'flex' }}>
 
                             <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
-                                    label="Cedula"
+                                    label="Documento"
                                     name="cedula"
                                     value={formik.values.cedula}
                                     variant='filled'

@@ -121,7 +121,7 @@ const Navbar = ({ setAutenticacion }) => {
                 sx={{ fontWeight: "bold", color: bgcolor_select_menu, ":hover": { backgroundColor: bgcolor_select_menu, color: color_select_menu, fontWeight: "bold" } }}
 
               >
-                Registrar Votantes
+                Registrar Referidos
               </Button>)}
               {context.tipo == "Admin" && (<Button
                 onClick={() => {

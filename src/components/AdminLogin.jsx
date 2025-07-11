@@ -45,11 +45,6 @@ const AdminLogin = ({setAutenticacion}) => {
     p: 4
   }
 
-  const usuarioReferencia = {
-    cedula: '1143',
-    password: 'admin123'
-  }
-
   const formik = useFormik({
     initialValues: {
       cedulaAdmin: '',
@@ -59,23 +54,14 @@ const AdminLogin = ({setAutenticacion}) => {
     validationSchema: yup.object({
       cedulaAdmin: yup
         .string()
-        .required('La Cedula es obligatoria'),
+        .required('La Documento es obligatorio'),
       passwordAdmin: yup
         .string()
         .min(6, 'Mínimo 6 caracteres')
         .required('La contraseña es obligatoria')
     }),
     onSubmit: async (values, { setErrors }) => {
-      //Validacion de correo electronico
-      /*if (values.cedulaAdmin !== usuarioReferencia.cedula) {
-        setErrors({ cedulaAdmin: 'La cedula no está registrada' })
-        return
-      }*/
-      //Validacion de contraseña
-      /*if (values.passwordAdmin !== usuarioReferencia.password) {
-        setErrors({ passwordAdmin: 'Contraseña incorrecta' })
-        return
-      }*/
+
 
             const res = await loginUsuarioAuthAdmin(values.cedulaAdmin, values.passwordAdmin)
             if (res.success) {
@@ -160,7 +146,7 @@ const AdminLogin = ({setAutenticacion}) => {
               variant='filled'
             >
               <TextField
-                label='cedula'
+                label='Documento'
                 id='cedulaAdmin'
                 value={formik.values.cedula}
                 onChange={formik.handleChange}

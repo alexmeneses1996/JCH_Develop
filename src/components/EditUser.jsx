@@ -202,7 +202,7 @@ const EditUser = ({ user }) => {
                                         fullWidth
                                         type='text'
                                         name='cedula'
-                                        label="Número de Cédula"
+                                        label="Número de Documento"
                                         value={formik.values.cedula}
                                         InputProps={{ readOnly: true }}
                                         onChange={formik.handleChange}

@@ -80,7 +80,7 @@ const FormEdition = () => {
           <Grid item xs={12} sm={3}>
             <TextField
               fullWidth
-              label="Número de Cédula"
+              label="Número de Documento"
               name="cedula"
               value={formik.values.cedula}
               onChange={formik.handleChange}

@@ -65,13 +65,13 @@ const  AdminViewVotante = ({ votante }) => {
                         <Typography sx={{
                             display: 'flex', alignItems: "center",
                             justifyContent: "center", fontSize: "40px", fontWeight: "bold", color: '#0b5345',
-                        }}>Visualizar Votante</Typography>
+                        }}>Visualizar Referido</Typography>
 
                         <Box sx={{ display: 'flex' }}>
 
                             <FormControl sx={{ m: 1, width: '200px',fontWeight: 'bold',backgroundColor:colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
-                                    label="Cedula"
+                                    label="Documento"
                                     id="Cedula"
                                     value={cedula}
                                     onChange={(event) => setCedula(event.target.value)}

@@ -37,7 +37,7 @@ const validationSchema = Yup.object({
   nombre: Yup.string().required("Requerido"),
   apellidos: Yup.string().required("Requerido"),
   fecha_de_nacimiento: Yup.date().required("Requerido")
-      .max(new Date(), "No puede ser una fecha futura").max(fechaLimite, 'Debe tener al menos 14 años a la fecha de votacion'),
+    .max(new Date(), "No puede ser una fecha futura").max(fechaLimite, 'Debe tener al menos 14 años a la fecha de votacion'),
   sexo: Yup.string().required("Requerido"),
   telefono: Yup.string().required("Requerido"),
   correo: Yup.string().email("Correo inválido").required("Requerido"),
@@ -59,7 +59,7 @@ const FormCreation = () => {
       nombre: "",
       apellidos: "",
       edad: "",
-      fecha_de_nacimiento:"",
+      fecha_de_nacimiento: "",
       sexo: "",
       telefono: "",
       correo: "",
@@ -70,7 +70,7 @@ const FormCreation = () => {
       comuna: "",
       comunaPuestoVotacion: "",
       direccionPuestoVotacion: "",
-      validacion_puesto:"NO",
+      validacion_puesto: "NO",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -133,6 +133,31 @@ const FormCreation = () => {
 
           }
         }><ArrowBackIcon /></IconButton>
+        <Button
+          component="a"
+          href="https://wsp.registraduria.gov.co/censo/consultar/"
+          target="_blank" // para abrir en nueva pestaña
+          rel="noopener noreferrer"
+          sx={{
+            position: "absolute", top: 6, right: 18,
+            width: 120,
+            height: 60,
+            borderRadius: '10%',
+            backgroundImage: 'url("https://res.cloudinary.com/dqgbna4ni/image/upload/v1752270907/registraduria_mgsmit.png")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            //backgroundRepeat: 'no-repeat',
+            minWidth: 0,
+            padding: 0,
+            border: '2px solid #ccc',
+            '&:hover': {
+              filter: 'brightness(1.1)',
+              border: '2px solid #999',
+            },
+          }}
+        />
+        
+
         <CardContent>
 
           <Typography
@@ -141,7 +166,7 @@ const FormCreation = () => {
             gutterBottom
             fontWeight="bold"
           >
-            Registrar Votantes
+            Registrar Referido
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
@@ -160,7 +185,7 @@ const FormCreation = () => {
                     fullWidth
                     type='text'
                     name='cedula'
-                    label="Número de Cédula"
+                    label="Número de Documento"
                     value={formik.values.cedula}
                     onChange={(e) => {
                       formik.handleChange(e);
@@ -310,7 +335,7 @@ const renderSelect = (name, label, options, formik) => (
       value={formik.values[name]}
       onChange={(e) => {
         formik.handleChange(e);
-        
+
       }}
       error={formik.touched[name] && Boolean(formik.errors[name])}
       helperText={formik.touched[name] && formik.errors[name]}

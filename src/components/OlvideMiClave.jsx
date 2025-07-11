@@ -14,13 +14,13 @@ function OlvideMiClave() {
         e.preventDefault();
 
         if (cedula.trim() === "") {
-            setMensaje("Por favor ingresa tu cédula.");
+            setMensaje("Por favor ingresa tu Documento.");
             return;
         }
 
         //validar que 
         if (cedula.trim() === "") {
-            setMensaje("Por favor ingresa tu cédula.");
+            setMensaje("Por favor ingresa tu Documento.");
             return;
         }
         setCargando(true);
@@ -60,7 +60,7 @@ function OlvideMiClave() {
                     <Box display="flex" flexDirection="column" gap={2}>
                         <TextField
                             fullWidth
-                            label="Cédula"
+                            label="Documento"
                             value={cedula}
                             onChange={(e) => setCedula(e.target.value)}
                         />

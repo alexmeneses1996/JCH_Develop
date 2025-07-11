@@ -68,9 +68,9 @@ const AdminVerificarSolicitud = ({ votante, setFiltered, setDatos, setEstado, se
 
 
                 }
-                else alert("❌ Error al intentar registrar la eliminacion del votante", res.message)
+                else alert("❌ Error al intentar registrar la eliminacion del referido", res.message)
             }
-            else alert("❌ Error al intentar eliminar votante")
+            else alert("❌ Error al intentar eliminar referido")
         }
         else {
             updateData = {
@@ -125,7 +125,7 @@ const AdminVerificarSolicitud = ({ votante, setFiltered, setDatos, setEstado, se
 
                             <FormControl sx={{ m: 1, width: '200px', fontWeight: 'bold', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
-                                    label="Cedula"
+                                    label="Documento"
                                     id="Cedula"
                                     value={cedula}
                                     onChange={(event) => setCedula(event.target.value)}

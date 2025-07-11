@@ -172,7 +172,7 @@ const RegistroUser = () => {
                                         fullWidth
                                         type='text'
                                         name='cedula'
-                                        label="Número de Cédula"
+                                        label="Número de Documento"
                                         value={formik.values.cedula}
                                         onChange={(e) => {
                                             formik.handleChange(e);

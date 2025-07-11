@@ -19,9 +19,9 @@ const AdminDeleteVotante = ({ votante, usuario }) => {
             if (result.success) {
                 const res = await registrarEliminacionAdmin(votante, usuario)
                 if (res.success) alert("✅ Se realizó exitosamente la eliminacion del votante")
-                else alert("❌ Error al intentar registrar la eliminacion del votante")
+                else alert("❌ Error al intentar registrar la eliminacion del referido")
             }
-            else alert("❌ Error al intentar eliminar votante")
+            else alert("❌ Error al intentar eliminar referido")
         }
         else {
 
@@ -45,9 +45,9 @@ const AdminDeleteVotante = ({ votante, usuario }) => {
             <IconButton><Delete color="error" onClick={handleOpenSession} /></IconButton>
 
             <Dialog open={openSession} onClose={handleCloseSession}>
-                <DialogTitle>¿Eliminar Votante?</DialogTitle>
+                <DialogTitle>¿Eliminar Referido?</DialogTitle>
                 <DialogContent>
-                    ¿Estás seguro de que deseas eliminar el votante con cedula: {votante.cedula}? Se eliminará por completo y <strong>NO</strong> podrás revertirlo.
+                    ¿Estás seguro de que deseas eliminar el referido con documento: {votante.cedula}? Se eliminará por completo y <strong>NO</strong> podrás revertirlo.
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseSession} color="primary">
@@ -57,7 +57,7 @@ const AdminDeleteVotante = ({ votante, usuario }) => {
                         onClick={handleCerrarSesion}
                         color="error"
                     >
-                        Eliminar Votante
+                        Eliminar Referido
                     </Button>
                 </DialogActions>
             </Dialog>

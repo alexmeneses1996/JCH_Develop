@@ -181,7 +181,7 @@ const Login = ({ setAutenticacion }) => {
               variant="filled"
             >
               <TextField
-                label="Cedula"
+                label="Documento"
                 id="cedula"
                 value={formik.values.cedula}
                 onChange={formik.handleChange}

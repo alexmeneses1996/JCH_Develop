@@ -7,8 +7,6 @@ export const registrarUsuarioAuth = async (datos, password) => {
   const cedulaLimpia = datos.cedula.toString().trim().replace(/\s+/g, '');
 
   const correoOculto = `usuario_${cedulaLimpia}@jcreamoshistoria.com`; // genera correo oculto
-  console.log(datos.cedula)
-  console.log(correoOculto)
 
   // 1. Registrar usuario en Supabase Auth
   const { data: signUpData, error: errorSignUp } = await supabase.auth.signUp({

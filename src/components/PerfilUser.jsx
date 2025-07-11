@@ -72,7 +72,7 @@ const PerfilUser = ({ user, setAutenticacion }) => {
                             {user?.nombre} {user?.apellidos}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            Cédula: {user?.cedula}
+                            Documento: {user?.cedula}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             Correo: {user?.correo}

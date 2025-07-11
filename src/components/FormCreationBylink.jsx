@@ -97,9 +97,6 @@ const FormCreationBylink = () => {
       const result = await devolverUsuario(id_cedula)
       if (result.success) setNombreRefente(result.data.nombre_completo)
       else setNombreRefente("Error al buscar el nombre del referente")
-
-      console.log(id_cedula)
-      console.log(result)
     }
 
     fetchData()
@@ -173,7 +170,7 @@ const FormCreationBylink = () => {
                     fullWidth
                     type='text'
                     name='cedula'
-                    label="Número de Cédula"
+                    label="Número de Documento"
                     value={formik.values.cedula}
                     onChange={(e) => {
                       formik.handleChange(e);
