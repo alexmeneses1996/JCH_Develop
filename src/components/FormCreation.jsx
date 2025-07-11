@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/userContext";
 import { validarCedulaUsuario } from "../helppers/crearUsuario";
 import { calcularEdad } from "../helppers/functions";
+import { Label } from "@mui/icons-material";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
@@ -133,30 +134,38 @@ const FormCreation = () => {
 
           }
         }><ArrowBackIcon /></IconButton>
-        <Button
-          component="a"
-          href="https://wsp.registraduria.gov.co/censo/consultar/"
-          target="_blank" // para abrir en nueva pestaña
-          rel="noopener noreferrer"
-          sx={{
-            position: "absolute", top: 6, right: 18,
-            width: 120,
-            height: 60,
-            borderRadius: '10%',
-            backgroundImage: 'url("https://res.cloudinary.com/dqgbna4ni/image/upload/v1752270907/registraduria_mgsmit.png")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            //backgroundRepeat: 'no-repeat',
-            minWidth: 0,
-            padding: 0,
-            border: '2px solid #ccc',
-            '&:hover': {
-              filter: 'brightness(1.1)',
-              border: '2px solid #999',
-            },
-          }}
-        />
-        
+        <Box sx={{ position: 'absolute', top: 4, right: 18 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Button
+              component="a"
+              href="https://wsp.registraduria.gov.co/censo/consultar/"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                width: 120,
+                height: 45,
+                borderRadius: '10%',
+                backgroundImage: 'url("https://res.cloudinary.com/dqgbna4ni/image/upload/v1752270907/registraduria_mgsmit.png")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                minWidth: 0,
+                padding: 0,
+                border: '2px solid #ccc',
+                '&:hover': {
+                  filter: 'brightness(1.1)',
+                  border: '2px solid #999',
+                },
+              }}
+            />
+            <Typography variant="caption" sx={{ color: bg_boton, marginTop: '4px' }}>
+              Consulta puesto
+            </Typography>
+          </Box>
+        </Box>
+
+
+
+
 
         <CardContent>
 

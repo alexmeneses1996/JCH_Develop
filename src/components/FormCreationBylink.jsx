@@ -36,7 +36,7 @@ const validationSchema = Yup.object({
   nombre: Yup.string().required("Requerido"),
   apellidos: Yup.string().required("Requerido"),
   fecha_de_nacimiento: Yup.date().required("Requerido")
-      .max(new Date(), "No puede ser una fecha futura").max(fechaLimite, 'Debe tener al menos 14 años a la fecha de votacion'),
+    .max(new Date(), "No puede ser una fecha futura").max(fechaLimite, 'Debe tener al menos 14 años a la fecha de votacion'),
   sexo: Yup.string().required("Requerido"),
   telefono: Yup.string().required("Requerido"),
   correo: Yup.string().email("Correo inválido").required("Requerido"),
@@ -51,7 +51,7 @@ const FormCreationBylink = () => {
   const { id_cedula } = useParams();
   const [nombreRefente, setNombreRefente] = useState("")
   const [usuarioExistente, setUsuarioExistente] = useState(false)
-  
+
 
   const { context, setContext } = useContext(AppContext)
   const navigate = useNavigate()
@@ -71,21 +71,21 @@ const FormCreationBylink = () => {
       comuna: "",
       comunaPuestoVotacion: "",
       direccionPuestoVotacion: "",
-      validacion_puesto:"NO",
+      validacion_puesto: "NO",
     },
     validationSchema,
     onSubmit: async (values) => {
 
-      if(!usuarioExistente){
-      const result = await crearRegistro(values, id_cedula, "SI");
+      if (!usuarioExistente) {
+        const result = await crearRegistro(values, id_cedula, "SI");
 
-      if (result.success) {
-        alert("✅ " + result.message)
-        formik.resetForm();
+        if (result.success) {
+          alert("✅ " + result.message)
+          formik.resetForm();
+        } else {
+          alert("❌ " + "El documento ya se encuentra registrado")
+        }
       } else {
-        alert("❌ " + "El documento ya se encuentra registrado")
-      }
-    } else {
         alert("❌ " + "El referido ya se encuentra registrado como usuario")
       }
     },
@@ -143,6 +143,35 @@ const FormCreationBylink = () => {
       <Card elevation={3} sx={{ position: 'relative' }}>
         <Box component="img" src="https://res.cloudinary.com/dqgbna4ni/image/upload/v1749935686/logo_xnitmu.png" alt="Logo" sx={{ height: "100px", width: "300px", objectFit: 'cover' }} />
         <Typography>Nombre referente: {nombreRefente}</Typography>
+
+        <Box sx={{ position: 'absolute', top: 4, right: 18 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Button
+              component="a"
+              href="https://wsp.registraduria.gov.co/censo/consultar/"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                width: 120,
+                height: 45,
+                borderRadius: '10%',
+                backgroundImage: 'url("https://res.cloudinary.com/dqgbna4ni/image/upload/v1752270907/registraduria_mgsmit.png")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                minWidth: 0,
+                padding: 0,
+                border: '2px solid #ccc',
+                '&:hover': {
+                  filter: 'brightness(1.1)',
+                  border: '2px solid #999',
+                },
+              }}
+            />
+            <Typography variant="caption" sx={{ color: bg_boton, marginTop: '4px' }}>
+              Consulta puesto
+            </Typography>
+          </Box>
+        </Box>
         <CardContent>
 
           <Typography
@@ -300,8 +329,8 @@ const renderField = (name, label, formik, type = "text") => (
 
         formik.handleChange(e);
         if (name === "fecha_de_nacimiento") {
-                  formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
-                }
+          formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
+        }
       }}
       error={formik.touched[name] && Boolean(formik.errors[name])}
       helperText={formik.touched[name] && formik.errors[name]}
