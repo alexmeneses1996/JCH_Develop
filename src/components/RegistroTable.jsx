@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
   Box, Button, Table, TableBody, TableCell, TableContainer, TableHead,
-  TableRow, Paper, Typography, MenuItem, Select, TextField, TablePagination
+  TableRow, Paper, Typography, MenuItem, Select, TextField, TablePagination,
+  FormControlLabel,
+  Checkbox,
+  Switch
 } from '@mui/material';
 import { CloudDownload, Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +21,8 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
   const [registros, setRegistros] = useState([]);
   //const [datos, setDatos] = useState(null)
   const [busqueda, setBusqueda] = useState('');
+  const [busquedaId, setBusquedaId] = useState('');
+  const [buscarPorCedula, setBuscarPorCedula] = useState(false);
   const [comuna, setComuna] = useState('');
   const [edad, setEdad] = useState('');
   const [page, setPage] = useState(0);
@@ -31,9 +36,13 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
 
     let result = datos?.filter(dato =>
       //Se realiza busqueda por escritura (Nombre)
-      (busqueda ? dato.nombre_completo?.toLowerCase().includes(busqueda.toLowerCase()) : true) &&
+      (busqueda
+        ? buscarPorCedula
+          ? dato.cedula?.toString().includes(busqueda)
+          : dato.nombre_completo?.toLowerCase().includes(busqueda.toLowerCase())
+        : true
+      ) &&
       (edad ? Number(dato.edad) === Number(edad) : true) &&
-      //filtro por 
       (comuna ? dato.comuna === comuna : true)
     );
     setFiltered(result);
@@ -50,8 +59,22 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
   return (
     <Box sx={{ padding: 2 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>
+        <Box sx={{display:'flex',gap: 4,}}> <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>
+          <FormControlLabel
+            sx={{ display: 'flex', color: 'black' }}
+            control={
+              <Switch
+                checked={buscarPorCedula}
+                onChange={() => setBuscarPorCedula(!buscarPorCedula)}
+                name="buscarPorCedula"
+                sx={{ color: bg_boton }}
+              />
+            }
+            label="Buscar por Documento"
+
+          /></Box>
         <Box>
+
           <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1, backgroundColor: "#90d8b2" }} onClick={hanldeExportData}>Exportar</Button>
           {context.tipo != "Admin" && (<Button sx={{ backgroundColor: bg_boton }} startIcon={<Add />} variant="contained" onClick={() => { navigate("/nuevoRegistro") }}>Nuevo Registro</Button>)}
         </Box>
@@ -59,13 +82,15 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
 
       {/* Filtros */}
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+
         <TextField
-          label="Buscar..."
+          label={buscarPorCedula? "Buscar por Documento...":"Buscar por Nombre..."}
           variant="outlined"
           size="small"
           fullWidth
           onChange={(e) => setBusqueda(e.target.value)}
         />
+
         <Select
           value={edad}
           displayEmpty
@@ -121,7 +146,7 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
                   <TableCell>
                     <AdminViewVotante key={r.referido} votante={r} />
                     <AdminEditVotante key={r.cedula} votante={r} />
-                    <AdminDeleteVotante votante={r}  usuario={context}/>
+                    <AdminDeleteVotante votante={r} usuario={context} />
                   </TableCell>
                 </TableRow>
               ))}

@@ -6,6 +6,7 @@ import RegistrosTable from './RegistroTable';
 import { supabase } from '../supabase/supabaseConfig';
 import { AppContext } from '../context/userContext';
 import { retornarUsuarios } from '../helppers/crearUsuario';
+import { retornarTodosLosVotantes, retornarVotantesPorUsuario } from '../helppers/crearVotante';
 
 const Inicio = () => {
 
@@ -17,69 +18,47 @@ const Inicio = () => {
     const duracion = 1000; // 1 segundo
     const pasos = valorFinal / incremento;
     const intervalo = duracion / pasos;
-    
+
     const [filtered, setFiltered] = useState([]);
     const [datos, setDatos] = useState(null)
     const [usuarios, setUsuarios] = useState(null)
-    const {context, setContext} = useContext(AppContext)
+    const { context, setContext } = useContext(AppContext)
 
     useEffect(() => {
         const retornarVotantes = async () => {
 
-                if (context.tipo == "User") {
-                    const cedula_referido = context.cedula;
-                    const { data, error } = await supabase
-                        .from("votante")
-                        .select("*")
-                        .eq("referido", cedula_referido);
+            if (context.tipo == "User") {
+                const cedula_referido = context.cedula;
+                const result = await retornarVotantesPorUsuario(cedula_referido)
+                if (result.success) {
+                    setDatos(result.data);
+                    setFiltered(result.data)
+                } else alert("Ocurrio un problema al mostrar los datos")
 
-                    setDatos(data);
-                    setFiltered(data)
-                    console.log("Consulta DB. Estoy en sesion Admin")
-                }else if(context.tipo == "Admin"){ //Se valida que sea de tipo Admin.
-                    const { data, error } = await supabase
-                        .from("votante")
-                        .select("*")
-
-                    setDatos(data);
-                    setFiltered(data);
+            } else if (context.tipo == "Admin") { //Se valida que sea de tipo Admin.
+                const res = await retornarTodosLosVotantes()
+                if (res.success) {
+                    setDatos(res.data);
+                    setFiltered(res.data);
 
                     const result = await retornarUsuarios()
-                    console.log(result)
                     if (result.success) {
                         setUsuarios(result.data) //Se actualiza la cantidad de usuarios
                         setCountUsuarios(result.data.length)
-                    console.log("Consulta DB. Estoy en sesion Admin") }
+                    }
+
                 }
+
+            }
         };//corregimiento ,, club blanco have retornarVotantes,,,,san rafeal,, llendo santander --- 40 
 
         retornarVotantes();
     }, []);
 
-/*
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCount((prev) => {
-                if (prev + incremento >= valorFinal) {
-                    clearInterval(timer);
-                    return valorFinal;
-                }
-                return prev + incremento;
-            });
-            retornarVotantes()
-        }, [intervalo, datos]);
-
-        return () => clearInterval(timer); // Limpieza
-    }, []);
-*/
 
     useEffect(() => {
-
-
         if (!datos || datos.length === 0) return;
-
         const valorFinal = datos.length; // o el campo que necesitas
-        
         const timer = setInterval(() => {
             setCount((prev) => {
                 const next = prev + incremento;
@@ -88,7 +67,6 @@ const Inicio = () => {
                     clearInterval(timer);
                     return valorFinal;
                 }
-
                 return next;
             });
         }, intervalo);
@@ -159,7 +137,7 @@ const Inicio = () => {
                             </Box>
                         </Card>
                         {/*se valida que este en el usuario Admin */}
-                        { context.tipo == "Admin" && (<Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2,ml:2, borderRadius: 2, minWidth: '160px' }}>
+                        {context.tipo == "Admin" && (<Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, ml: 2, borderRadius: 2, minWidth: '160px' }}>
                             <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>
                                 <PersonIcon />
                             </Avatar>
@@ -167,7 +145,7 @@ const Inicio = () => {
                                 <Typography variant="subtitle2">USUARIOS</Typography>
                                 <Typography variant="h5">{countUsuarios}</Typography>
                             </Box>
-                        </Card> )}                      
+                        </Card>)}
 
                         <Card sx={{
                             display: 'flex', alignItems: 'center', backgroundColor: '#90d8b2', color: '#0b5345', p: 2, borderRadius: 2, marginLeft: '1rem', width: '80%',
@@ -185,12 +163,7 @@ const Inicio = () => {
                         </Card>
 
                     </Box>
-                    {/*<FormEdition /> */}
                     <RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />
-                    {/* Simulamos contenido largo */}
-                    {/*Array.from({ length: 3 }).map((_, i) => (
-                        <Typography key={i} color='black'>Contenido línea {i + 1}</Typography>
-                    ))*/}
                 </Box>
             </Box>
         </Container>

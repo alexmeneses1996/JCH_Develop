@@ -68,7 +68,6 @@ export const retornarVotantesPorUsuario = async (cedula) => {
     .from("votante")
     .select("*")
     .eq('referido', cedula);
-    console.log(data)
 
   if (error) {
     console.error("❌ Error al retornar votantes por usuario:", error.message);
