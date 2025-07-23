@@ -126,29 +126,38 @@ const Inicio = () => {
                     }}
 
                 >
-                    <Box sx={{ display: 'flex' }}>
-                        <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px' }}>
+                    <Box sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 2,
+                        justifyContent: 'left',
+                        alignItems: 'stretch',
+                        width: '100%',
+                        marginTop:"30px"
+                    }}>
+                        <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px', maxWidth:"200px", flex: "1 1 240px" }}>
                             <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>
                                 <PersonIcon />
                             </Avatar>
                             <Box>
-                                <Typography variant="subtitle2">VOTANTES</Typography>
+                                <Typography variant="subtitle2">CONTACTOS</Typography>
                                 <Typography variant="h5">{count}</Typography>
                             </Box>
                         </Card>
                         {/*se valida que este en el usuario Admin */}
-                        {context.tipo == "Admin" && (<Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, ml: 2, borderRadius: 2, minWidth: '160px' }}>
-                            <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>
-                                <PersonIcon />
-                            </Avatar>
-                            <Box>
-                                <Typography variant="subtitle2">USUARIOS</Typography>
-                                <Typography variant="h5">{countUsuarios}</Typography>
-                            </Box>
-                        </Card>)}
+                        {context.tipo == "Admin" && (
+                            <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px', flex: "1 1 240px", maxWidth:"200px", }}>
+                                <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>
+                                    <PersonIcon />
+                                </Avatar>
+                                <Box>
+                                    <Typography variant="subtitle2">USUARIOS</Typography>
+                                    <Typography variant="h5">{countUsuarios}</Typography>
+                                </Box>
+                            </Card>)}
 
                         <Card sx={{
-                            display: 'flex', alignItems: 'center', backgroundColor: '#90d8b2', color: '#0b5345', p: 2, borderRadius: 2, marginLeft: '1rem', width: '80%',
+                            display: 'flex', alignItems: 'center', backgroundColor: '#90d8b2', color: '#0b5345', p: 2, borderRadius: 2, flex: '1 1 100%',
                             minHeight: '64px'
                         }}>
 

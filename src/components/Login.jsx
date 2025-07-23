@@ -160,7 +160,7 @@ const Login = ({ setAutenticacion }) => {
           </Typography>
         </Box>
 
-        <Paper elevation={5} sx={{ width: "30%", padding: "2rem" }}>
+        <Paper elevation={5} sx={{ width: "30%", minWidth:"220px", padding: "2rem" }}>
          
           <form
             style={{
@@ -175,6 +175,7 @@ const Login = ({ setAutenticacion }) => {
                 m: 1,
                 width: "100%",
                 maxWidth: "300px",
+
                 //height:'44px',
                 borderRadius: "20px",
               }}

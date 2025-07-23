@@ -4,7 +4,8 @@ import {
   TableRow, Paper, Typography, MenuItem, Select, TextField, TablePagination,
   FormControlLabel,
   Checkbox,
-  Switch
+  Switch,
+  Grid
 } from '@mui/material';
 import { CloudDownload, Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -57,111 +58,124 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
   }
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box sx={{ padding: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Box sx={{display:'flex',gap: 4,}}> <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>
-          <FormControlLabel
-            sx={{ display: 'flex', color: 'black' }}
-            control={
-              <Switch
-                checked={buscarPorCedula}
-                onChange={() => setBuscarPorCedula(!buscarPorCedula)}
-                name="buscarPorCedula"
-                sx={{ color: bg_boton }}
-              />
-            }
-            label="Buscar por Documento"
-
-          /></Box>
-        <Box>
-
+        <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>
+        <Box sx={{ width: '100%' }}>
           <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1, backgroundColor: "#90d8b2" }} onClick={hanldeExportData}>Exportar</Button>
           {context.tipo != "Admin" && (<Button sx={{ backgroundColor: bg_boton }} startIcon={<Add />} variant="contained" onClick={() => { navigate("/nuevoRegistro") }}>Nuevo Registro</Button>)}
         </Box>
       </Box>
 
       {/* Filtros */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+      <Box sx={{ mb: 2 }}>
 
-        <TextField
-          label={buscarPorCedula? "Buscar por Documento...":"Buscar por Nombre..."}
-          variant="outlined"
-          size="small"
-          fullWidth
-          onChange={(e) => setBusqueda(e.target.value)}
-        />
+        <Grid container spacing={2}>
 
-        <Select
-          value={edad}
-          displayEmpty
-          size="small"
-          onChange={(e) => setEdad(e.target.value)}
-          fullWidth
-        >
-          <MenuItem value="">Todos las edades</MenuItem>
-          {[...new Set(datos?.map(r => r.edad))].sort((a, b) => Number(a) - Number(b)).map(p => (
-            <MenuItem key={p} value={p}>{p}</MenuItem>
-          ))}
-        </Select>
-        <Select
-          value={comuna}
-          displayEmpty
-          size="small"
-          onChange={(e) => setComuna(e.target.value)}
-          fullWidth
-        >
-          <MenuItem value="">Todos las comunas</MenuItem>
-          {[...new Set(datos?.map(r => r.comuna))].map(c => (
-            <MenuItem key={c} value={c}>{c}</MenuItem>
-          ))}
-        </Select>
-        <Button onClick={() => { setBusqueda(''); setComuna(''); setEdad(''); }} variant="outlined">Limpiar</Button>
-      </Box>
+          <Grid item xs={12} sm={6} md={3}>
 
-      {/* Tabla */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>Nombre Completo</TableCell>
-              <TableCell>Documento</TableCell>
-              <TableCell>Edad</TableCell>
-              <TableCell>Sexo</TableCell>
-              <TableCell>Comuna</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filtered?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((r, i) => (
-                <TableRow key={r.cedula}>
-                  <TableCell >{i + 1 + page * rowsPerPage}</TableCell>
-                  <TableCell >{r.nombre_completo}</TableCell>
-                  <TableCell >{r.cedula}</TableCell>
-                  <TableCell >{r.edad}</TableCell>
-                  <TableCell>{r.sexo}</TableCell>
-                  <TableCell >{r.comuna}</TableCell>
+            <FormControlLabel
+              sx={{ display: 'flex', color: 'black' }}
+              control={
+                <Switch
+                  checked={buscarPorCedula}
+                  onChange={() => setBuscarPorCedula(!buscarPorCedula)}
+                  name="buscarPorCedula"
+                  sx={{ color: bg_boton }}
+                />
+              }
+              label="Buscar por Documento"
 
-                  <TableCell>
-                    <AdminViewVotante key={r.referido} votante={r} />
-                    <AdminEditVotante key={r.cedula} votante={r} />
-                    <AdminDeleteVotante votante={r} usuario={context} />
-                  </TableCell>
-                </TableRow>
+            /></Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              label={buscarPorCedula ? "Buscar por Documento..." : "Buscar por Nombre..."}
+              variant="outlined"
+              size="small"
+              fullWidth
+              onChange={(e) => setBusqueda(e.target.value)}
+            /></Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Select
+              value={edad}
+              displayEmpty
+              size="small"
+              onChange={(e) => setEdad(e.target.value)}
+              fullWidth
+            >
+              <MenuItem value="">Todos las edades</MenuItem>
+              {[...new Set(datos?.map(r => r.edad))].sort((a, b) => Number(a) - Number(b)).map(p => (
+                <MenuItem key={p} value={p}>{p}</MenuItem>
               ))}
-          </TableBody>
-        </Table>
-        <TablePagination
-          component="div"
-          count={filtered?.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[rowsPerPage]}
-        />
-      </TableContainer>
+            </Select>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Select
+              value={comuna}
+              displayEmpty
+              size="small"
+              onChange={(e) => setComuna(e.target.value)}
+              fullWidth
+            >
+              <MenuItem value="">Todos las comunas</MenuItem>
+              {[...new Set(datos?.map(r => r.comuna))].map(c => (
+                <MenuItem key={c} value={c}>{c}</MenuItem>
+              ))}
+            </Select>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+          <Button onClick={() => { setBusqueda(''); setComuna(''); setEdad(''); }} variant="outlined">Limpiar</Button>
+        </Grid>
+      </Grid>
     </Box>
+
+      {/* Tabla */ }
+  <TableContainer component={Paper}>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>#</TableCell>
+          <TableCell>Nombre Completo</TableCell>
+          <TableCell>Documento</TableCell>
+          <TableCell>Edad</TableCell>
+          <TableCell>Sexo</TableCell>
+          <TableCell>Comuna</TableCell>
+          <TableCell>Acciones</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {filtered?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((r, i) => (
+            <TableRow key={r.cedula}>
+              <TableCell >{i + 1 + page * rowsPerPage}</TableCell>
+              <TableCell >{r.nombre_completo}</TableCell>
+              <TableCell >{r.cedula}</TableCell>
+              <TableCell >{r.edad}</TableCell>
+              <TableCell>{r.sexo}</TableCell>
+              <TableCell >{r.comuna}</TableCell>
+
+              <TableCell>
+                <AdminViewVotante key={r.referido} votante={r} />
+                <AdminEditVotante key={r.cedula} votante={r} />
+                <AdminDeleteVotante votante={r} usuario={context} />
+              </TableCell>
+            </TableRow>
+          ))}
+      </TableBody>
+    </Table>
+    <TablePagination
+      component="div"
+      count={filtered?.length}
+      page={page}
+      onPageChange={handleChangePage}
+      rowsPerPage={rowsPerPage}
+      rowsPerPageOptions={[rowsPerPage]}
+    />
+  </TableContainer>
+    </Box >
   );
 };
 

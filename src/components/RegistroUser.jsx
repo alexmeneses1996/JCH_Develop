@@ -166,7 +166,7 @@ const RegistroUser = () => {
                             justifyContent="center"
                             alignItems="center"
                         >
-                            <Box sx={{ display: "flex", width: "100%" }}>
+                            <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
                                     <TextField
                                         fullWidth
@@ -185,25 +185,25 @@ const RegistroUser = () => {
                                 {renderField("password", "Contraseña", formik, "password")}
                                 {renderField("confirmPassword", "Confirmar contraseña", formik, "password")}
 
-                            </Box>
-                            <Box sx={{ display: "flex", width: "100%" }}>
+                            </Grid>
+                            <Grid container spacing={2}>
                                 {renderField("nombre", "Nombre", formik)}
                                 {renderField("apellidos", "Apellidos", formik)}
                                 {renderField("telefono", "Teléfono o Celular", formik)}
                                 {renderSelect("sexo", "Sexo", sexos, formik)}
 
-                            </Box>
-                            <Box sx={{ display: "flex", width: "100%" }}>
+                            </Grid>
+                            <Grid container spacing={2}>
                                 {renderField("direccion", "Dirección", formik)}
                                 {renderField("correo", "Correo", formik)}
                                 {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik, "date")}
-                            </Box>
-                            <Box sx={{ display: "flex", width: "100%" }}>
+                            </Grid>
+                            <Grid container spacing={2}>
                                 {renderSelect("municipio", "Municipio", municipios, formik)}
                                 {renderSelect("comuna", "Comuna", comunas, formik)}
                                 {renderSelect("barrio", "Barrio", barrios, formik)}
-                            </Box>
-                            <Box sx={{ display: "flex", width: "100%" }}>
+                            </Grid>
+                            <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
                                     <Autocomplete
                                         fullWidth
@@ -257,7 +257,7 @@ const RegistroUser = () => {
                                         sx={{ marginTop: 0, minWidth: '300px', backgroundColor: '#D3D3D3' }}
                                     />
                                 </Grid>
-                            </Box>
+                            </Grid>
                         </Grid>
 
                         <Box mt={4} textAlign="center">

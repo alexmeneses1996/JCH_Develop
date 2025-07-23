@@ -196,7 +196,7 @@ const EditUser = ({ user }) => {
                             justifyContent="center"
                             alignItems="center"
                         >
-                            <Box sx={{ display: "flex", width: "100%" }}>
+                            <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
                                     <TextField
                                         fullWidth
@@ -213,12 +213,13 @@ const EditUser = ({ user }) => {
                                 </Grid>
                                 {renderField("nombre", "Nombre", formik)}
                                 {renderField("apellidos", "Apellidos", formik)}
+                                {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik, "date")}
 
-                            </Box>
+                            </Grid>
                             <Box sx={{ display: "flex", width: "100%" }}>
                                 {renderField("telefono", "Teléfono o Celular", formik)}
                                 {renderSelect("sexo", "Sexo", sexos, formik)}
-                                {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik, "date")}
+                                
 
 
                             </Box>
@@ -232,7 +233,7 @@ const EditUser = ({ user }) => {
                                 {renderSelect("barrio", "Barrio", barrios, formik)}
 
                             </Box>
-                            <Box sx={{ display: "flex", width: "100%" }}>
+                            <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
                                     <Autocomplete
                                         fullWidth
@@ -286,7 +287,7 @@ const EditUser = ({ user }) => {
                                         sx={{ marginTop: 0, minWidth: '300px', backgroundColor: '#D3D3D3' }}
                                     />
                                 </Grid>
-                            </Box>
+                            </Grid>
                             <Box sx={{ display: "flex", width: "100%" }}>
                                 <FormControlLabel
                                     control={

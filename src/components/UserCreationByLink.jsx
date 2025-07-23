@@ -12,26 +12,12 @@ const UserCreationByLink = ({ handleClose }) => {
     const { context, setContext } = useContext(AppContext)
     const [open, setOpen] = useState(false);
     const handleOpenWindow = () => setOpen(true);
-    const handleCloseWindow = () => {setOpen(false), handleClose() };
+    const handleCloseWindow = () => { setOpen(false), handleClose() };
 
 
     const handleSubmitAdmin = async (event) => {
         //event.preventDefault();
     }
-
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 640,
-        bgcolor: 'background.paper',
-        border: '2px solid #efe7da',
-        boxShadow: 24,
-        borderRadius: 4,
-        p: 1,
-        margin: '5px'
-    };
 
     return (
         <>
@@ -42,7 +28,20 @@ const UserCreationByLink = ({ handleClose }) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '90vw',
+                    maxWidth: "640px",
+                    bgcolor: 'background.paper',
+                    border: '2px solid #efe7da',
+                    boxShadow: 24,
+                    borderRadius: 4,
+                    p: 1,
+                    margin: '5px'
+                }}>
                     <form
                         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                         onSubmit={handleSubmitAdmin}
@@ -53,14 +52,14 @@ const UserCreationByLink = ({ handleClose }) => {
 
                         <Typography sx={{
                             display: 'flex', alignItems: "center",
-                            justifyContent: "center", fontSize: "40px", fontWeight: "bold", color: '#0b5345',
+                            justifyContent: "center", fontSize: "34px", fontWeight: "bold", color: '#0b5345', marginTop: '2px'
                         }}> Escanea el código QR</Typography>
                         <Typography sx={{
                             display: 'flex', alignItems: "center",
                             justifyContent: "center", fontSize: "20px", fontWeight: "bold", color: '#0b5345',
                         }}> Formulario de registro de Referido</Typography>
 
-                        <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ display: 'flex', width: '100%' }}>
                             <QRyWhatsapp id_cedula={context.cedula} />
                         </Box>
                     </form>

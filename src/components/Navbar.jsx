@@ -78,6 +78,7 @@ const Navbar = ({ setAutenticacion }) => {
         color: "#000",
         boxShadow: "none",
         width: "100%",
+        maxHeight:'64px'
       }}
     >
       <Toolbar>

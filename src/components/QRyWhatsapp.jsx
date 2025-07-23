@@ -16,7 +16,7 @@ const url = `https://jcreamoshistoria.vercel.app/nuevoRegistroLink/${id_cedula}`
 
 
     return (
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center', width:'100%' }}>
 
 
             <QRCode
