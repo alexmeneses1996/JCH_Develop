@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, Container, Drawer, IconButton, Typography } from '@mui/material'
+import { Avatar, Box, Button, Card, Container, Drawer, FormControlLabel, IconButton, Switch, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import PersonIcon from "@mui/icons-material/Person";
 //import FormEdition from './FormEdition';
@@ -7,6 +7,8 @@ import { supabase } from '../supabase/supabaseConfig';
 import { AppContext } from '../context/userContext';
 import { retornarUsuarios } from '../helppers/crearUsuario';
 import { retornarTodosLosVotantes, retornarVotantesPorUsuario } from '../helppers/crearVotante';
+import { bg_boton } from '../styled/styled';
+import RegistroTableUser from './RegistroTableUser';
 
 const Inicio = () => {
 
@@ -19,7 +21,10 @@ const Inicio = () => {
     const pasos = valorFinal / incremento;
     const intervalo = duracion / pasos;
 
+    const [buscarPorCedula, setBuscarPorCedula] = useState(false);
+
     const [filtered, setFiltered] = useState([]);
+    const [filteredUser, setFilteredUser] = useState([]);
     const [datos, setDatos] = useState(null)
     const [usuarios, setUsuarios] = useState(null)
     const { context, setContext } = useContext(AppContext)
@@ -45,6 +50,7 @@ const Inicio = () => {
                     if (result.success) {
                         setUsuarios(result.data) //Se actualiza la cantidad de usuarios
                         setCountUsuarios(result.data.length)
+                        setFilteredUser(result.data)
                     }
 
                 }
@@ -134,7 +140,7 @@ const Inicio = () => {
                         alignItems: 'stretch',
                         width: '100%',
                     }}>
-                        <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px', maxWidth:"200px", flex: "1 1 240px" }}>
+                        <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px', maxWidth: "200px", flex: "1 1 240px" }}>
                             <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>
                                 <PersonIcon />
                             </Avatar>
@@ -145,7 +151,7 @@ const Inicio = () => {
                         </Card>
                         {/*se valida que este en el usuario Admin */}
                         {context.tipo == "Admin" && (
-                            <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px', flex: "1 1 240px", maxWidth:"200px", }}>
+                            <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px', flex: "1 1 240px", maxWidth: "200px", }}>
                                 <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>
                                     <PersonIcon />
                                 </Avatar>
@@ -171,7 +177,23 @@ const Inicio = () => {
                         </Card>
 
                     </Box>
+                    {context.tipo == "Admin" && (
+                    <FormControlLabel
+                        sx={{ display: 'flex', color: 'black' }}
+                        control={
+                            <Switch
+                                checked={buscarPorCedula}
+                                onChange={() => setBuscarPorCedula(!buscarPorCedula)}
+                                name="buscarPorCedula"
+                                sx={{ color: bg_boton }}
+                            />
+                        }
+                        label="Mostrar info por referidos"
+
+                    />)}
                     <RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />
+                    {/*buscarPorCedula? (<RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />):
+                    (<RegistroTableUser datos={usuarios} filtered={filtered} setFilteredUser={setFilteredUser}/>)*/}
                 </Box>
             </Box>
         </Container>

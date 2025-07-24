@@ -1,10 +1,6 @@
 import { CircularProgress, GlobalStyles } from '@mui/material'
 import React, { lazy, Suspense, useContext, useEffect, useState } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-//import Login from '../components/Login'
-//import Home from '../components/Home'
-//import Available from './Available'
-//import RegistroUser from '../components/RegistroUser'
 
 import Private from './Private'
 import Navbar from '../components/Navbar'

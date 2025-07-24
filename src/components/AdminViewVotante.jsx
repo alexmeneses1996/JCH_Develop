@@ -5,7 +5,7 @@ import { Visibility } from '@mui/icons-material';
 import { colorViewVotante } from '../styled/styled';
 
 
-const  AdminViewVotante = ({ votante }) => {
+const AdminViewVotante = ({ votante }) => {
 
     const [cedula, setCedula] = useState(votante.cedula);
     const [nombre, setNombre] = useState(votante.nombre);
@@ -36,7 +36,7 @@ const  AdminViewVotante = ({ votante }) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '90vw',
-        maxWidth: "640px",
+        maxWidth: "700px",
         bgcolor: 'background.paper',
         border: '2px solid #efe7da',
         boxShadow: 24,
@@ -68,9 +68,9 @@ const  AdminViewVotante = ({ votante }) => {
                             justifyContent: "center", fontSize: "40px", fontWeight: "bold", color: '#0b5345',
                         }}>Visualizar Referido</Typography>
 
-                        <Box sx={{ display: 'flex', flexWrap:'nowrap' }}>
+                        <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
 
-                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, fontWeight: 'bold',backgroundColor:colorViewVotante, borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, fontWeight: 'bold', backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Documento"
                                     id="Cedula"
@@ -85,13 +85,13 @@ const  AdminViewVotante = ({ votante }) => {
                                         '& .MuiFilledInput-root': {
                                             borderRadius: "20px",
                                             color: '#0b5345',
-                                            backgroundColor: colorViewVotante 
+                                            backgroundColor: colorViewVotante
                                         }
                                     }}
                                 />
                             </FormControl>
 
-                            <FormControl sx={{ m: 1,width: { xs: '100%', sm: '200px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Nombre"
                                     id="Nombre"
@@ -105,7 +105,7 @@ const  AdminViewVotante = ({ votante }) => {
                                         '& .MuiFilledInput-root': {
                                             borderRadius: "20px",
                                             color: '#0b5345',
-                                            backgroundColor: colorViewVotante 
+                                            backgroundColor: colorViewVotante
                                         }
                                     }}
                                 />
@@ -133,7 +133,13 @@ const  AdminViewVotante = ({ votante }) => {
                             </FormControl>
                         </Box>
 
-                        <Box sx={{ display: 'flex' }}>
+                        <Box sx={{
+                            flex: {
+                                xs: "0 0 100%", 
+                                sm: "0 0 50%",  
+                                md: "0 0 25%",  
+                            },
+                        }} >
                             <FormControl sx={{ m: 1, width: { xs: '100%', sm: '110px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Sexo"
@@ -194,7 +200,7 @@ const  AdminViewVotante = ({ votante }) => {
                                     }}
                                 />
                             </FormControl>
-                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '2400px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '240px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Correo"
                                     id="Correo"
@@ -215,7 +221,7 @@ const  AdminViewVotante = ({ votante }) => {
                             </FormControl>
                         </Box>
 
-                        <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ display: 'flex', }}>
                             <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Direccion"
@@ -253,7 +259,7 @@ const  AdminViewVotante = ({ votante }) => {
                                             backgroundColor: colorViewVotante
                                         }
                                     }} />
-                                
+
                             </FormControl>
 
                             <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
@@ -273,10 +279,10 @@ const  AdminViewVotante = ({ votante }) => {
                                             backgroundColor: colorViewVotante
                                         }
                                     }}
-                                    />
+                                />
                             </FormControl>
                         </Box>
-                        <FormControl sx={{ m: 1,width: { xs: '100%', sm: '450px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
+                        <FormControl sx={{ m: 1, width: { xs: '100%', sm: '450px' }, backgroundColor: colorViewVotante, borderRadius: "20px" }} variant="filled">
                             <TextField
                                 label="Puesto de Votacion"
                                 id="Puesto_votacion"

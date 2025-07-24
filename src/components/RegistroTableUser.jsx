@@ -17,7 +17,7 @@ import AdminDeleteVotante from './AdminDeleteVotante';
 import { exportToExcel, ordenarComuna } from '../helppers/functions';
 
 
-const RegistrosTable = ({ datos, filtered, setFiltered }) => {
+const RegistroTableUser = ({ datos, filteredUser, setFilteredUser }) => {
 
   const [registros, setRegistros] = useState([]);
   //const [datos, setDatos] = useState(null)
@@ -46,7 +46,7 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
       (edad ? Number(dato.edad) === Number(edad) : true) &&
       (comuna ? dato.comuna === comuna : true)
     );
-    setFiltered(result);
+    setFilteredUser(result);
   }, [busqueda, comuna, edad]);
 
   const handleChangePage = (event, newPage) => {
@@ -54,14 +54,14 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
   };
 
   const hanldeExportData = () => {
-    exportToExcel(filtered, "votantes.xlsx")
+    exportToExcel(filteredUser, "votantes.xlsx")
   }
 
   return (
     <Box sx={{ padding: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        {context.tipo != "Admin" ? <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>:
-        <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Registros de Referidos</Typography>}
+         {context.tipo != "Admin" ? <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Mis Registros</Typography>:
+                <Typography variant="h6" sx={{ color: '#1e3a8a', fontWeight: 'bold' }}>Registros de Usuarios</Typography>}
         <Box sx={{ width: '100%' }}>
           <Button startIcon={<CloudDownload />} variant="outlined" sx={{ mr: 1, backgroundColor: "#90d8b2" }} onClick={hanldeExportData}>Exportar</Button>
           {context.tipo != "Admin" && (<Button sx={{ backgroundColor: bg_boton }} startIcon={<Add />} variant="contained" onClick={() => { navigate("/nuevoRegistro") }}>Nuevo Registro</Button>)}
@@ -87,8 +87,7 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
               }
               label="Buscar por Documento"
 
-            />
-            </Grid>
+            /></Grid>
           <Grid item xs={12} sm={6} md={3}>
             <TextField
               label={buscarPorCedula ? "Buscar por Documento..." : "Buscar por Nombre..."}
@@ -149,7 +148,7 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {filtered?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        {filteredUser?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((r, i) => (
             <TableRow key={r.cedula}>
               <TableCell >{i + 1 + page * rowsPerPage}</TableCell>
@@ -160,9 +159,7 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
               <TableCell >{r.comuna}</TableCell>
 
               <TableCell>
-                <AdminViewVotante key={r.referido} votante={r} />
-                <AdminEditVotante key={r.cedula} votante={r} />
-                <AdminDeleteVotante votante={r} usuario={context} />
+                
               </TableCell>
             </TableRow>
           ))}
@@ -170,7 +167,7 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
     </Table>
     <TablePagination
       component="div"
-      count={filtered?.length}
+      count={filteredUser?.length}
       page={page}
       onPageChange={handleChangePage}
       rowsPerPage={rowsPerPage}
@@ -181,4 +178,4 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
   );
 };
 
-export default RegistrosTable;
+export default RegistroTableUser;

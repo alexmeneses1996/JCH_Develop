@@ -123,13 +123,14 @@ const AdminEditVotante = ({ votante }) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '90vw',
-        maxWidth: "640px",
+        maxWidth: "700px",
         bgcolor: 'background.paper',
         border: '2px solid #efe7da',
         boxShadow: 24,
         borderRadius: 4,
         p: 1,
         margin: '5px'
+        
     };
 
 
@@ -187,7 +188,8 @@ const AdminEditVotante = ({ votante }) => {
                             justifyContent: "center", fontSize: "40px", fontWeight: "bold"
                         }}>Editar Referido</Typography>
 
-                       <Box sx={{ display: 'flex', flexWrap:'nowrap' }}>
+                       <Box sx={{ display: 'flex' 
+                             }}>
 
                             <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
@@ -252,7 +254,12 @@ const AdminEditVotante = ({ votante }) => {
                             </FormControl>
                         </Box>
 
-                        <Box sx={{ display: 'flex' }}>
+                        <Box sx={{flex: {
+                                xs: "0 0 100%", 
+                                sm: "0 0 50%",  
+                                md: "0 0 25%",  
+                            },}}>
+
                             <FormControl sx={{ m: 1, width: { xs: '100%', sm: '120px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Sexo"
@@ -349,7 +356,7 @@ const AdminEditVotante = ({ votante }) => {
                             </FormControl>
                         </Box>
 
-                        <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ display: 'flex', flexWrap:'nowrap' }}>
                             <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Direccion"
