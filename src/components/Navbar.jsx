@@ -227,7 +227,7 @@ const Navbar = ({ setAutenticacion }) => {
             onClick={handleClick}
             sx={{
               color: "white",
-              maxWidth: {xs: 250,sm: 500 }, // ajusta según el tamaño que necesites
+              maxWidth: {xs: 230,sm: 500 }, // ajusta según el tamaño que necesites
               //textTransform: "none", // opcional: evita que el texto se vuelva mayúsculas
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -239,7 +239,7 @@ const Navbar = ({ setAutenticacion }) => {
                 outline: "none",
               },
             }}
-          >
+          > <ExpandMoreIcon />
             {context.sexo == "femenino" ? (<Person3Icon />) : (<PersonIcon />)}
             <Typography variant="subtitle2" sx={{
               mx: 1, fontWeight: 500, overflow: "hidden",
@@ -247,9 +247,9 @@ const Navbar = ({ setAutenticacion }) => {
               whiteSpace: "nowrap",
               flexGrow: 1,
             }}>
+             
               {context.nombre} {context.apellidos} <span style={{ fontWeight: 300 }}>({context.tipo})</span>
             </Typography>
-            <ExpandMoreIcon />
           </Button>
 
           <Menu

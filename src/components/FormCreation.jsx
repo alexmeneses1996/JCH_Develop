@@ -170,7 +170,7 @@ const FormCreation = () => {
         <CardContent>
 
           <Typography
-            sx={{ color: bg_boton, textAlign: { xs: 'left', sm: 'center' } , marginLeft:  { xs: '60px', sm: '1px' } }}
+            sx={{ color: bg_boton, textAlign: { xs: 'left', sm: 'center' } , marginLeft:  { xs: '40px', sm: '1px' } }}
             variant="h5"
             gutterBottom
             fontWeight="bold"
@@ -225,8 +225,8 @@ const FormCreation = () => {
               <Grid container spacing={2}>
                 {renderField("direccion", "Dirección", formik)}
                 {renderField("correo", "Correo", formik)}
-                {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik, "date")}
                 {renderSelect("sexo", "Sexo", sexos, formik)}
+                {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik, "date")}
               </Grid>
               <Grid container spacing={2}>
                 {renderSelect("municipio", "Municipio", municipios, formik)}

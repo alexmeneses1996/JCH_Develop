@@ -76,7 +76,7 @@ const AppRoutes = () => {
         <Routes>
           {/* Rutas Públicas */}
           <Route path='/login' element={<Login setAutenticacion={setAutenticacion} />} />
-          <Route path='/registrar' element={<FormCreationBylink />} />
+          <Route path='/registrar' element={<RegistroUser />} />
           <Route path='/olvide-mi-clave' element={<OlvideMiClave />} />
           <Route path='/reset-password' element={<ResetPassword />} />
           <Route path='/nuevoRegistroLink/:id_cedula' element={<FormCreationBylink />} />

@@ -39,20 +39,20 @@ const UserCreationByLink = ({ handleClose }) => {
                     border: '2px solid #efe7da',
                     boxShadow: 24,
                     borderRadius: 4,
-                    p: 1,
+                    p: 1.5,
                     margin: '5px'
                 }}>
                     <form
                         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                         onSubmit={handleSubmitAdmin}
                     >
-                        <IconButton onClick={handleCloseWindow} sx={{ position: "absolute", top: 8, left: 8, "&:hover": { color: 'red' } }}>
+                        <IconButton onClick={handleCloseWindow} sx={{ position: "absolute", top: 4, left: 4, "&:hover": { color: 'red' } }}>
                             <CancelIcon />
                         </IconButton>
 
                         <Typography sx={{
                             display: 'flex', alignItems: "center",
-                            justifyContent: "center", fontSize: "34px", fontWeight: "bold", color: '#0b5345', marginTop: '2px'
+                            justifyContent: "center", fontSize: "34px", fontWeight: "bold", color: '#0b5345', marginTop: '10px'
                         }}> Escanea el código QR</Typography>
                         <Typography sx={{
                             display: 'flex', alignItems: "center",
