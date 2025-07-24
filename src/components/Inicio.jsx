@@ -133,7 +133,6 @@ const Inicio = () => {
                         justifyContent: 'left',
                         alignItems: 'stretch',
                         width: '100%',
-                        marginTop:"30px"
                     }}>
                         <Card sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#059669', color: 'white', p: 2, borderRadius: 2, minWidth: '160px', maxWidth:"200px", flex: "1 1 240px" }}>
                             <Avatar sx={{ bgcolor: 'white', color: '#4CAF50', mr: 2 }}>

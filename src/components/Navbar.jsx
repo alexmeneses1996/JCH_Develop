@@ -64,7 +64,7 @@ const Navbar = ({ setAutenticacion }) => {
   }
 
   const handleReferido = () => {
-    
+
     ///navegate("/perfil");
 
   }
@@ -78,7 +78,7 @@ const Navbar = ({ setAutenticacion }) => {
         color: "#000",
         boxShadow: "none",
         width: "100%",
-        maxHeight:'64px'
+        maxHeight: '64px'
       }}
     >
       <Toolbar>
@@ -144,7 +144,7 @@ const Navbar = ({ setAutenticacion }) => {
               >
                 Gráficas
               </Button>
-                {context.tipo == "Admin" && (<Button
+              {context.tipo == "Admin" && (<Button
                 onClick={() => {
                   setOpenDrawer(false);
                   navegate("/proyeccion");
@@ -227,13 +227,26 @@ const Navbar = ({ setAutenticacion }) => {
             onClick={handleClick}
             sx={{
               color: "white",
+              maxWidth: {xs: 250,sm: 500 }, // ajusta según el tamaño que necesites
+              //textTransform: "none", // opcional: evita que el texto se vuelva mayúsculas
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
               "&:focus": {
                 outline: "none",
               },
             }}
           >
             {context.sexo == "femenino" ? (<Person3Icon />) : (<PersonIcon />)}
-            <Typography variant="subtitle2" sx={{ mx: 1, fontWeight: 500 }}>
+            <Typography variant="subtitle2" sx={{
+              mx: 1, fontWeight: 500, overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              flexGrow: 1,
+            }}>
               {context.nombre} {context.apellidos} <span style={{ fontWeight: 300 }}>({context.tipo})</span>
             </Typography>
             <ExpandMoreIcon />
@@ -247,7 +260,7 @@ const Navbar = ({ setAutenticacion }) => {
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
             {context.tipo != "Admin" && (<MenuItem onClick={handlePerfil}>Mi perfil</MenuItem>)}
-            {context.tipo != "Admin" && (<MenuItem onClick={handleReferido}><UserCreationByLink handleClose={handleClose}/>
+            {context.tipo != "Admin" && (<MenuItem onClick={handleReferido}><UserCreationByLink handleClose={handleClose} />
             </MenuItem>)}
             <MenuItem onClick={handleOpenSession}>Cerrar sesión</MenuItem>
           </Menu>

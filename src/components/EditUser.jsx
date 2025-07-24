@@ -32,7 +32,7 @@ const sexos = ["Femenino", "Masculino"];
 
 const validationSchema = Yup.object({
     actualizarContrasena: Yup.boolean(),
-    cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
+    cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").min(6, "Debe tener al menos 6 dígitos").required("Requerido"),
     nombre: Yup.string().required("Requerido"),
     apellidos: Yup.string().required("Requerido"),
     fecha_de_nacimiento: Yup.date().required("Requerido")

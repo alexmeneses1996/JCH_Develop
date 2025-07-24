@@ -9,7 +9,7 @@ const generos = ['Femenino', 'Masculino', 'Otro'];
 const comunas = ['Comuna 1', 'Comuna 22', 'Comuna 3']
 
 const validationSchema = Yup.object({
-  cedula: Yup.string().required('Requerido'),
+  cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").min(6, "Debe tener al menos 6 dígitos").required("Requerido"),
   nombres: Yup.string().required('Requerido'),
   apellidos: Yup.string().required('Requerido'),
   fechaNacimiento: Yup.date().required('Requerido'),

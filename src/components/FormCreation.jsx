@@ -34,7 +34,7 @@ const fechaLimite = new Date('2011-10-18');
 
 
 const validationSchema = Yup.object({
-  cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
+  cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").min(6, "Debe tener al menos 6 dígitos").required("Requerido"),
   nombre: Yup.string().required("Requerido"),
   apellidos: Yup.string().required("Requerido"),
   fecha_de_nacimiento: Yup.date().required("Requerido")
@@ -138,7 +138,7 @@ const FormCreation = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Button
               component="a"
-              href="https://wsp.registraduria.gov.co/censo/consultar/"
+              href="https://wsp.registraduria.gov.co/censocmlj/consultar/"
               target="_blank"
               rel="noopener noreferrer"
               sx={{
@@ -170,7 +170,7 @@ const FormCreation = () => {
         <CardContent>
 
           <Typography
-            sx={{ color: bg_boton }}
+            sx={{ color: bg_boton, textAlign: { xs: 'left', sm: 'center' } , marginLeft:  { xs: '60px', sm: '1px' } }}
             variant="h5"
             gutterBottom
             fontWeight="bold"
@@ -188,7 +188,7 @@ const FormCreation = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <Box sx={{ display: "flex", width: "100%" }}>
+              <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
                   <TextField
                     fullWidth
@@ -217,22 +217,23 @@ const FormCreation = () => {
                     helperText={formik.touched.cedula && formik.errors.cedula}
                   />
                 </Grid>
+
                 {renderField("nombre", "Nombre", formik)}
                 {renderField("apellidos", "Apellidos", formik)}
                 {renderField("telefono", "Teléfono o Celular", formik)}
-              </Box>
-              <Box sx={{ display: "flex", width: "100%" }}>
+              </Grid>
+              <Grid container spacing={2}>
                 {renderField("direccion", "Dirección", formik)}
                 {renderField("correo", "Correo", formik)}
                 {renderField("fecha_de_nacimiento", "Fecha de nacimiento", formik, "date")}
                 {renderSelect("sexo", "Sexo", sexos, formik)}
-              </Box>
-              <Box sx={{ display: "flex", width: "100%" }}>
+              </Grid>
+              <Grid container spacing={2}>
                 {renderSelect("municipio", "Municipio", municipios, formik)}
                 {renderSelect("comuna", "Comuna", comunas, formik)}
                 {renderSelect("barrio", "Barrio", barrios, formik)}
-              </Box>
-              <Box sx={{ display: "flex", width: "100%" }}>
+              </Grid>
+              <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
                   <Autocomplete
                     fullWidth
@@ -266,7 +267,7 @@ const FormCreation = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                <Grid container spacing={2}>
                   <TextField
                     fullWidth
                     label="Comuna por Puesto"
@@ -276,7 +277,7 @@ const FormCreation = () => {
                     sx={{ marginTop: 0, width: '150px', backgroundColor: '#D3D3D3' }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} sx={{ padding: "3px" }}>
+                <Grid container spacing={2}>
                   <TextField
                     fullWidth
                     label="Direccion por Puesto"
@@ -286,8 +287,9 @@ const FormCreation = () => {
                     sx={{ marginTop: 0, minWidth: '300px', backgroundColor: '#D3D3D3' }}
                   />
                 </Grid>
-              </Box>
+              </Grid>
             </Grid>
+
 
             <Box mt={4} textAlign="center">
               <Button

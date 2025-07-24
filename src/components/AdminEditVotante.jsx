@@ -13,7 +13,7 @@ import { calcularEdad, capitalizarCadaPalabra } from '../helppers/functions';
 const fechaLimite = new Date('2011-10-18');
 
 const validationSchema = Yup.object({
-    cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").required("Requerido"),
+    cedula: Yup.string().matches(/^[0-9]+$/, "Solo se permiten números").min(6, "Debe tener al menos 6 dígitos").required("Requerido"),
     nombre: Yup.string().required("Requerido"),
     apellidos: Yup.string().required("Requerido"),
     fecha_de_nacimiento: Yup.date().required("Requerido")
@@ -122,7 +122,8 @@ const AdminEditVotante = ({ votante }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 640,
+        width: '90vw',
+        maxWidth: "640px",
         bgcolor: 'background.paper',
         border: '2px solid #efe7da',
         boxShadow: 24,
@@ -186,9 +187,9 @@ const AdminEditVotante = ({ votante }) => {
                             justifyContent: "center", fontSize: "40px", fontWeight: "bold"
                         }}>Editar Referido</Typography>
 
-                        <Box sx={{ display: 'flex' }}>
+                       <Box sx={{ display: 'flex', flexWrap:'nowrap' }}>
 
-                            <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Documento"
                                     name="cedula"
@@ -209,7 +210,7 @@ const AdminEditVotante = ({ votante }) => {
                                 />
                             </FormControl>
 
-                            <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Nombre"
                                     name="nombre"
@@ -230,7 +231,7 @@ const AdminEditVotante = ({ votante }) => {
                             </FormControl>
 
 
-                            <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Apellido"
                                     name="apellidos"
@@ -252,7 +253,7 @@ const AdminEditVotante = ({ votante }) => {
                         </Box>
 
                         <Box sx={{ display: 'flex' }}>
-                            <FormControl sx={{ m: 1, width: '120px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '120px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Sexo"
                                     name="sexo"
@@ -279,7 +280,7 @@ const AdminEditVotante = ({ votante }) => {
                                 </TextField>
                             </FormControl>
 
-                            <FormControl sx={{ m: 1, width: '130px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '130px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Fecha de nacimiento"
                                     name="fecha_de_nacimiento"
@@ -308,7 +309,7 @@ const AdminEditVotante = ({ votante }) => {
 
                                 />
                             </FormControl>
-                            <FormControl sx={{ m: 1, width: '130px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '130px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Telefono"
                                     name="telefono"
@@ -327,7 +328,7 @@ const AdminEditVotante = ({ votante }) => {
                                     }}
                                 />
                             </FormControl>
-                            <FormControl sx={{ m: 1, width: '230px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '230px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Correo"
                                     name="correo"
@@ -349,7 +350,7 @@ const AdminEditVotante = ({ votante }) => {
                         </Box>
 
                         <Box sx={{ display: 'flex' }}>
-                            <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1, width: { xs: '100%', sm: '200px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Direccion"
                                     name="direccion"
@@ -369,7 +370,7 @@ const AdminEditVotante = ({ votante }) => {
                                 />
                             </FormControl>
 
-                            <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1,width: { xs: '100%', sm: '200px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Comuna"
                                     name="comuna"
@@ -395,7 +396,7 @@ const AdminEditVotante = ({ votante }) => {
                                 </TextField>
                             </FormControl>
 
-                            <FormControl sx={{ m: 1, width: '200px', backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
+                            <FormControl sx={{ m: 1,width: { xs: '100%', sm: '200px' }, backgroundColor: "#efe7da", borderRadius: "20px" }} variant="filled">
                                 <TextField
                                     label="Barrio"
                                     name="barrio"
