@@ -1,5 +1,5 @@
 import { supabase } from "../supabase/supabaseConfig";
-import { capitalizarCadaPalabra } from "./functions";
+import { calcularEdad, capitalizarCadaPalabra } from "./functions";
 
 export const crearRegistro = async (datos, cedula_usuario,link) => {
 
@@ -11,7 +11,7 @@ export const crearRegistro = async (datos, cedula_usuario,link) => {
         cedula: datos.cedula,
         nombre: capitalizarCadaPalabra(datos.nombre),
         apellidos: capitalizarCadaPalabra(datos.apellidos),
-        edad: datos.edad,
+        edad: calcularEdad(datos.fecha_de_nacimiento),
         fecha_de_nacimiento: datos.fecha_de_nacimiento,
         sexo: datos.sexo,
         telefono: datos.telefono,

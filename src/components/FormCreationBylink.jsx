@@ -23,7 +23,7 @@ import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../context/userContext";
-import { devolverUsuario } from "../helppers/crearUsuario";
+import { devolverUsuario, validarCedulaUsuario } from "../helppers/crearUsuario";
 import { calcularEdad } from "../helppers/functions";
 
 const municipios = ["CALI"];
@@ -83,7 +83,7 @@ const FormCreationBylink = () => {
           alert("✅ " + result.message)
           formik.resetForm();
         } else {
-          alert("❌ " + "El documento ya se encuentra registrado")
+          alert("❌ " + "El documento ya se encuentra registrado." + result.message )
         }
       } else {
         alert("❌ " + "El referido ya se encuentra registrado como usuario")
@@ -330,6 +330,7 @@ const renderField = (name, label, formik, type = "text") => (
         formik.handleChange(e);
         if (name === "fecha_de_nacimiento") {
           formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
+          console.log("edad:", formik.values.edad)
         }
       }}
       error={formik.touched[name] && Boolean(formik.errors[name])}
