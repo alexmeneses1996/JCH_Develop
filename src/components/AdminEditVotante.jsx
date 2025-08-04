@@ -57,7 +57,7 @@ const AdminEditVotante = ({ votante }) => {
             const newData = {
                 nombre: capitalizarCadaPalabra(values.nombre),
                 apellidos: capitalizarCadaPalabra(values.apellidos),
-                edad: calcularEdad(datos.fecha_de_nacimiento),
+                edad: calcularEdad(values.fecha_de_nacimiento),
                 fecha_de_nacimiento: values.fecha_de_nacimiento,
                 sexo: values.sexo,
                 telefono: values.telefono,

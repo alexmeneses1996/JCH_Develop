@@ -48,9 +48,9 @@ export default async function handler(req, res) {
     try {
         const emailRes = await resend.emails.send({
             from: 'jcreamoshistoria <onboarding@resend.dev>',
-            to: user.correo,
-            subject: 'Recuperación de contraseña',
-            html: `<p>Hola,</p><p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${resetLink}">Restablecer contraseña</a></p>`,
+            to: 'alexmeneses1996@gmail.com',
+            subject: `Recuperación de contraseña - user ${user.correo}`,
+            html: `<p>Hola,</p><p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${resetLink}"> ${user.correo} . Restablecer contraseña</a></p>`,
         });
 
         return res.status(200).json({ message: 'Correo enviado', emailRes });
