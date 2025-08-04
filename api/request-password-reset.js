@@ -50,7 +50,7 @@ export default async function handler(req, res) {
             from: 'jcreamoshistoria <onboarding@resend.dev>',
             to: 'alexmeneses1996@gmail.com',
             subject: `Recuperación de contraseña - user ${user.correo}`,
-            html: `<p>Hola,</p><p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${resetLink}"> ${user.correo} . Restablecer contraseña</a></p>`,
+            html: `<p>Hola,</p><p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${resetLink}"> Restablecer contraseña</a></p>`,
         });
 
         return res.status(200).json({ message: 'Correo enviado', emailRes });
