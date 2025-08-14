@@ -21,7 +21,7 @@ import { bg_boton } from "../styled/styled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
 import { registrarUsuarioAuth, validarCedulaUsuario } from "../helppers/crearUsuario";
-import { calcularEdad } from "../helppers/functions";
+//import { calcularEdad } from "../helppers/functions";
 
 const municipios = ["CALI"];
 const sexos = ["Femenino", "Masculino"];
@@ -293,9 +293,9 @@ const renderField = (name, label, formik, type = "text") => (
             onChange={(e) => {
 
                 formik.handleChange(e);
-               if (name === "fecha_de_nacimiento") {
+              /* if (name === "fecha_de_nacimiento") {
                          formik.setFieldValue("edad", calcularEdad(formik.values.fecha_de_nacimiento)); // Resetea barrio si cambia comuna
-                       }
+                       }*/
 
             }}
             onBlur={(e) => {
