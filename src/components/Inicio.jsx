@@ -48,9 +48,24 @@ const Inicio = () => {
 
                     const result = await retornarUsuarios()
                     if (result.success) {
-                        setUsuarios(result.data) //Se actualiza la cantidad de usuarios
+
+
+                        const datosConConteo = result.data?.map(usuario => {
+                        const cantidadVotantes = res.data?.filter(
+                            v => v.referido === usuario.cedula
+                        ).length;
+
+
+                        return {
+                            ...usuario,
+                            cantidadVotantes
+                        };
+                    });
+
+                        setUsuarios(datosConConteo);
+                        //setUsuarios(result.data) //Se actualiza la cantidad de usuarios
                         setCountUsuarios(result.data.length)
-                        setFilteredUser(result.data)
+                        setFilteredUser(datosConConteo)
                     }
 
                 }
@@ -178,22 +193,22 @@ const Inicio = () => {
 
                     </Box>
                     {context.tipo == "Admin" && (
-                    <FormControlLabel
-                        sx={{ display: 'flex', color: 'black' }}
-                        control={
-                            <Switch
-                                checked={buscarPorCedula}
-                                onChange={() => setBuscarPorCedula(!buscarPorCedula)}
-                                name="buscarPorCedula"
-                                sx={{ color: bg_boton }}
-                            />
-                        }
-                        label="Mostrar info por referidos"
+                        <FormControlLabel
+                            sx={{ display: 'flex', color: 'black' }}
+                            control={
+                                <Switch
+                                    checked={buscarPorCedula}
+                                    onChange={() => setBuscarPorCedula(!buscarPorCedula)}
+                                    name="buscarPorCedula"
+                                    sx={{ color: bg_boton }}
+                                />
+                            }
+                            label="Mostrar info por referidos"
 
-                    />)}
-                    <RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />
-                    {/*buscarPorCedula? (<RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />):
-                    (<RegistroTableUser datos={usuarios} filtered={filtered} setFilteredUser={setFilteredUser}/>)*/}
+                        />)}
+                    {/*<RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />*/}
+                    {buscarPorCedula ? (<RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />) :
+                        (<RegistroTableUser datos={usuarios} setUsuarios={setUsuarios} filteredUser={filteredUser} setFilteredUser={setFilteredUser} />)}
                 </Box>
             </Box>
         </Container>

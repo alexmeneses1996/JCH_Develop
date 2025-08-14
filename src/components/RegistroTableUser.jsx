@@ -15,9 +15,11 @@ import AdminEditVotante from './AdminEditVotante';
 import AdminViewVotante from './AdminViewVotante';
 import AdminDeleteVotante from './AdminDeleteVotante';
 import { exportToExcel, ordenarComuna } from '../helppers/functions';
+import { retornarUsuarios } from '../helppers/crearUsuario';
+import { retornarTodosLosVotantes } from '../helppers/crearVotante';
 
 
-const RegistroTableUser = ({ datos, filteredUser, setFilteredUser }) => {
+const RegistroTableUser = ({ datos, setUsuarios, filteredUser, setFilteredUser }) => {
 
   const [registros, setRegistros] = useState([]);
   //const [datos, setDatos] = useState(null)
@@ -28,10 +30,37 @@ const RegistroTableUser = ({ datos, filteredUser, setFilteredUser }) => {
   const [edad, setEdad] = useState('');
   const [page, setPage] = useState(0);
   const navigate = useNavigate()
-  const rowsPerPage = 5;
+  const rowsPerPage = 10;
   const { context, setContext } = useContext(AppContext)
 
+/*
+ useEffect(() => {
 
+   const fetchData = async () =>{
+    const result = await retornarTodosLosVotantes()
+    const votantes = result.data
+
+    const datosConConteo = datos?.map(usuario => {
+      const cantidadVotantes = votantes?.filter(
+        v => v.referido === usuario.cedula
+      ).length;
+
+
+      return {
+        ...usuario,
+        cantidadVotantes
+      };
+    });
+
+    setUsuarios(datosConConteo);
+    console.log(datos)
+
+  }
+
+  fetchData();
+
+ },[])
+*/
 
   useEffect(() => {
 
@@ -56,6 +85,8 @@ const RegistroTableUser = ({ datos, filteredUser, setFilteredUser }) => {
   const hanldeExportData = () => {
     exportToExcel(filteredUser, "votantes.xlsx")
   }
+
+
 
   return (
     <Box sx={{ padding: 2, width: '100%' }}>
@@ -144,7 +175,7 @@ const RegistroTableUser = ({ datos, filteredUser, setFilteredUser }) => {
           <TableCell>Edad</TableCell>
           <TableCell>Sexo</TableCell>
           <TableCell>Comuna</TableCell>
-          <TableCell>Acciones</TableCell>
+          <TableCell># Referidos</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -157,6 +188,7 @@ const RegistroTableUser = ({ datos, filteredUser, setFilteredUser }) => {
               <TableCell >{r.edad}</TableCell>
               <TableCell>{r.sexo}</TableCell>
               <TableCell >{r.comuna}</TableCell>
+               <TableCell >{r.cantidadVotantes}</TableCell>
 
               <TableCell>
                 

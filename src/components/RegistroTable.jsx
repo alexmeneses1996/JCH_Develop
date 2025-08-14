@@ -28,7 +28,7 @@ const RegistrosTable = ({ datos, filtered, setFiltered }) => {
   const [edad, setEdad] = useState('');
   const [page, setPage] = useState(0);
   const navigate = useNavigate()
-  const rowsPerPage = 5;
+  const rowsPerPage = 10;
   const { context, setContext } = useContext(AppContext)
 
 
