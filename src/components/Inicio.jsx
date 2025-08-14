@@ -206,9 +206,9 @@ const Inicio = () => {
                             label="Mostrar info por referidos"
 
                         />)}
-                    {/*<RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />*/}
-                    {buscarPorCedula ? (<RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />) :
-                        (<RegistroTableUser datos={usuarios} setUsuarios={setUsuarios} filteredUser={filteredUser} setFilteredUser={setFilteredUser} />)}
+                    {context.tipo != "Admin" && <RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />}
+                    {context.tipo == "Admin" &&(buscarPorCedula ? (<RegistrosTable datos={datos} filtered={filtered} setFiltered={setFiltered} />) :
+                        (<RegistroTableUser datos={usuarios} setUsuarios={setUsuarios} filteredUser={filteredUser} setFilteredUser={setFilteredUser} />))}
                 </Box>
             </Box>
         </Container>

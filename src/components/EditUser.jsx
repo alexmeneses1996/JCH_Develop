@@ -90,7 +90,7 @@ const EditUser = ({ user }) => {
             const newData = {
                 nombre: capitalizarCadaPalabra(values.nombre),
                 apellidos: capitalizarCadaPalabra(values.apellidos),
-                edad: values.edad,
+                edad: calcularEdad(values.fecha_de_nacimiento),
                 fecha_de_nacimiento: values.fecha_de_nacimiento,
                 sexo: values.sexo,
                 telefono: values.telefono,
